@@ -1,5 +1,17 @@
 var barn = new Barn(localStorage);
 
+class addons {
+
+    chunkArray(arr, chunk) {
+        var i, j, tmp = [];
+        for (i = 0, j = arr.length; i < j; i += chunk) {
+            tmp.push(arr.slice(i, i + chunk));
+        }
+        return tmp;
+    }
+
+}
+
 function boot_chart () {
 
 
@@ -375,19 +387,41 @@ function init_chart () {
         socket.on('connect', () => {
             socket.emit('bybitMarkets');
             socket.emit('deribitMarkets');
-            socket.emit('feed');
         });
 
         socket.on('deribitMarkets', function(msg){
-            marketsOfCrypto.markets.deribit = JSON.parse(msg);
+
+            var i = 0;
+            var objproto = {};
+
+            for (const [key, value] of Object.entries(Object.freeze(JSON.parse(msg)))) {
+               i++;
+               if (i > 100) { break; }
+               objproto[key] = value;
+            }
+
+            marketsOfCrypto.markets.deribit = objproto;
+
         });
 
         socket.on('bybitMarkets', function(msg){
-            marketsOfCrypto.markets.bybit = JSON.parse(msg);
+            marketsOfCrypto.markets.bybit = Object.freeze(JSON.parse(msg));
         });
 
+        window.feedchunk = 0;
+
         socket.on('feed', function(msg){
-            feedOfCrypto.items = (JSON.parse(msg).items).splice(0, 3);
+
+            var chunks = new addons().chunkArray(JSON.parse(msg), 3);
+
+            if (chunks[window.feedchunk]) {
+                feedOfCrypto.items = chunks[window.feedchunk];
+                window.feedchunk++;
+            } else {
+                feedOfCrypto.items = chunks[0];
+                window.feedchunk=0;
+            }
+
         });
 
         if (chart_exchange == 'deribit') {
@@ -396,7 +430,7 @@ function init_chart () {
                 window.barSeries_chart.setData(JSON.parse(msg))
             });
 
-            socket.on('deribitChartVolume', function(msg){
+            socket.on('deribitChartVOLUME', function(msg){
                 window.volumeSeries.setData(JSON.parse(msg))
             });
 
@@ -420,7 +454,7 @@ function init_chart () {
                 window.MACD_histogram.setData(JSON.parse(msg).histogram)
             });
 
-            socket.on('deribitChartPriceMVRVZScope', function(msg){
+            socket.on('deribitChartPriceMVRVZSCOPE', function(msg){
                 window.MVRVZScope_chart.setData(JSON.parse(msg))
             });
 

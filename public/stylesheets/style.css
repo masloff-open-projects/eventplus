@@ -40,6 +40,11 @@ section.content {
     margin-top: 72px;
 }
 
+section.post-center {
+    padding: 124px 0;
+    text-align: center;
+}
+
 .navbar-main {
     background: #131313;
     color: white;
@@ -177,6 +182,10 @@ section.content {
 
 .orderBids > .right {
     float: right;
+}
+
+.big-title {
+    font-size: 94px;
 }
 
 ::-webkit-scrollbar {

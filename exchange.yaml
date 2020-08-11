@@ -20,7 +20,7 @@ indicators:
 
 exchange:
   period: 1
-  offset: 145152000 # 1 mounh
+  offset: 36288000 # 1 week
 
 ordersBook:
   depth: 5

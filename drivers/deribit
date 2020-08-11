@@ -10,6 +10,12 @@ module.exports = class {
         const this_ = this;
 
         this.data = {};
+        this.meta = {
+            name: 'Deribit Driver by Event+',
+            id: 'ddbe-101',
+            version: 1,
+            exchange: 'deribit'
+        }
 
         this.ccxt = ccxt;
         this.actions = [];
@@ -88,7 +94,6 @@ module.exports = class {
                     }
 
                     this_.call('getChartForTradingview', chartData);
-                    this_.call('hello', 1);
                     this_.looper.bars(this_);
                 } else if (answer.id == 835) {
                     this_.call('getOrderBook', answer.result);

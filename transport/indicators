@@ -1,12 +1,23 @@
 #!/usr/bin/env node
+var async = require("async");
 
 module.exports = class {
 
-    constructor(drivers={}) {
+    constructor(drivers={}, processors={}) {
 
         this.actions = [];
         this.transports = [];
+        this.processors = [];
+        this.mask = {
+            'bdbe-101': {
 
+            },
+            'ddbe-101': {
+
+            }
+        }
+
+        // Load drivers
         for (const driver in drivers) {
             let object = drivers[driver];
             if ('meta' in object) {
@@ -19,8 +30,18 @@ module.exports = class {
             }
         }
 
-    }
+        // Load processors
+        for (const processor in processors) {
+            let object = processors[processor];
+            if ('meta' in object) {
+                this.processors.push({
+                    processor: object,
+                    meta: object.meta
+                });
+            }
+        }
 
+    }
 
     on (action='default', callback=null) {
         return this.actions.push({
@@ -41,13 +62,240 @@ module.exports = class {
         }
     }
 
+    calculate (e, this_, _, processor) {
+
+        async.parallel([
+
+            // SMA
+            function() {
+
+                var chartData = [];
+                var closes = [];
+
+                for (const close of e) {
+                    closes.push(parseFloat(close.close))
+                }
+
+                var indicator = processor.SMA(closes);
+
+                for (const key in indicator) {
+                    chartData.push({
+                        value: indicator[key],
+                        time: e[key].time
+                    })
+                }
+
+                this_.call('SMA', {
+                    exchange: _.meta.exchange,
+                    chart: chartData
+                });
+
+            },
+
+            // RVI
+            function () {
+
+                var chartData = [];
+                var close = [];
+                var open = [];
+                var high = [];
+                var low = [];
+
+                for (const _ of e) {
+                    close.push(parseFloat(_.close))
+                    open.push(parseFloat(_.open))
+                    high.push(parseFloat(_.high))
+                    low.push(parseFloat(_.low))
+                }
+
+                var indicator = processor.RVI(close, open, high, low);
+
+                for (const key in indicator) {
+                    chartData.push({
+                        value: indicator[key],
+                        time: e[key].time
+                    })
+                }
+
+                this_.call('RVI', {
+                    exchange: _.meta.exchange,
+                    chart: chartData
+                });
+
+            },
+
+            // Bollinger Bands
+            function () {
+
+                var chartData = {
+                    'lower': [],
+                    'middle': [],
+                    'upper': []
+                };
+                var closes = [];
+
+                for (const close of e) {
+                    closes.push(parseFloat(close.close))
+                }
+
+                var indicator = processor.BB(closes);
+
+                for (const key in indicator) {
+
+                    chartData.lower.push({
+                        value: indicator[key].lower,
+                        time: e[key].time
+                    });
+
+                    chartData.middle.push({
+                        value: indicator[key].middle,
+                        time: e[key].time
+                    });
+
+                    chartData.upper.push({
+                        value: indicator[key].upper,
+                        time: e[key].time
+                    });
+
+                }
+
+                this_.call('BB', {
+                    exchange: _.meta.exchange,
+                    chart: chartData
+                });
+
+            },
+
+            // MACD
+            function () {
+
+                var chartData = {
+                    'macd': [],
+                    'signal': [],
+                    'histogram': []
+                };
+                var closes = [];
+
+                for (const close of e) {
+                    closes.push(parseFloat(close.close))
+                }
+
+                var indicator = processor.MACD(closes);
+
+                for (const key in indicator) {
+
+                    chartData.macd.push({
+                        value: indicator[key].MACD,
+                        time: e[key].time
+                    });
+
+                    chartData.signal.push({
+                        value: indicator[key].signal,
+                        time: e[key].time
+                    });
+
+                    chartData.histogram.push({
+                        value: indicator[key].histogram,
+                        time: e[key].time
+                    });
+
+                }
+
+                this_.call('MACD', {
+                    exchange: _.meta.exchange,
+                    chart: chartData
+                });
+
+            },
+
+            // MVRVZSCOPE
+            function () {
+
+                var closes = [];
+
+                for (const close of e) {
+                    closes.push(parseFloat(close.close))
+                }
+
+                processor.MVRVZScope(closes).then(function (indicator) {
+
+                    var chartData = [];
+
+                    for (const key in indicator) {
+                        chartData.push({
+                            value: indicator[key],
+                            time: e[key].time
+                        })
+                    }
+
+                    this_.call('MVRVZSCOPE', {
+                        exchange: _.meta.exchange,
+                        chart: chartData
+                    });
+
+                });
+
+
+            },
+
+            // Values
+            function () {
+
+                var chartData = [];
+                var values = [];
+
+                for (const close of e) {
+                    values.push(parseFloat(close.volume))
+                }
+
+                for (const key in values) {
+                    chartData.push({
+                        value: values[key],
+                        time: e[key].time
+                    });
+                }
+
+                this_.call('VOLUME', {
+                    exchange: _.meta.exchange,
+                    chart: chartData
+                });
+
+            }
+
+        ]);
+
+    }
+
     init () {
 
-        for (const _ of this.transports) {
-            _.on('getChart', calculate)
+        const this_ = this;
+        var processor = false;
+
+        // Select processor
+        for (const _ of this.processors) {
+            if (_.meta.id == 'ipbe-101') {
+                processor = _.processor;
+            }
         }
 
-        this.call('init', true);
+        // If processor selected
+        if (processor) {
+
+            for (const _ of this.transports) {
+
+                _.driver.on('getChartForTradingview', function (e) {
+                    this_.calculate(e, this_, _, processor);
+                });
+
+                _.driver.init();
+
+            }
+
+            this.call('init', true);
+
+        } else {
+            throw "Processor is not selected";
+        }
 
     }
 

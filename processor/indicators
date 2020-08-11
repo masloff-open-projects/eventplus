@@ -4,6 +4,7 @@ const SMA = require('technicalindicators').SMA;
 const BB = require('technicalindicators').BollingerBands
 const MACD = require('technicalindicators').MACD;
 const math = require("mathjs");
+const provider = require('../provider/coingecko');
 
 const cache = require("cache");
 const c = new cache(15 * 60 * 1000);
@@ -12,6 +13,11 @@ module.exports = class {
 
     constructor(exchangeConfig={ indicators: undefined }) {
         this.exchangeConfig = exchangeConfig;
+        this.meta = {
+            name: 'Indicators Processor by Event+',
+            id: 'ipbe-101',
+            version: 1
+        };
     }
 
     SMA (values=[], period=this.exchangeConfig.indicators.SMA.period) {
@@ -19,7 +25,7 @@ module.exports = class {
     }
 
     BB (values=[], period=this.exchangeConfig.indicators.BB.period) {
-        return BB.calculate({period: period, values: values, stdDev: Math.sqrt(Math.sqrt(math.std(values)))});
+        return BB.calculate({period: period, values: values, stdDev: math.sqrt(math.sqrt(math.std(values)))});
     }
 
     MACD (values=[], fastPeriod=this.exchangeConfig.indicators.MACD.fastPeriod, slowPeriod=this.exchangeConfig.indicators.MACD.slowPeriod, signalPeriod=this.exchangeConfig.indicators.MACD.signalPeriod, SimpleMAOscillator=this.exchangeConfig.indicators.MACD.SimpleMAOscillator, SimpleMASignal=this.exchangeConfig.indicators.MACD.SimpleMASignal )  {
@@ -46,22 +52,32 @@ module.exports = class {
 
     MVRVZScope (values=[], ts=0, cs=0) {
 
-        var chartData = [];
-        var marketCap = [];
+        return new Promise((resolve, reject) => {
 
-        for (const key in values) {
-            marketCap.push(values[key] * ts)
-        }
+            var chartData = [];
+            var marketCap = [];
 
-        for (const key in values) {
+            provider.market().then(function (event) {
 
-            let mc = values[key] * ts;
-            let rc = values[key] * cs;
+                for (const key in values) {
+                    marketCap.push(values[key] * event.total_supply)
+                }
 
-            chartData.push( math.sqrt(math.sqrt((mc - rc)/(math.std(marketCap)))) );
-        }
+                for (const key in values) {
 
-        return chartData;
+                    let mc = values[key] * event.total_supply;
+                    let rc = values[key] * event.circulating_supply;
+
+                    chartData.push( math.sqrt(math.sqrt((mc - rc)/(math.std(marketCap)))) );
+
+                }
+
+                resolve (chartData);
+
+            });
+
+        });
+
 
     }
 

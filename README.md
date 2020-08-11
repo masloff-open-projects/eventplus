@@ -1,2 +1,2 @@
-# eventplus
+# Event+
 Event+ repository
