@@ -1,0 +1,145 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2">
+          <div class="block-section">
+            <div class="header">
+              Crypto Pairs
+            </div>
+            <div class="block">
+              <div id="markets">
+                <div v-for="exchange in markets">
+                  <div v-for="market in exchange">
+                    <div class="pair-container">
+                      <b>
+                        <i v-bind:class="market.info.base_currency | cryptofont"></i>
+                        <span>${market.symbol}</span>
+                      </b>
+                      <span class="right">
+                        <span class="span-taker">${market.taker}</span>
+                        <span class="span-maker">${market.maker}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="block-section">
+            <div class="header">
+
+              <select id="select-chart">
+                <option value="deribit">BTC/USD Chart <span>Deribit</span></option>
+                <option value="bybit">BTC/USD Chart <span>ByBit</span></option>
+              </select>
+
+              <div class="right">
+                <span id="priceStat">
+                  <span class="price-info">
+                    Price change:
+                    <span class="change-price">${change}$</span>
+                  </span>
+                   <span class="price-info">
+                    Volume (BTC):
+                    <span class="default-price">${volume}</span>
+                  </span>
+                  <span class="price-info">
+                    High:
+                    <span class="high-price">${high}$</span>
+                  </span>
+                  <span class="price-info">
+                    Low:
+                    <span class="low-price">${low}$</span>
+                  </span>
+              </span>
+              </div>
+            </div>
+            <div class="block">
+              <div id="price_chart">
+
+              </div>
+
+              <span class="indicator-name">
+                RVI
+              </span>
+              <div id="indicators_chart_rvi">
+
+              </div>
+
+              <span class="indicator-name">
+                MACD
+              </span>
+              <div id="indicators_chart_macd">
+
+              </div>
+
+              <span class="indicator-name">
+                MVRV Z-Scope
+              </span>
+              <div id="indicators_chart_zscope">
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="block-section">
+            <div class="header">
+              Terminal Deals
+            </div>
+            <div class="block">
+              ...
+            </div>
+          </div>
+          <div class="block-section">
+            <div class="header">
+              News
+            </div>
+            <div class="block" id="feed">
+              <div v-for="post in items" class="post-body">
+                <h5>${post.title}</h5>
+                <small class="feed-description">${post.description}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="block-section">
+            <div class="header">
+              Exchange OrderBook
+            </div>
+            <div class="block" id="ordersBook">
+
+              <div v-for="item in asks" class="orderAsk">
+                <span class="left" v-bind:style="{width: item[1]/100 > 70 ? 70 : item[1]/100 + '%'}">
+                  ${item[0]}
+                </span>
+                <span class="right">
+                  ${item[1]}
+                </span>
+              </div>
+
+              <div v-for="item in bids" class="orderBids">
+                 <span class="left" v-bind:style="{width: item[1]/100 > 70 ? 70 : item[1]/100 + '%'}">
+                  ${item[0]}
+                </span>
+                <span class="right">
+                  ${item[1]}
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+{% endblock %}

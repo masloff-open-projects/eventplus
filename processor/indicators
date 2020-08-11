@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+const SMA = require('technicalindicators').SMA;
+const BB = require('technicalindicators').BollingerBands
+const MACD = require('technicalindicators').MACD;
+const math = require("mathjs");
+
+const cache = require("cache");
+const c = new cache(15 * 60 * 1000);
+
+module.exports = class {
+
+    constructor(exchangeConfig={ indicators: undefined }) {
+        this.exchangeConfig = exchangeConfig;
+    }
+
+    SMA (values=[], period=this.exchangeConfig.indicators.SMA.period) {
+        return SMA.calculate({period: period, values: values});
+    }
+
+    BB (values=[], period=this.exchangeConfig.indicators.BB.period) {
+        return BB.calculate({period: period, values: values, stdDev: Math.sqrt(Math.sqrt(math.std(values)))});
+    }
+
+    MACD (values=[], fastPeriod=this.exchangeConfig.indicators.MACD.fastPeriod, slowPeriod=this.exchangeConfig.indicators.MACD.slowPeriod, signalPeriod=this.exchangeConfig.indicators.MACD.signalPeriod, SimpleMAOscillator=this.exchangeConfig.indicators.MACD.SimpleMAOscillator, SimpleMASignal=this.exchangeConfig.indicators.MACD.SimpleMASignal )  {
+        return MACD.calculate({
+            values: values,
+            fastPeriod: fastPeriod,
+            slowPeriod: slowPeriod,
+            signalPeriod: signalPeriod ,
+            SimpleMAOscillator: SimpleMAOscillator,
+            SimpleMASignal: SimpleMASignal
+        });
+    }
+
+    RVI (close=[], open=[], high=[], low=[]) {
+
+        var chartData = [];
+        for (const index in close) {
+            chartData.push( (close[index]-open[index])/(high[index]-low[index]) );
+        }
+
+        return chartData;
+
+    }
+
+    MVRVZScope (values=[], ts=0, cs=0) {
+
+        var chartData = [];
+        var marketCap = [];
+
+        for (const key in values) {
+            marketCap.push(values[key] * ts)
+        }
+
+        for (const key in values) {
+
+            let mc = values[key] * ts;
+            let rc = values[key] * cs;
+
+            chartData.push( math.sqrt(math.sqrt((mc - rc)/(math.std(marketCap)))) );
+        }
+
+        return chartData;
+
+    }
+
+}

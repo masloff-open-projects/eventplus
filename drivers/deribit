@@ -1,0 +1,155 @@
+#!/usr/bin/env node
+
+const cache = require("cache");
+const c = new cache(15 * 60 * 1000);
+
+module.exports = class {
+
+    constructor(ccxt=null, io=null, yaml=null, redis=null) {
+
+        const this_ = this;
+
+        this.data = {};
+
+        this.ccxt = ccxt;
+        this.actions = [];
+        this.keystore = yaml('keystore.yaml');
+        this.exchange = yaml('exchange.yaml');
+        this.websocket = require('websocket').w3cwebsocket;
+        this.deribit_client = new this.websocket(this.keystore.deribit.testnet ? "wss://test.deribit.com/ws/api/v2" : "wss://www.deribit.com/ws/api/v2");
+        this.deribit_client.onopen = function (e) {
+            this_.init();
+        }
+        this.looper = {
+            bars: function (e) {
+                e.eval( {
+                    "jsonrpc" : "2.0",
+                    "id" : 833,
+                    "method" : "public/get_tradingview_chart_data",
+                    "params" : {
+                        "instrument_name" : "BTC-PERPETUAL",
+                        "start_timestamp" : parseInt(new Date().getTime()) - this_.exchange.exchange.offset,
+                        "end_timestamp" : parseInt(new Date().getTime()),
+                        "resolution" : this_.exchange.exchange.period
+                    }
+                })
+            },
+            book: function (e) {
+                e.eval( {
+                    "jsonrpc" : "2.0",
+                    "id" : 835,
+                    "method" : "public/get_order_book",
+                    "params" : {
+                        "instrument_name" : "BTC-PERPETUAL",
+                        "depth" : this_.exchange.exchange.depth
+                    }
+                })
+            },
+            instrument: function (e) {
+                e.eval( {
+                    "jsonrpc" : "2.0",
+                    "id" : 7617,
+                    "method" : "public/get_instruments",
+                    "params" : {
+                        "currency" : "BTC",
+                        "kind" : "future",
+                        "expired" : false
+                    }
+                })
+            },
+        }
+
+    }
+
+    eval (request={}) {
+
+        const this_ = this;
+
+        (this.deribit_client).onmessage = function (e) {
+            let answer = JSON.parse(e.data);
+            if ('id' in answer) {
+                if (answer.id == 833) {
+
+                    this_.call('getChart', answer.result);
+
+                    var chartData = [];
+                    if (answer.result.ticks.length) {
+                        for (let i = 0; i < answer.result.ticks.length; i++) {
+                            chartData.push ({
+                                time: answer.result.ticks[i]/1000,
+                                open: answer.result.open[i],
+                                low: answer.result.low[i],
+                                high: answer.result.high[i],
+                                cost: answer.result.cost[i],
+                                close: answer.result.close[i],
+                                volume: answer.result.volume[i],
+                            });
+                        }
+                    }
+
+                    this_.call('getChartForTradingview', chartData);
+                    this_.call('hello', 1);
+                    this_.looper.bars(this_);
+                } else if (answer.id == 835) {
+                    this_.call('getOrderBook', answer.result);
+                    this_.looper.book(this_);
+                } else if (answer.id == 7617) {
+                    this_.call('getInstrument', answer.result);
+                    this_.looper.instrument(this_);
+                }
+            }
+        };
+
+        if ((this.deribit_client).readyState == 1) {
+            (this.deribit_client).send(JSON.stringify(request));
+        }
+
+    }
+
+    on (action='default', callback=null) {
+        return this.actions.push({
+            action: action,
+            function: callback
+        });
+    }
+
+    call (action='default', data) {
+        for (const callback of this.actions) {
+            if (action === callback.action) {
+                try {
+                    callback.function(data)
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+        }
+    }
+
+    init () {
+
+        // Start stream
+        this.looper.bars(this);
+        this.looper.book(this);
+        this.looper.instrument(this);
+
+        this.call('init', true);
+
+        (async function (ccxt, this_) {
+
+            let deribit = new ccxt.deribit();
+
+            // Get markets
+
+            if (c.get(`driver-deribit-markets`)) {
+                this_.data.markets = c.get(`driver-deribit-markets`);
+                this_.call('getMarkets', this_.data.markets);
+            } else {
+                this_.data.markets = await deribit.loadMarkets ();
+                this_.call('getMarkets', this_.data.markets);
+            }
+
+
+        }) (this.ccxt, this);
+
+    }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "event",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node bin.js"
+  },
+  "dependencies": {
+    "@pxtrn/bybit-api": "^1.1.5",
+    "cache": "^2.3.1",
+    "ccxt": "^1.32.78",
+    "coingecko-api": "^1.0.10",
+    "coinmarketcap-api": "^3.1.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "fs": "0.0.1-security",
+    "http-errors": "~1.6.3",
+    "js-yaml": "^3.14.0",
+    "mathjs": "^7.1.0",
+    "morgan": "~1.9.1",
+    "redis": "^3.0.2",
+    "rss-to-json": "^1.1.1",
+    "socket.io": "^2.3.0",
+    "technicalindicators": "^3.1.0",
+    "twig": "~0.10.3",
+    "websocket": "^1.0.31"
+  }
+}

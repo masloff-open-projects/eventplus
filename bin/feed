@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+var Feed = require('rss-to-json');
+
+module.exports = function (callback) {
+    Feed.load('https://www.coindesk.com/feed', callback);
+}

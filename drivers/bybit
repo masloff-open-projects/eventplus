@@ -1,0 +1,146 @@
+#!/usr/bin/env node
+
+const request = require('request');
+const cache = require("cache");
+const c = new cache(15 * 60 * 1000);
+
+module.exports = class {
+
+    constructor(ccxt=null, io=null, yaml=null, redis=null) {
+
+        this.data = {};
+        this.meta = {
+            name: 'ByBit Driver by Event+',
+            id: 'bdbe-101',
+            version: 1,
+            exchange: 'bybit'
+        }
+
+        const this_ = this;
+        this.ccxt = ccxt;
+        this.redis = redis;
+        this.actions = [];
+        this.keystore = yaml('keystore.yaml');
+        this.exchange = yaml('exchange.yaml');
+        this.websocket = require('websocket').w3cwebsocket;
+        this.client = new this.websocket(this.keystore.bybit.testnet ? 'wss://stream-testnet.bybit.com/realtime' : 'wss://stream.bybit.com/realtime');
+        this.initial = (event) => {
+            const this_ = this;
+            var buffer = [];
+            var bufferObject = {}
+
+            request(`https://api.bybit.com/v2/public/kline/list?symbol=BTCUSD&interval=${this_.exchange.exchange.period}&limit=200&from=${parseInt(new Date().getTime()/1000) - (60 * 200)}`, function (error, response, body) {
+                if (response && response.statusCode == 200) {
+                    const data = JSON.parse(body);
+                    buffer = data.result;
+                }
+            });
+
+            this.client.onmessage = function (e) {
+
+                const data = JSON.parse(e.data);
+
+                if ('topic' in data && data.topic == 'instrument_info.100ms.BTCUSD') {
+
+                    if ('update' in data.data) {
+
+                        for (const i in data.data.update) {
+                            if (i in bufferObject) {
+                                bufferObject[i] = data.data.update[i];
+                            }
+                        }
+
+                        this_.call('getInstrument', bufferObject);
+
+                    } else {
+                        this_.call('getInstrument', data.data);
+                        bufferObject = data.data;
+                    }
+
+
+                } else if ('topic' in data && data.topic == 'klineV2.1.BTCUSD') {
+                    if (buffer) {
+
+                        var chartData = [];
+
+                        for (const bufferData of data.data) {
+                            buffer.push(bufferData);
+                        }
+
+                        for (const bufferData of buffer) {
+                            chartData.push({
+                                time: 'open_time' in bufferData ? bufferData.open_time : bufferData.end,
+                                open: bufferData.open,
+                                low: bufferData.low,
+                                high: bufferData.high,
+                                turnover: bufferData.turnover,
+                                close: bufferData.close,
+                                volume: bufferData.volume
+                            })
+                        }
+
+                        this_.call('getChartForTradingview', chartData);
+                        this_.call('getChart', chartData);
+                    }
+                }
+
+            }
+
+            this.client.onopen = function (e) {
+                this_.client.send(JSON.stringify({
+                    "op": "subscribe",
+                    "args": [
+                        "klineV2.1.BTCUSD",
+                        "instrument_info.100ms.BTCUSD"
+                    ]
+                }));
+            }
+        }
+
+    }
+
+    on (action='default', callback=null) {
+        return this.actions.push({
+            action: action,
+            function: callback
+        });
+    }
+
+    call (action='default', data) {
+        for (const callback of this.actions) {
+            if (action === callback.action) {
+                try {
+                    callback.function(data)
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+        }
+    }
+
+    init () {
+
+        this.initial();
+
+        this.call('init', true);
+
+        (async function (ccxt, this_) {
+
+            let bybyit = new ccxt.bybit();
+
+            // Get markets
+
+            if (c.get(`driver-bybit-markets`)) {
+                this_.data.markets = c.get(`driver-bybit-markets`);
+                this_.call('getMarkets', this_.data.markets);
+            } else {
+                this_.data.markets = await bybyit.loadMarkets ();
+                this_.call('getMarkets', this_.data.markets);
+            }
+
+
+        }) (this.ccxt, this);
+
+    }
+
+}

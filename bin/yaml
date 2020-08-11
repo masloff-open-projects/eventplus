@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+const yaml = require('js-yaml');
+const fs = require('fs');
+
+module.exports = function (file) {
+    return yaml.safeLoad(fs.readFileSync(file, 'utf8'));
+}

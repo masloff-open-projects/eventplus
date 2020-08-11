@@ -1,0 +1,26 @@
+indicators:
+
+  SMA:
+    period: 15
+
+  BB:
+    period: 15
+
+  MACD:
+    fastPeriod: 5
+    slowPeriod: 8
+    signalPeriod: 3
+    SimpleMAOscillator: false
+    SimpleMASignal: false
+
+  MVRV:
+    ZScope:
+      stdDev: 5000
+
+
+exchange:
+  period: 1
+  offset: 145152000 # 1 mounh
+
+ordersBook:
+  depth: 5

@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+module.exports = class {
+
+    constructor(drivers={}) {
+
+        this.actions = [];
+        this.transports = [];
+
+        for (const driver in drivers) {
+            let object = drivers[driver];
+            if ('meta' in object) {
+                if ('exchange' in object.meta) {
+                    this.transports.push({
+                        driver: object,
+                        meta: object.meta
+                    })
+                }
+            }
+        }
+
+    }
+
+
+    on (action='default', callback=null) {
+        return this.actions.push({
+            action: action,
+            function: callback
+        });
+    }
+
+    call (action='default', data) {
+        for (const callback of this.actions) {
+            if (action === callback.action) {
+                try {
+                    callback.function(data)
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+        }
+    }
+
+    init () {
+
+        for (const _ of this.transports) {
+            _.on('getChart', calculate)
+        }
+
+        this.call('init', true);
+
+    }
+
+}

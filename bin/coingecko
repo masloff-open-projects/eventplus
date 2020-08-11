@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+const CoinGecko = require('coingecko-api');
+const CoinGeckoClient = new CoinGecko();
+const cache = require("cache");
+const c = new cache(15 * 60 * 1000);
+
+module.exports = {
+    market: function (symbol='bitcoin') {
+        if (c.get(`coingecko-api-market-${symbol}`)) {
+            return new Promise((resolve, reject) => {
+                resolve(c.get(`coingecko-api-market-${symbol}`));
+            });
+        } else {
+            return new Promise((resolve, reject) => {
+                CoinGeckoClient.coins.fetch('bitcoin', {}).then(function(e) {
+                    c.put(`coingecko-api-market-${symbol}`, e.data.market_data);
+                    resolve(e.data.market_data)
+                });
+            });
+        }
+    }
+}
+
+// let data = CoinGeckoClient.coins.fetch('bitcoin', {});
+// data.then(function (e) {
+//     console.log(e.data.market_data.market_cap_change_24h_in_currency.usd)
+// })
