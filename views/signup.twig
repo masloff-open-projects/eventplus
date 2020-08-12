@@ -1,0 +1,43 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+
+    <section class="post-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <h1 class="form-title">Event+</h1>
+
+                    <form method="POST" id="signup" class="transport-form">
+
+                        <small class="spot">Type a username. Use the Latin alphabet. You cannot use Russian characters and space. </small>
+                        <input type="text" placeholder="Username" name="username">
+                        <small class="form-attention" id="hint-username"></small>
+
+
+                        <div class="separator"></div>
+
+                        <small class="spot">Enter your name in English</small>
+                        <input type="text" placeholder="First name" name="name">
+                        <small class="form-attention" id="hint-name"></small>
+
+
+                        <div class="separator"></div>
+
+                        <small class="spot">Enter the password. Try to come up with a strong password.</small>
+                        <input type="password" placeholder="Password" name="password" class="check-password">
+                        <small class="form-attention" id="hint-password"></small>
+
+
+                        <div class="separator"></div>
+
+                        <input type="submit" value="Sign up" class="action-button">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

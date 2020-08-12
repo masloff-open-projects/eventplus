@@ -1,0 +1,37 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+
+    <section class="post-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <h1 class="form-title amin-text">Event+</h1>
+
+                    <form method="POST" id="login" class="transport-form">
+
+                        <small class="spot">Type a username</small>
+                        <input type="text" placeholder="Username" name="username">
+                        <small class="form-attention" id="hint-username"></small>
+
+
+                        <div class="separator"></div>
+
+                        <small class="spot">Enter the password</small>
+                        <input type="password" placeholder="Pasword" name="password">
+                        <small class="form-attention" id="hint-password"></small>
+
+
+                        <div class="separator"></div>
+
+                        <input type="submit" value="Login" class="action-button">
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
