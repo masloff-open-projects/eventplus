@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bd58a08c-ffbe-4e85-be63-476b51808539" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Sass File" />
+        <option value="SCSS File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1fwfUaOt1u0GdGrnhGY5IHqYnUP" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/stylesheets/css" />
+    <property name="list.type.of.created.stylesheet" value="SCSS" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/stylesheets/css" />
+      <recent name="$PROJECT_DIR$/public/stylesheets/sass" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/stylesheets/sass" />
+      <recent name="$PROJECT_DIR$/public/stylesheets/css" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/provider" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bd58a08c-ffbe-4e85-be63-476b51808539" name="Default Changelist" comment="" />
+      <created>1597134094366</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1597134094366</updated>
+      <workItem from="1597134095871" duration="31236000" />
+      <workItem from="1597166644156" duration="6194000" />
+      <workItem from="1597222434668" duration="24827000" />
+      <workItem from="1597295004556" duration="278000" />
+    </task>
+    <task id="LOCAL-00001" summary="Update #1193">
+      <created>1597134335566</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1597134335566</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Update #1193">
+      <created>1597135177949</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1597135177949</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update #1193">
+      <created>1597135299301</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1597135299301</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Update #1193">
+      <created>1597152062448</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1597152062449</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Update #1193">
+      <created>1597243481145</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1597243481146</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Update #1193">
+      <created>1597295093571</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1597295093571</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Update #1193" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update #1193" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="716" y="324" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1597231979258">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="716" y="324" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1044@0.0.1920.1044" timestamp="1597231979258" />
+    <state x="229" y="37" key="CommitChangelistDialog2" timestamp="1597243478988">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="229" y="37" key="CommitChangelistDialog2/0.0.1920.1044@0.0.1920.1044" timestamp="1597243478988" />
+    <state x="621" y="300" key="EditFileWatcherDialog" timestamp="1597237408067">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="621" y="300" key="EditFileWatcherDialog/0.0.1920.1044@0.0.1920.1044" timestamp="1597237408067" />
+    <state x="560" y="258" key="Vcs.Push.Dialog.v2" timestamp="1597243484262">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="560" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1044@0.0.1920.1044" timestamp="1597243484262" />
+    <state x="562" y="136" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1597244484918">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="562" y="136" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1044@0.0.1920.1044" timestamp="1597244484918" />
+    <state x="768" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1597134539740">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="768" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1044@0.0.1920.1044" timestamp="1597134539740" />
+    <state x="664" y="261" width="592" height="522" key="find.popup" timestamp="1597234012949">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="664" y="261" width="592" height="522" key="find.popup/0.0.1920.1044@0.0.1920.1044" timestamp="1597234012949" />
+    <state x="624" y="238" key="run.anything.popup" timestamp="1597249924077">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="624" y="238" key="run.anything.popup/0.0.1920.1044@0.0.1920.1044" timestamp="1597249924077" />
+    <state x="623" y="230" key="search.everywhere.popup" timestamp="1597149462101">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="623" y="230" key="search.everywhere.popup/0.0.1920.1044@0.0.1920.1044" timestamp="1597149462101" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/models/user.js</url>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
