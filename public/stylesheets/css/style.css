@@ -103,6 +103,11 @@ div.separator {
   display: block;
 }
 
+.toolbar-icon-toggle {
+  margin: 0 12px;
+  cursor: pointer;
+}
+
 div.block-section {
   border: 1px solid rgba(208, 208, 208, 0.05);
   background: #131313;
@@ -251,7 +256,7 @@ section.post-center {
   float: right;
 }
 
-#select-chart {
+#toolbar-select-chart {
   background: #131313;
   border: transparent;
   width: auto;

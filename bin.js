@@ -65,14 +65,22 @@ transport.indicators.on ('*', (event, action) => {
 
     if (!(action in ['init'])) {
         if ('exchange' in event) {
-            io.emit(`${event.exchange.toLowerCase()}ChartPrice${action.toUpperCase()}`, JSON.stringify(event.chart));
+            io.emit(`chartData`, JSON.stringify({
+                exchange: event.exchange.toLowerCase(),
+                type: action.toUpperCase(),
+                chart: event.chart
+            }));
         }
     }
 
 });
 
 driver.deribit.on ('getChartForTradingview', (event) => {
-    io.emit('deribitChartPrice', JSON.stringify(event));
+    io.emit(`chartData`, JSON.stringify({
+        exchange: 'deribit',
+        type: 'BARS',
+        chart: event
+    }));
 });
 
 driver.deribit.on ('getOrderBook', (event) => {
@@ -80,7 +88,11 @@ driver.deribit.on ('getOrderBook', (event) => {
 });
 
 driver.bybit.on ('getChartForTradingview', (event) => {
-    io.emit('bybitChartPrice', JSON.stringify(event));
+    io.emit(`chartData`, JSON.stringify({
+        exchange: 'bybit',
+        type: 'BARS',
+        chart: event
+    }));
 })
 
 driver.bybit.on ('getInstrument', (event) => {

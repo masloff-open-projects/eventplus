@@ -34,10 +34,14 @@
           <div class="block-section">
             <div class="header">
 
-              <select id="select-chart">
+              <select id="toolbar-select-chart" @change="toggle($event)">
                 <option value="deribit">BTC/USD Chart <span>Deribit</span></option>
                 <option value="bybit">BTC/USD Chart <span>ByBit</span></option>
               </select>
+
+              <span v-on:click="toggle" id="toolbar-sound-on-change-price">
+                <i class="fas fa-volume toolbar-icon-toggle"></i>
+              </span>
 
               <div class="right">
                 <span id="priceStat">
@@ -61,30 +65,27 @@
               </div>
             </div>
             <div class="block">
-              <div id="price_chart">
 
+              <div id="vue-chart-price">
+                <div id="price_chart"></div>
               </div>
 
-              <span class="indicator-name">
-                RVI
-              </span>
-              <div id="indicators_chart_rvi">
-
+              <div id="vue-chart-indicator-rvi">
+                <span class="indicator-name">RVI</span>
+                <div id="indicators_chart_rvi"> </div>
               </div>
 
-              <span class="indicator-name">
-                MACD
-              </span>
-              <div id="indicators_chart_macd">
-
+              <div id="vue-chart-indicator-macd">
+                 <span class="indicator-name">MACD</span>
+                <div id="indicators_chart_macd"></div>
               </div>
 
-              <span class="indicator-name">
-                MVRV Z-Scope
-              </span>
-              <div id="indicators_chart_zscope">
 
+              <div id="vue-chart-indicator-mvrvzscope">
+                <span class="indicator-name">MVRV Z-Scope</span>
+                <div id="indicators_chart_mvrvzscope"></div>
               </div>
+
             </div>
           </div>
         </div>

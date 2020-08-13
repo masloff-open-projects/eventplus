@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/css/style.css' type="text/css"/>
-    <link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.3.0/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cryptofont@0.1.1/css/cryptofont.min.css" integrity="sha256-oCoKY2h9AOXXZhYYsaRAPpfr+Yw4vkcJqp5hxWnizBQ=" crossorigin="anonymous">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.0/js/all.js"></script>
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.0/anime.min.js" integrity="sha512-LfB+BcvR3zBt7ebVskhSWiSbEUiG3p5EcCprkieldsKhBeR6wpnLi0VpWC2GNgVGWP2n/skO8Bx2oKNjUhXCkw==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/barn/0.2.3/barn.min.js" integrity="sha512-2ra4TtMIHkMHZ69G8aL4dfkOTPXoe3YKtaDyaxFIo7OqIoM5Bcaj3d/oaZ5jjNUKooDwqS/FpwweY/iIa7Mzqg==" crossorigin="anonymous"></script>
@@ -57,19 +57,6 @@
             {% for item in left_menu %}
               <li class="{{ item.active ? 'active' : '' }}"><a href="{{ item.href }}">{{ item.text }} <span class="sr-only">(current)</span></a></li>
             {% endfor %}
-
-{#            <li class="dropdown">#}
-{#              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>#}
-{#              <ul class="dropdown-menu">#}
-{#                <li><a href="#">Action</a></li>#}
-{#                <li><a href="#">Another action</a></li>#}
-{#                <li><a href="#">Something else here</a></li>#}
-{#                <li role="separator" class="divider"></li>#}
-{#                <li><a href="#">Separated link</a></li>#}
-{#                <li role="separator" class="divider"></li>#}
-{#                <li><a href="#">One more separated link</a></li>#}
-{#              </ul>#}
-{#            </li>#}
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
@@ -100,9 +87,10 @@
 
   </body>
 
+  <script src="/javascripts/init.js"></script>
+  <script src="/javascripts/audio.js"></script>
   <script src="/javascripts/parseParams.js"></script>
   <script src="/javascripts/pswd.js"></script>
-  <script src="/javascripts/audio.js"></script>
   <script src="/javascripts/vue.js"></script>
   <script src="/javascripts/script.js"></script>
 
