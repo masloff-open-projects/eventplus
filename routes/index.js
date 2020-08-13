@@ -20,6 +20,11 @@ module.exports = function (passport, authenticationMiddleware) {
           href: "/deals",
           text: "Deals History",
           active: false
+        },
+        {
+          href: "javascript:window.open('/studio','Studio','resizable,height=600,width=800');",
+          text: "VM Studio",
+          active: false
         }
       ],
       right_menu: [

@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+var mysql = require('mysql');
+var yaml = require('./yaml');
+
+module.exports = function () {
+
+    return mysql.createConnection(yaml('keypair.yaml').mysql);
+
+}

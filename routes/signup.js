@@ -8,7 +8,7 @@ module.exports = function (passport, authenticationMiddleware) {
         res.render('signup', {
             brand: "Event+",
             show_brand: false,
-            title: 'Main',
+            title: 'Signup',
             left_menu: [
                 {
                     href: "/",

@@ -120,26 +120,36 @@ module.exports = class {
 
     init () {
 
+        const this_ = this;
+
         this.initial();
 
         this.call('init', true);
 
-        (async function (ccxt, this_) {
+        var bybyit = new this.ccxt.bybit();
 
-            let bybyit = new ccxt.bybit();
-
-            // Get markets
+        // Get markets
+        this.on ('markets', function () {
 
             if (c.get(`driver-bybit-markets`)) {
-                this_.data.markets = c.get(`driver-bybit-markets`);
-                this_.call('getMarkets', this_.data.markets);
+
+                this.data.markets = c.get(`driver-bybit-markets`);
+                this.redis.set('driverBybitMarkets', JSON.stringify(this.data.markets));
+                this.call('getMarket', this.data.markets);
+
             } else {
-                this_.data.markets = await bybyit.loadMarkets ();
-                this_.call('getMarkets', this_.data.markets);
+
+                bybyit.loadMarkets().then(function (e) {
+
+                    this_.data.markets = e;
+                    this_.redis.set('driverBybitMarkets', JSON.stringify(this_.data.markets));
+                    this_.call('getMarkets', this_.data.markets);
+
+                });
             }
 
+        });
 
-        }) (this.ccxt, this);
 
     }
 

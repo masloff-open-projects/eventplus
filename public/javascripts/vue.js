@@ -4,22 +4,15 @@ const synth = new Tone.Synth({
     oscillator : {
         type: 'sine'
     }
-});
+}).toDestination();
 
-var feedbackDelay = new Tone.FeedbackDelay('8n',  0.6);
-
-synth.connect(feedbackDelay);
-synth.connect(Tone.Master);
-feedbackDelay.connect(Tone.Master);
-
-(async function () {
-    await Tone.start();
-}) ();
+NProgress.start()
 
 var mainChartOfPrice = new Vue({
     delimiters: ['${', '}'],
     el: '#vue-chart-price',
     data: {
+        lastClose: 0,
         chart: false,
         lines: {
             bars: false,
@@ -151,40 +144,6 @@ var mainChartOfPrice = new Vue({
             lineType: 4
         });
 
-        // Listen data channel
-        socket.on ('chartData', (data) => {
-
-            let object = JSON.parse(data);
-
-            if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
-                switch (object.type) {
-
-                    case 'SMA':
-                        this.lines.SMA.setData(object.chart)
-                        break;
-
-                    case 'BARS':
-                        this.lines.BARS.setData(object.chart)
-                        break;
-
-                    case 'VOLUME':
-                        this.lines.VOLUME.setData(object.chart)
-                        break;
-
-                    case 'BB':
-                        this.lines.BBLower.setData(object.chart.lower)
-                        this.lines.BBMiddle.setData(object.chart.middle)
-                        this.lines.BBUpper.setData(object.chart.upper)
-                        break;
-
-                    default:
-                        break
-
-                }
-            }
-
-        });
-
     }
 });
 
@@ -264,26 +223,6 @@ var rviChartOfIndicator = new Vue({
             crosshairMarkerVisible: true,
             crosshairMarkerRadius: 6,
             lineType: 4
-        });
-
-        // Listen data channel
-        socket.on ('chartData', (data) => {
-
-            let object = JSON.parse(data);
-
-            if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
-                switch (object.type) {
-
-                    case 'RVI':
-                        this.lines.RVI.setData(object.chart)
-                        break;
-
-                    default:
-                        break;
-
-                }
-            }
-
         });
 
     }
@@ -381,28 +320,6 @@ var macdChartOfIndicator = new Vue({
             color: '#f89500'
         });
 
-        // Listen data channel
-        socket.on ('chartData', (data) => {
-
-            let object = JSON.parse(data);
-
-            if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
-                switch (object.type) {
-
-                    case 'MACD':
-                        this.lines.MACD.setData(object.chart.macd)
-                        this.lines.MACDHistogram.setData(object.chart.histogram)
-                        this.lines.MACDSignal.setData(object.chart.signal)
-                        break;
-
-                    default:
-                        break;
-
-                }
-            }
-
-        });
-
     }
 })
 
@@ -484,26 +401,6 @@ var mvrvzscopeChartOfIndicator = new Vue({
             lineType: 4
         });
 
-        // Listen data channel
-        socket.on ('chartData', (data) => {
-
-            let object = JSON.parse(data);
-
-            if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
-                switch (object.type) {
-
-                    case 'MVRVZSCOPE':
-                        this.lines.ZScope.setData(object.chart)
-                        break;
-
-                    default:
-                        break;
-
-                }
-            }
-
-        });
-
     }
 })
 
@@ -536,19 +433,19 @@ var feedOfCrypto = new Vue({
     el: '#feed',
     data: {
         chunk: 0,
-        items: []
+        items: false
     },
     mounted: function () {
 
         const this_ = this;
 
-        socket.on('feed', function(msg){
-
-            const feed = JSON.parse(msg);
-            if (this_.chunk > feed.length) {this_.chunk = 0;}
-            this_.items = feed[this_.chunk + 3] ? [feed[this_.chunk + 1], feed[this_.chunk + 2], feed[this_.chunk + 3]] : [];
-            this_.chunk++;
-
+        axios({
+            method: 'get',
+            url: `/api/v1/feed/news`
+        }).then(function (response) {
+            if (response.status == 200) {
+                this_.items = (response.data.feed.items).splice(0, 3)
+            }
         });
 
     }
@@ -558,10 +455,7 @@ var marketsOfCrypto = new Vue({
     delimiters: ['${', '}'],
     el: '#markets',
     data: {
-        markets: {
-            bybit: [],
-            deribit: [],
-        }
+        markets: false
     },
     filters: {
         cryptofont: function (value) {
@@ -569,6 +463,11 @@ var marketsOfCrypto = new Vue({
             value = value.toString();
             return `cf cf-${value.toLowerCase()}`;
         }
+    },
+    mounted: function () {
+
+        const this_ = this;
+
     }
 })
 
@@ -579,11 +478,16 @@ var soundPriceChangeOfToolBar = new Vue({
         toggle: function (event) {
             let data = barn.get('settings_sound-on-change-price');
             if (!data || data == 'true') {
-                barn.set('settings_sound-on-change-price', 'false')
+                barn.set('settings_sound-on-change-price', 'false');
+                this.turn = false;
             } else {
-                barn.set('settings_sound-on-change-price', 'true')
+                barn.set('settings_sound-on-change-price', 'true');
+                this.turn = true;
             }
         }
+    },
+    data: {
+        turn: (!barn.get('settings_sound-on-change-price') || barn.get('settings_sound-on-change-price') == 'true')
     }
 })
 
@@ -595,8 +499,163 @@ var exchangeChangeOfToolBar = new Vue({
             barn.set('chart_exchange', event.target.value);
         }
     },
+    data: {
+        exchanges: [
+            {
+                name: "Deribit",
+                value: 'deribit',
+                pair: 'BTC/USD'
+            },
+            {
+                name: "ByBit",
+                value: 'bybit',
+                pair: 'BTC/USD'
+            },
+            {
+                name: "BitMex",
+                value: 'bitmex',
+                pair: 'XBT/USD'
+            },
+            {
+                name: "Arbitrage",
+                value: 'arb-deribit-bitmex',
+                pair: 'XBT/USD BTC/USD'
+            },
+        ]
+    },
     mounted: function (event) {
-        this.$el.value = barn.get('chart_exchange');
+        this.$el.value = (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit');
     }
 })
 
+// Listen data channel
+websocket.onopen = function(e) {
+
+    NProgress.done();
+
+    websocket.onmessage = function(event) {
+
+        let object = JSON.parse(event.data);
+
+        if (object.response == 'chartData') {
+
+            if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
+
+                switch (object.type) {
+
+                    case 'SMA':
+                        mainChartOfPrice.lines.SMA.setData(object.chart)
+                        break;
+
+                    case 'BARS':
+
+                        let data = barn.get('settings_sound-on-change-price');
+                        if (!data || data == 'true') {
+
+                            if (Tone.context.state !== 'running') {
+                                Tone.context.resume();
+                            } else {
+
+                                let bar = object.chart.pop();
+
+                                if (mainChartOfPrice.lastClose != bar.close) {
+
+                                    if (bar.close > this.lastClose) {
+                                        synth.triggerAttackRelease("C6", "8n", Tone.now());
+                                    } else {
+                                        synth.triggerAttackRelease("A3", "8n", Tone.now());
+                                    }
+
+                                    mainChartOfPrice.lastClose = bar.close;
+                                }
+
+                            }
+                        }
+
+                        mainChartOfPrice.lines.BARS.setData(object.chart)
+                        break;
+
+                    case 'VOLUME':
+                        mainChartOfPrice.lines.VOLUME.setData(object.chart)
+                        break;
+
+                    case 'BB':
+                        mainChartOfPrice.lines.BBLower.setData(object.chart.lower)
+                        mainChartOfPrice.lines.BBMiddle.setData(object.chart.middle)
+                        mainChartOfPrice.lines.BBUpper.setData(object.chart.upper)
+                        break;
+
+                    case 'RVI':
+                        rviChartOfIndicator.lines.RVI.setData(object.chart)
+                        break;
+
+                    case 'MACD':
+                        macdChartOfIndicator.lines.MACD.setData(object.chart.macd)
+                        macdChartOfIndicator.lines.MACDHistogram.setData(object.chart.histogram)
+                        macdChartOfIndicator.lines.MACDSignal.setData(object.chart.signal)
+                        break;
+
+                    case 'MVRVZSCOPE':
+                        mvrvzscopeChartOfIndicator.lines.ZScope.setData(object.chart)
+                        break;
+
+                    default:
+                        break
+
+                }
+
+            } else if ((barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit') == 'arb-deribit-bitmex' ) {
+
+                // switch (object.type) {
+                //
+                //     case 'SMA':
+                //         mainChartOfPrice.lines.SMA.setData(object.chart)
+                //         break;
+                //
+                //
+                //     default:
+                //         break
+                //
+                // }
+
+            }
+
+        } else if (object.response == 'ordersBookData') {
+
+            if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
+                orderBookOfCrypto.asks = object.book.asks;
+                orderBookOfCrypto.bids = object.book.bids;
+            }
+
+        } else if (object.response == 'markets') {
+
+            if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
+                marketsOfCrypto.markets = Object.values(object.markets);
+            }
+        }
+
+    };
+
+    notyf.success({
+        message: `WebSocket is connected!`,
+        duration: 4000,
+        icon: false
+    });
+
+};
+
+websocket.onerror = function (e) {
+    notyf.error({
+        message: `WebSocket Error Code: ${String(e.code)}`,
+        duration: 32000,
+        icon: false
+    });
+}
+
+websocket.onclose = function (e) {
+    notyf.error({
+        message: `WebSocket Close Code: ${String(e.code)}`,
+        duration: 32000,
+        icon: false
+    });
+}

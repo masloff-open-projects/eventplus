@@ -1,3 +1,3 @@
 var barn = new Barn(localStorage);
 var notyf = new Notyf();
-var socket = io();
+const websocket = new WebSocket(`${location.protocol == 'https:' ? "wss:" : "ws:"}//${location.hostname}:9999`);

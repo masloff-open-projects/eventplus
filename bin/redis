@@ -1,11 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * Driver to work with Redis cache
- *
- * @version 1.0.0
- */
-
 module.exports = function () {
 
     var redis = require("redis");

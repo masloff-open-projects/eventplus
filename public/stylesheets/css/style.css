@@ -275,6 +275,40 @@ section.post-center {
   margin-top: 72px;
 }
 
+.studio-body {
+  background: #4e54c8;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #8f94fb, #4e54c8);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #8f94fb, #4e54c8);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.container-for-studio {
+  padding: 0;
+  margin: 0;
+}
+.container-for-studio > div {
+  padding: 0;
+  margin: 0;
+}
+.container-for-studio > div > div {
+  padding: 0;
+  margin: 0;
+}
+
+.no-content {
+  text-align: center;
+  padding: 20px 10px;
+}
+.no-content > img {
+  padding: 10px 4px;
+}
+
+.studio-title {
+  font-size: 10em;
+}
+
 .orderAsk > .left {
   padding: 1px;
   font-size: 11px;
@@ -307,6 +341,14 @@ section.post-center {
 
 .big-title {
   font-size: 94px;
+}
+
+#codeContainer {
+  width: 100%;
+  min-height: 100px;
+  height: 100vh;
+  margin: 0px;
+  padding: 0px;
 }
 
 ::-webkit-scrollbar {

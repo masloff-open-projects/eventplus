@@ -18,6 +18,7 @@ module.exports = class {
         }
 
         this.ccxt = ccxt;
+        this.redis = redis;
         this.actions = [];
         this.keystore = yaml('keystore.yaml');
         this.exchange = yaml('exchange.yaml');
@@ -96,7 +97,10 @@ module.exports = class {
                     this_.call('getChartForTradingview', chartData);
                     this_.looper.bars(this_);
                 } else if (answer.id == 835) {
-                    this_.call('getOrderBook', answer.result);
+                    this_.call('getOrderBook', {
+                        asks: answer.result.asks,
+                        bids: answer.result.bids
+                    });
                     this_.looper.book(this_);
                 } else if (answer.id == 7617) {
                     this_.call('getInstrument', answer.result);
@@ -140,20 +144,7 @@ module.exports = class {
         this.call('init', true);
 
         (async function (ccxt, this_) {
-
             let deribit = new ccxt.deribit();
-
-            // Get markets
-
-            if (c.get(`driver-deribit-markets`)) {
-                this_.data.markets = c.get(`driver-deribit-markets`);
-                this_.call('getMarkets', this_.data.markets);
-            } else {
-                this_.data.markets = await deribit.loadMarkets ();
-                this_.call('getMarkets', this_.data.markets);
-            }
-
-
         }) (this.ccxt, this);
 
     }

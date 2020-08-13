@@ -6,6 +6,11 @@ module.exports = class {
 
     constructor(drivers={}, processors={}) {
 
+        this.meta = {
+            id: 'itbe-101',
+            name: "Indicators Transport by Event+",
+            version: 1
+        };
         this.actions = [];
         this.transports = [];
         this.processors = [];
@@ -14,6 +19,9 @@ module.exports = class {
 
             },
             'ddbe-101': {
+
+            },
+            'bmxdbe-101': {
 
             }
         }
@@ -26,8 +34,10 @@ module.exports = class {
                     this.transports.push({
                         driver: object,
                         meta: object.meta
-                    })
+                    });
                 }
+            } else {
+                throw `'${driver}' is not a driver`;
             }
         }
 
@@ -39,6 +49,8 @@ module.exports = class {
                     processor: object,
                     meta: object.meta
                 });
+            } else {
+                throw `'${processor}' is not a processor`;
             }
         }
 
@@ -287,8 +299,6 @@ module.exports = class {
                 _.driver.on('getChartForTradingview', function (e) {
                     this_.calculate(e, this_, _, processor);
                 });
-
-                _.driver.init();
 
             }
 

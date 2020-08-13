@@ -3,107 +3,65 @@
 var ccxt = require ('ccxt');
 var www = require('./bin/www');
 var yaml = require('./bin/yaml');
-var client = require('./bin/redis')();
 var io = require('./bin/socket')(www);
-
-var provider = {
-    feed: new (require('./provider/feed'))()
-};
+var redis = require('./bin/redis')();
 
 var processor = {
     indicators: new (require('./processor/indicators'))(yaml('./exchange.yaml'))
 };
 
 var driver = {
-    bybit: new (require('./drivers/bybit')) (ccxt, io, yaml, client),
-    deribit: new (require('./drivers/deribit')) (ccxt, io, yaml, client)
+    bybit: new (require('./drivers/bybit')) (ccxt, io, yaml, redis),
+    deribit: new (require('./drivers/deribit')) (ccxt, io, yaml, redis),
+    bitmex: new (require('./drivers/bitmex')) (ccxt, io, yaml, redis),
+}
+
+var transport_high = {
+    indicators: new (require('./transport/indicators'))(driver, processor),
 }
 
 var transport = {
-    indicators: new (require('./transport/indicators'))(driver, processor),
-    feed: new (require('./transport/feed'))(provider.feed),
+    io: new (require('./transport/socket'))(io, driver, transport_high),
 }
 
 /**
  * Installation of Redis event handler
  */
 
-client.on("error", function(error) {
+redis.on("error", function(error) {
     console.error('[REDIS]', error);
 })
 
-client.on("connect", function() {
+redis.on("connect", function() {
+
     console.log('[REDIS]', "You are now connected");
-});
 
-io.on('connection', (socket) => {
 
-    socket.on ('bybitMarkets', (e) => {
-        io.emit('bybitMarkets', JSON.stringify(driver.bybit.data.markets));
+    /**
+     * Installation of Transport handler
+     */
+
+    transport_high.indicators.on ('init', (event) => {
+        console.log('[TRANSPORT / INDICATORS]', "You are now initialization");
     });
 
-    socket.on ('deribitMarkets', (e) => {
-        io.emit('deribitMarkets', JSON.stringify(driver.deribit.data.markets));
+    transport.io.on ('init', (event) => {
+        console.log('[TRANSPORT / IO]', "You are now initialization");
     });
 
-    console.log('[SOCKET]', "User now connected");
+    transport.io.on ('userConnect', (event) => {
+        console.log('[TRANSPORT / IO]', "User connect");
+    });
 
-    io.emit('ping', 'pong');
-});
 
-/**
- * Installation of Transport handler
- */
+    /**
+     * Init of all drivers and indicators
+     */
 
-transport.indicators.on ('init', (event) => {
-    console.log('[TRANSPORT / INDICATORS]', "You are now initialization");
-});
-
-transport.indicators.init();
-
-transport.indicators.on ('*', (event, action) => {
-
-    if (!(action in ['init'])) {
-        if ('exchange' in event) {
-            io.emit(`chartData`, JSON.stringify({
-                exchange: event.exchange.toLowerCase(),
-                type: action.toUpperCase(),
-                chart: event.chart
-            }));
-        }
-    }
+    transport_high.indicators.init();
+    transport.io.init();
+    driver.deribit.init();
+    driver.bybit.init();
+    driver.bitmex.init();
 
 });
-
-driver.deribit.on ('getChartForTradingview', (event) => {
-    io.emit(`chartData`, JSON.stringify({
-        exchange: 'deribit',
-        type: 'BARS',
-        chart: event
-    }));
-});
-
-driver.deribit.on ('getOrderBook', (event) => {
-    io.emit('deribitExchangeState', JSON.stringify(event));
-});
-
-driver.bybit.on ('getChartForTradingview', (event) => {
-    io.emit(`chartData`, JSON.stringify({
-        exchange: 'bybit',
-        type: 'BARS',
-        chart: event
-    }));
-})
-
-driver.bybit.on ('getInstrument', (event) => {
-    io.emit('bybitExchangeState', JSON.stringify(event));
-})
-
-transport.feed.on ('getContent', (event) => {
-    io.emit('feed', JSON.stringify(event));
-});
-
-transport.feed.init();
-
-// driver.deribit.init();
-// driver.bybit.init();

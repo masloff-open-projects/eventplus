@@ -8,7 +8,7 @@
 
 module.exports = function (http) {
 
-    var io = require('socket.io')(http);
+    var io = new (require('ws')).Server({ port: 9999 });
     return io;
 
 }

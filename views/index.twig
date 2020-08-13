@@ -12,19 +12,24 @@
             </div>
             <div class="block">
               <div id="markets">
-                <div v-for="exchange in markets">
-                  <div v-for="market in exchange">
+                <div v-if="markets">
+                  <div v-for="pair in markets">
                     <div class="pair-container">
                       <b>
-                        <i v-bind:class="market.info.base_currency | cryptofont"></i>
-                        <span>${market.symbol}</span>
+                        <i v-bind:class="pair.info.base_currency | cryptofont"></i>
+                        <span>${pair.symbol}</span>
                       </b>
                       <span class="right">
-                        <span class="span-taker">${market.taker}</span>
-                        <span class="span-maker">${market.maker}</span>
-                      </span>
+                      <span class="span-taker">${pair.taker}</span>
+                      <span class="span-maker">${pair.maker}</span>
+                    </span>
                     </div>
                   </div>
+                </div>
+                <div v-else class="no-content">
+                  <img src="/images/bitcoin.png" alt="">
+                  <h5>No currency pairs</h5>
+                  <small>There is no information about currency pairs on this exchange</small>
                 </div>
               </div>
             </div>
@@ -35,11 +40,10 @@
             <div class="header">
 
               <select id="toolbar-select-chart" @change="toggle($event)">
-                <option value="deribit">BTC/USD Chart <span>Deribit</span></option>
-                <option value="bybit">BTC/USD Chart <span>ByBit</span></option>
+                <option v-for="exchange in exchanges" v-bind:value="exchange.value">${exchange.pair} ${exchange.name}</option>
               </select>
 
-              <span v-on:click="toggle" id="toolbar-sound-on-change-price">
+              <span v-on:click="toggle" id="toolbar-sound-on-change-price" v-bind:style="{color: turn ? 'white' : 'gray'}">
                 <i class="fas fa-volume toolbar-icon-toggle"></i>
               </span>
 
@@ -95,7 +99,12 @@
               Terminal Deals
             </div>
             <div class="block">
-              ...
+              <div v-if="false"></div>
+              <div v-else class="no-content">
+                <img src="/images/money.png" alt="">
+                <h5>Empty</h5>
+                <small>You don't have any open orders at this time.</small>
+              </div>
             </div>
           </div>
           <div class="block-section">
@@ -103,9 +112,16 @@
               News
             </div>
             <div class="block" id="feed">
-              <div v-for="post in items" class="post-body">
-                <h5>${post.title}</h5>
-                <small class="feed-description">${post.description}</small>
+              <div v-if="items">
+                <div v-if="items" v-for="post in items" class="post-body">
+                  <h5>${post.title}</h5>
+                  <small class="feed-description">${post.description}</small>
+                </div>
+              </div>
+              <div v-else class="no-content">
+                <img src="/images/text-lines.png" alt="">
+                <h5>No news yet.</h5>
+                <small>No news in the world of cryptology yet.</small>
               </div>
             </div>
           </div>
@@ -118,7 +134,7 @@
             <div class="block" id="ordersBook">
 
               <div v-for="item in asks" class="orderAsk">
-                <span class="left" v-bind:style="{width: item[1]/100 > 70 ? 70 : item[1]/100 + '%'}">
+                <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%'}">
                   ${item[0]}
                 </span>
                 <span class="right">
@@ -127,7 +143,7 @@
               </div>
 
               <div v-for="item in bids" class="orderBids">
-                 <span class="left" v-bind:style="{width: item[1]/100 > 70 ? 70 : item[1]/100 + '%'}">
+                 <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%'}">
                   ${item[0]}
                 </span>
                 <span class="right">
