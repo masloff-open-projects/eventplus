@@ -6,7 +6,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "start": "node bin.js"
+    "start": "node bin.js",
+    "cluster": "pm2 start bin.js -i max"
   },
   "dependencies": {
     "@pxtrn/bybit-api": "^1.1.5",

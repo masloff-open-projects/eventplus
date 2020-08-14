@@ -2,26 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bd58a08c-ffbe-4e85-be63-476b51808539" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/crossover/bigData" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/javascripts/WebSocket.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/javascripts/vuejs/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin.js" beforeDir="false" afterPath="$PROJECT_DIR$/bin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/bitmex.js" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bitmex.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/bybit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bybit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/deribit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/deribit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exchange.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/exchange.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/init.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/vue.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/vue.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transport/indicators" beforeDir="false" afterPath="$PROJECT_DIR$/transport/indicators" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transport/socket" beforeDir="false" afterPath="$PROJECT_DIR$/transport/socket" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/layout.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/layout.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/login.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/login.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/signup.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/signup.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/studio.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/studio.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +73,7 @@
       <workItem from="1597395136311" duration="2266000" />
       <workItem from="1597399434483" duration="4588000" />
       <workItem from="1597408491392" duration="2929000" />
-      <workItem from="1597411672972" duration="2083000" />
+      <workItem from="1597411672972" duration="2754000" />
     </task>
     <task id="LOCAL-00001" summary="Update #1193">
       <created>1597134335566</created>
@@ -149,7 +131,14 @@
       <option name="project" value="LOCAL" />
       <updated>1597340133782</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Update #1275">
+      <created>1597413811934</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1597413811934</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,10 +156,10 @@
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="716" y="324" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1044@0.0.1920.1044" timestamp="1597339529540" />
-    <state x="543" y="56" width="801" height="902" key="CommitChangelistDialog2" timestamp="1597340130637">
+    <state x="543" y="56" width="801" height="902" key="CommitChangelistDialog2" timestamp="1597413810669">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="543" y="56" width="801" height="902" key="CommitChangelistDialog2/0.0.1920.1044@0.0.1920.1044" timestamp="1597340130637" />
+    <state x="543" y="56" width="801" height="902" key="CommitChangelistDialog2/0.0.1920.1044@0.0.1920.1044" timestamp="1597413810669" />
     <state x="621" y="300" key="EditFileWatcherDialog" timestamp="1597237408067">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
@@ -179,10 +168,10 @@
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="654" y="220" key="SettingsEditor/0.0.1920.1044@0.0.1920.1044" timestamp="1597392428045" />
-    <state x="560" y="258" key="Vcs.Push.Dialog.v2" timestamp="1597340139126">
+    <state x="560" y="258" key="Vcs.Push.Dialog.v2" timestamp="1597413819387">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="560" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1044@0.0.1920.1044" timestamp="1597340139126" />
+    <state x="560" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1044@0.0.1920.1044" timestamp="1597413819387" />
     <state x="562" y="136" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1597244484918">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
