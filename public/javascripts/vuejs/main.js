@@ -2,7 +2,7 @@
 
 const barn = new Barn(localStorage);
 const notyf = new Notyf();
-const websocket = new ReconnectingWebSocket(`${location.protocol == 'https:' ? "wss:" : "ws:"}//${location.hostname}:3003`, null, {debug: false, reconnectInterval: 3000});
+const websocket = new ReconnectingWebSocket(`${location.protocol == 'https:' ? "wss:" : "ws:"}//${location.host}`, null, {debug: false, reconnectInterval: 3000});
 
 const synth = new Tone.Synth({
     oscillator : {
