@@ -8,7 +8,7 @@
 
 module.exports = function (http) {
 
-    var io = new (require('ws')).Server({ port: 9999 });
+    var io = new (require('ws')).Server({server: http});
     return io;
 
 }
