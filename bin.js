@@ -16,12 +16,13 @@ var driver = {
     bitmex: new (require('./drivers/bitmex')) (ccxt, io, yaml, redis),
 }
 
-var transport_high = {
+var transport = {
+    // io: new (require('./transport/socket'))(io, driver, transport_high),
     indicators: new (require('./transport/indicators'))(driver, processor),
 }
 
-var transport = {
-    io: new (require('./transport/socket'))(io, driver, transport_high),
+var crossover = {
+    bigData: new (require('./crossover/bigData'))()
 }
 
 /**
@@ -41,25 +42,38 @@ redis.on("connect", function() {
      * Installation of Transport handler
      */
 
-    transport_high.indicators.on ('init', (event) => {
+    transport.indicators.on ('init', (event) => {
         console.log('[TRANSPORT / INDICATORS]', "You are now initialization");
     });
 
-    transport.io.on ('init', (event) => {
-        console.log('[TRANSPORT / IO]', "You are now initialization");
-    });
+    // transport.io.on ('init', (event) => {
+    //     console.log('[TRANSPORT / IO]', "You are now initialization");
+    // });
+    //
+    // transport.io.on ('userConnect', (event) => {
+    //     console.log('[TRANSPORT / IO]', "User connect");
+    // });
 
-    transport.io.on ('userConnect', (event) => {
-        console.log('[TRANSPORT / IO]', "User connect");
-    });
+    /**
+     * Settings of Crossover handler
+     */
 
+    crossover.bigData.use ('transfer', 'io', io);
+
+    for (const name in driver) {
+        crossover.bigData.use ('driver', name, driver[name]);
+    }
+
+    for (const name in transport) {
+        crossover.bigData.use ('transport', name, transport[name]);
+    }
 
     /**
      * Init of all drivers and indicators
      */
 
-    transport_high.indicators.init();
-    transport.io.init();
+    transport.indicators.init();
+    crossover.bigData.init();
     driver.deribit.init();
     driver.bybit.init();
     driver.bitmex.init();

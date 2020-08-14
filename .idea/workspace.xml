@@ -1,40 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bd58a08c-ffbe-4e85-be63-476b51808539" name="Default Changelist" comment="Update #1275">
-      <change afterPath="$PROJECT_DIR$/keypair.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/bitcoin.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/images/money.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/virtual/all.js" afterDir="false" />
+    <list default="true" id="bd58a08c-ffbe-4e85-be63-476b51808539" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/crossover/bigData" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/javascripts/WebSocket.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/javascripts/vuejs/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin.js" beforeDir="false" afterPath="$PROJECT_DIR$/bin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/redis" beforeDir="false" afterPath="$PROJECT_DIR$/bin/redis" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/socket" beforeDir="false" afterPath="$PROJECT_DIR$/bin/socket" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/sql" beforeDir="false" afterPath="$PROJECT_DIR$/bin/sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/bitmex.js" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bitmex.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/bybit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bybit" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/deribit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/deribit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/keystore.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/keystore.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exchange.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/exchange.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/init.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/init.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/javascripts/studio/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/studio/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/javascripts/vue.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/javascripts/vue.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/stylesheets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/stylesheets/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/stylesheets/css/style.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/public/stylesheets/css/style.css.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/stylesheets/css/style.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/stylesheets/css/style.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/rest.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/rest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/signup.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/signup.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/studio.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/studio.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transport/indicators" beforeDir="false" afterPath="$PROJECT_DIR$/transport/indicators" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transport/socket" beforeDir="false" afterPath="$PROJECT_DIR$/transport/socket" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/index.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/layout.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/layout.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/login.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/login.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/signup.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/signup.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/studio.twig" beforeDir="false" afterPath="$PROJECT_DIR$/views/studio.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,6 +56,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/public/images" />
     <property name="list.type.of.created.stylesheet" value="SCSS" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -98,7 +85,13 @@
       <workItem from="1597295004556" duration="20201000" />
       <workItem from="1597317841835" duration="1944000" />
       <workItem from="1597319921548" duration="14254000" />
-      <workItem from="1597335083062" duration="4637000" />
+      <workItem from="1597335083062" duration="6971000" />
+      <workItem from="1597390721240" duration="1522000" />
+      <workItem from="1597392804810" duration="1730000" />
+      <workItem from="1597395136311" duration="2266000" />
+      <workItem from="1597399434483" duration="4588000" />
+      <workItem from="1597408491392" duration="2929000" />
+      <workItem from="1597411672972" duration="2083000" />
     </task>
     <task id="LOCAL-00001" summary="Update #1193">
       <created>1597134335566</created>
@@ -149,7 +142,14 @@
       <option name="project" value="LOCAL" />
       <updated>1597295312307</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Update #1275">
+      <created>1597340133782</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1597340133782</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,18 +167,22 @@
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="716" y="324" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1044@0.0.1920.1044" timestamp="1597339529540" />
-    <state x="543" y="56" width="801" height="902" key="CommitChangelistDialog2" timestamp="1597328641109">
+    <state x="543" y="56" width="801" height="902" key="CommitChangelistDialog2" timestamp="1597340130637">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="543" y="56" width="801" height="902" key="CommitChangelistDialog2/0.0.1920.1044@0.0.1920.1044" timestamp="1597328641107" />
+    <state x="543" y="56" width="801" height="902" key="CommitChangelistDialog2/0.0.1920.1044@0.0.1920.1044" timestamp="1597340130637" />
     <state x="621" y="300" key="EditFileWatcherDialog" timestamp="1597237408067">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="621" y="300" key="EditFileWatcherDialog/0.0.1920.1044@0.0.1920.1044" timestamp="1597237408067" />
-    <state x="560" y="258" key="Vcs.Push.Dialog.v2" timestamp="1597328663731">
+    <state x="654" y="220" key="SettingsEditor" timestamp="1597392428045">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="560" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1044@0.0.1920.1044" timestamp="1597328663731" />
+    <state x="654" y="220" key="SettingsEditor/0.0.1920.1044@0.0.1920.1044" timestamp="1597392428045" />
+    <state x="560" y="258" key="Vcs.Push.Dialog.v2" timestamp="1597340139126">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="560" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1044@0.0.1920.1044" timestamp="1597340139126" />
     <state x="562" y="136" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1597244484918">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
@@ -187,14 +191,14 @@
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="768" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1044@0.0.1920.1044" timestamp="1597295269469" />
-    <state x="664" y="261" width="592" height="522" key="find.popup" timestamp="1597234012949">
+    <state x="664" y="261" width="713" height="522" key="find.popup" timestamp="1597410827016">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="664" y="261" width="592" height="522" key="find.popup/0.0.1920.1044@0.0.1920.1044" timestamp="1597234012949" />
-    <state x="624" y="238" key="run.anything.popup" timestamp="1597249924077">
+    <state x="664" y="261" width="713" height="522" key="find.popup/0.0.1920.1044@0.0.1920.1044" timestamp="1597410827016" />
+    <state x="624" y="238" key="run.anything.popup" timestamp="1597412009060">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="624" y="238" key="run.anything.popup/0.0.1920.1044@0.0.1920.1044" timestamp="1597249924077" />
+    <state x="624" y="238" key="run.anything.popup/0.0.1920.1044@0.0.1920.1044" timestamp="1597412009060" />
     <state x="623" y="230" key="search.everywhere.popup" timestamp="1597314345820">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>

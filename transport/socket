@@ -3,6 +3,7 @@
 const async = require("async");
 const cache = require("cache");
 const c = new cache(15 * 60 * 1000);
+const os = require('os-utils');
 
 module.exports = class {
 
@@ -85,7 +86,7 @@ module.exports = class {
             throw "Transport for indicators is not selected";
         }
 
-        this.io.on('connection', function connection(ws) {
+        this.io.on ('connection', function connection(ws) {
 
             // Setup drivers env
             for (const _ of this_.drivers) {
@@ -124,6 +125,7 @@ module.exports = class {
 
                 // Send indicators
                 transport_indicators.on('*', (event, action) => {
+
                     if (!(action in ['init'])) {
                         if ('exchange' in event) {
                             ws.send(JSON.stringify({
@@ -137,6 +139,11 @@ module.exports = class {
                 });
 
             }
+
+            // On close
+            ws.on ('close', function (e) {
+
+            });
 
         });
 

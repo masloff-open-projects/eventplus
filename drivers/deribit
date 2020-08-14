@@ -35,7 +35,7 @@ module.exports = class {
                     "method" : "public/get_tradingview_chart_data",
                     "params" : {
                         "instrument_name" : "BTC-PERPETUAL",
-                        "start_timestamp" : parseInt(new Date().getTime()) - this_.exchange.exchange.offset,
+                        "start_timestamp" : Math.round((parseInt(new Date().getTime()) / 1000 - this_.exchange.exchange.offset) * 1000),
                         "end_timestamp" : parseInt(new Date().getTime()),
                         "resolution" : this_.exchange.exchange.period
                     }

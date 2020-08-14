@@ -1,0 +1,171 @@
+#!/usr/bin/env node
+
+var async = require("async");
+
+module.exports = class {
+
+    constructor() {
+
+        this.meta = {
+            id: 'cbdbe-101',
+            name: "Crossover BigData by Event+",
+            version: 1
+        };
+        this.actions = [];
+        this.essence = {};
+
+    }
+
+    on (action = 'default', callback = null) {
+        return this.actions.push({
+            action: action,
+            function: callback
+        });
+    }
+
+    call (action = 'default', data) {
+        for (const callback of this.actions) {
+            if ((action === callback.action) || ('*' === callback.action)) {
+                try {
+                    callback.function(data, action)
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+        }
+    }
+
+    use (essence='default', instance='default', object=Object) {
+
+        if (!(essence in this.essence)) {this.essence[essence] = {} }
+        this.essence[essence][instance] = object;
+
+    }
+
+    go (essence='default', instance='default', data=Object) {
+
+        if (essence in this.essence) {
+            if (instance in this.essence[essence]) {
+                try {
+                    return this.essence[essence][instance](data);
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+        }
+
+    }
+
+    init () {
+
+        const this_ = this;
+
+        if ('transfer' in this.essence) {
+
+            if ('io' in this.essence['transfer']) {
+
+                const io = this.essence['transfer']['io'];
+
+                io.on ('connection', function connection(ws) {
+
+                    this_.call('activeConnection', ws);
+                    this_.call('userConnect', ws);
+
+                    ws.on ('close', function (e) {
+
+                        this_.call('closeConnection', e);
+                        this_.call('userDisconnected', e);
+
+                    });
+
+                    ws.on ('message', function (e) {
+
+                        this_.call('message', e);
+                        this_.call('userMessage', e);
+
+                    });
+
+                });
+
+                this_.on ('activeConnection', function (ws) {
+                    this_.use ('compound', 'io', function(data) {
+                        if (ws) {
+                            ws.send(data);
+                        }
+                    });
+                });
+
+                this_.on ('closeConnection', function () {
+                    this_.use ('compound', 'io', function() {});
+                })
+
+
+                // Setup drivers env
+                for (const [name, driver] of Object.entries(this_.essence['driver'])) {
+
+                    // Send price
+                    driver.on('getChartForTradingview', function (event) {
+                        this_.go('compound', 'io', JSON.stringify({
+                            response: 'chartData',
+                            exchange: driver.meta.exchange,
+                            type: 'BARS',
+                            chart: event
+                        }));
+                    });
+
+                    // Send orders book
+                    driver.on('getOrderBook', (event) => {
+                        this_.go('compound', 'io', JSON.stringify({
+                            response: 'ordersBookData',
+                            exchange: driver.meta.exchange,
+                            book: event
+                        }));
+                    });
+
+                    // Send markets
+                    driver.on('getMarkets', (event) => {
+                        this_.go('compound', 'io', JSON.stringify({
+                            response: 'markets',
+                            exchange: driver.meta.exchange,
+                            markets: event
+                        }));
+                    });
+
+                    driver.call('markets');
+
+                    if ('transport' in this.essence) {
+
+                        if ('indicators' in this.essence['transport']) {
+
+                            this.essence['transport']['indicators'].on('*', (event, action) => {
+
+                                if (!(action in ['init'])) {
+                                    if ('exchange' in event) {
+                                        this_.go('compound', 'io', JSON.stringify({
+                                            response: 'chartData',
+                                            exchange: event.exchange.toLowerCase(),
+                                            type: action.toUpperCase(),
+                                            chart: event.chart
+                                        }));
+                                    }
+                                }
+                            });
+
+                        }
+
+                    }
+
+                }
+
+
+            } else {
+                throw `'io' is not use in crossover`;
+            }
+
+        } else {
+            throw `'io' is not use in crossover`;
+        }
+
+    }
+
+}

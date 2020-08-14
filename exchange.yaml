@@ -20,7 +20,8 @@ indicators:
 
 exchange:
   period: 1
-  offset: 36288000 # 1 week
+  offset: 36000 # 10 minutes
+  count: 200 # For history BitMex
 
 ordersBook:
   depth: 5

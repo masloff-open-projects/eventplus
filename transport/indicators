@@ -77,10 +77,10 @@ module.exports = class {
 
     calculate (e, this_, _, processor) {
 
-        async.parallel([
+        async.waterfall([
 
             // SMA
-            function() {
+            function(callback) {
 
                 var chartData = [];
                 var closes = [];
@@ -98,15 +98,12 @@ module.exports = class {
                     })
                 }
 
-                this_.call('SMA', {
-                    exchange: _.meta.exchange,
-                    chart: chartData
-                });
+                callback(null, chartData);
 
             },
 
             // RVI
-            function () {
+            function (SMA, callback) {
 
                 var chartData = [];
                 var close = [];
@@ -130,15 +127,12 @@ module.exports = class {
                     })
                 }
 
-                this_.call('RVI', {
-                    exchange: _.meta.exchange,
-                    chart: chartData
-                });
+                callback(null, SMA, chartData);
 
             },
 
             // Bollinger Bands
-            function () {
+            function (SMA, RVI, callback) {
 
                 var chartData = {
                     'lower': [],
@@ -172,15 +166,12 @@ module.exports = class {
 
                 }
 
-                this_.call('BB', {
-                    exchange: _.meta.exchange,
-                    chart: chartData
-                });
+                callback(null, SMA, RVI, chartData);
 
             },
 
             // MACD
-            function () {
+            function (SMA, RVI, BB, callback) {
 
                 var chartData = {
                     'macd': [],
@@ -214,15 +205,12 @@ module.exports = class {
 
                 }
 
-                this_.call('MACD', {
-                    exchange: _.meta.exchange,
-                    chart: chartData
-                });
+                callback(null, SMA, RVI, BB, chartData);
 
             },
 
             // MVRVZSCOPE
-            function () {
+            function (SMA, RVI, BB, MACD, callback) {
 
                 var closes = [];
 
@@ -241,10 +229,7 @@ module.exports = class {
                         })
                     }
 
-                    this_.call('MVRVZSCOPE', {
-                        exchange: _.meta.exchange,
-                        chart: chartData
-                    });
+                    callback(null, SMA, RVI, BB, MACD, chartData);
 
                 });
 
@@ -252,7 +237,7 @@ module.exports = class {
             },
 
             // Values
-            function () {
+            function (SMA, RVI, BB, MACD, MVRVZSCOPE, callback) {
 
                 var chartData = [];
                 var values = [];
@@ -268,14 +253,43 @@ module.exports = class {
                     });
                 }
 
-                this_.call('VOLUME', {
-                    exchange: _.meta.exchange,
-                    chart: chartData
-                });
+                callback(null, SMA, RVI, BB, MACD, MVRVZSCOPE, chartData);
 
             }
 
-        ]);
+        ], function (err, SMA, RVI, BB, MACD, MVRVZSCOPE, VALUES) {
+
+            this_.call('SMA', {
+                exchange: _.meta.exchange,
+                chart: SMA
+            });
+
+            this_.call('RVI', {
+                exchange: _.meta.exchange,
+                chart: RVI
+            });
+
+            this_.call('BB', {
+                exchange: _.meta.exchange,
+                chart: BB
+            });
+
+            this_.call('MACD', {
+                exchange: _.meta.exchange,
+                chart: MACD
+            });
+
+            this_.call('MVRVZSCOPE', {
+                exchange: _.meta.exchange,
+                chart: MVRVZSCOPE
+            });
+
+            this_.call('VALUES', {
+                exchange: _.meta.exchange,
+                chart: VALUES
+            });
+
+        });
 
     }
 

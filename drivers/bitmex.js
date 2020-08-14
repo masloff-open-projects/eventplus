@@ -56,7 +56,7 @@ module.exports = class {
 
             const this_ = this;
 
-            request(`https://www.bitmex.com/api/v1/trade/bucketed?binSize=1m&partial=true&count=300&symbol=XBTUSD&reverse=true`, function (error, response, body) {
+            request(`https://www.bitmex.com/api/v1/trade/bucketed?binSize=1m&partial=true&count=${this.exchange.exchange.count}&symbol=XBTUSD&reverse=true`, function (error, response, body) {
                 if (response && response.statusCode == 200) {
                     const data = JSON.parse(body).reverse();
                     var history = data;
