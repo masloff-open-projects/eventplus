@@ -24,6 +24,8 @@ $(document).ready(function(event=null) {
                 bars: false,
                 volume: false,
                 SMA: false,
+                WMA: false,
+                EMA: false,
                 BBLower: false,
                 BBMiddle: false,
                 BBUpper: false,
@@ -108,6 +110,7 @@ $(document).ready(function(event=null) {
                 wickDownColor: '#D64545',
             })
             this.lines.VOLUME = this.chart.addHistogramSeries({
+                color: 'red',
                 priceFormat: {
                     type: 'volume',
                 },
@@ -119,6 +122,22 @@ $(document).ready(function(event=null) {
             });
             this.lines.SMA = this.chart.addLineSeries({
                 color: '#7599b1',
+                lineStyle: 0,
+                lineWidth: 1,
+                crosshairMarkerVisible: true,
+                crosshairMarkerRadius: 6,
+                lineType: 4
+            });
+            this.lines.WMA = this.chart.addLineSeries({
+                color: '#5e345e',
+                lineStyle: 0,
+                lineWidth: 1,
+                crosshairMarkerVisible: true,
+                crosshairMarkerRadius: 6,
+                lineType: 4
+            });
+            this.lines.EMA = this.chart.addLineSeries({
+                color: '#f2b620',
                 lineStyle: 0,
                 lineWidth: 1,
                 crosshairMarkerVisible: true,
@@ -329,6 +348,87 @@ $(document).ready(function(event=null) {
         }
     })
 
+    const obvChartOfIndicator = new Vue({
+        delimiters: ['${', '}'],
+        el: '#vue-chart-indicator-obv',
+        data: {
+            chart: false,
+            lines: {
+                OBV: false
+            }
+        },
+        mounted: function () {
+
+            this.chart = LightweightCharts.createChart(indicators_chart_obv, {
+                height: 120,
+                crosshair: {
+                    vertLine: {
+                        color: '#7f7f7f',
+                        width: 0.5,
+                        style: 3,
+                        visible: true,
+                        labelVisible: true,
+                    },
+                    horzLine: {
+                        color: '#7f7f7f',
+                        width: 0.5,
+                        style: 3,
+                        visible: true,
+                        labelVisible: true,
+                    },
+                    mode: 1,
+                },
+                grid: {
+                    vertLines: {
+                        color: '#252423',
+                        style: 1,
+                        visible: true,
+                    },
+                    horzLines: {
+                        color: '#252423',
+                        style: 1,
+                        visible: true,
+                    },
+                },
+                layout: {
+                    backgroundColor: '#131313',
+                    textColor: '#ffffff',
+                    fontSize: 12,
+                    fontFamily: 'Calibri',
+                },
+                handleScroll: {
+                    mouseWheel: true,
+                    pressedMouseMove: true,
+                },
+                handleScale: {
+                    axisPressedMouseMove: true,
+                    mouseWheel: true,
+                    pinch: true,
+                },
+                timeScale: {
+                    rightOffset: 12,
+                    barSpacing: 3,
+                    fixLeftEdge: true,
+                    lockVisibleTimeRangeOnResize: true,
+                    rightBarStaysOnScroll: true,
+                    borderVisible: true,
+                    visible: true,
+                    timeVisible: true,
+                    secondsVisible: true
+                },
+            });
+            this.lines.OBV = this.chart.addLineSeries({
+                color: '#1aa758',
+                lineStyle: 0,
+                lineWidth: 1,
+                crosshairMarkerVisible: true,
+                crosshairMarkerRadius: 6,
+                lineType: 4
+            });
+
+        }
+    })
+
     const mvrvzscopeChartOfIndicator = new Vue({
         delimiters: ['${', '}'],
         el: '#vue-chart-indicator-mvrvzscope',
@@ -400,6 +500,96 @@ $(document).ready(function(event=null) {
             });
             this.lines.ZScope = this.chart.addLineSeries({
                 color: '#e4df17',
+                lineStyle: 0,
+                lineWidth: 1,
+                crosshairMarkerVisible: true,
+                crosshairMarkerRadius: 6,
+                lineType: 4
+            });
+
+        }
+    })
+
+    const stochasticChartOfIndicator = new Vue({
+        delimiters: ['${', '}'],
+        el: '#vue-chart-indicator-stochastic',
+        data: {
+            chart: false,
+            lines: {
+                StochasticD: false,
+                StochasticK: false,
+            }
+        },
+        mounted: function () {
+
+            this.chart = LightweightCharts.createChart(indicators_chart_stochastic, {
+                height: 120,
+                crosshair: {
+                    vertLine: {
+                        color: '#7f7f7f',
+                        width: 0.5,
+                        style: 3,
+                        visible: true,
+                        labelVisible: true,
+                    },
+                    horzLine: {
+                        color: '#7f7f7f',
+                        width: 0.5,
+                        style: 3,
+                        visible: true,
+                        labelVisible: true,
+                    },
+                    mode: 1,
+                },
+                grid: {
+                    vertLines: {
+                        color: '#252423',
+                        style: 1,
+                        visible: true,
+                    },
+                    horzLines: {
+                        color: '#252423',
+                        style: 1,
+                        visible: true,
+                    },
+                },
+                layout: {
+                    backgroundColor: '#131313',
+                    textColor: '#ffffff',
+                    fontSize: 12,
+                    fontFamily: 'Calibri',
+                },
+                handleScroll: {
+                    mouseWheel: true,
+                    pressedMouseMove: true,
+                },
+                handleScale: {
+                    axisPressedMouseMove: true,
+                    mouseWheel: true,
+                    pinch: true,
+                },
+                timeScale: {
+                    rightOffset: 12,
+                    barSpacing: 3,
+                    fixLeftEdge: true,
+                    lockVisibleTimeRangeOnResize: true,
+                    rightBarStaysOnScroll: true,
+                    borderVisible: true,
+                    visible: true,
+                    timeVisible: true,
+                    secondsVisible: true
+                },
+            });
+            this.lines.StochasticD = this.chart.addLineSeries({
+                color: '#1aaf5d',
+                lineStyle: 0,
+                lineWidth: 1,
+                crosshairMarkerVisible: true,
+                crosshairMarkerRadius: 6,
+                lineType: 4
+            });
+            this.lines.StochasticK = this.chart.addLineSeries({
+                color: '#612626',
                 lineStyle: 0,
                 lineWidth: 1,
                 crosshairMarkerVisible: true,
@@ -551,6 +741,11 @@ $(document).ready(function(event=null) {
             icon: false
         });
 
+        websocket.send(JSON.stringify({
+            method: 'connected',
+            connect: true
+        }));
+
     };
 
     websocket.onmessage = function(event) {
@@ -565,6 +760,14 @@ $(document).ready(function(event=null) {
 
                     case 'SMA':
                         mainChartOfPrice.lines.SMA.setData(object.chart)
+                        break;
+
+                    case 'WMA':
+                        mainChartOfPrice.lines.WMA.setData(object.chart)
+                        break;
+
+                    case 'EMA':
+                        mainChartOfPrice.lines.EMA.setData(object.chart)
                         break;
 
                     case 'BARS':
@@ -599,6 +802,10 @@ $(document).ready(function(event=null) {
                         mainChartOfPrice.lines.VOLUME.setData(object.chart)
                         break;
 
+                    case 'OBV':
+                        obvChartOfIndicator.lines.OBV.setData(object.chart)
+                        break;
+
                     case 'BB':
                         mainChartOfPrice.lines.BBLower.setData(object.chart.lower)
                         mainChartOfPrice.lines.BBMiddle.setData(object.chart.middle)
@@ -617,6 +824,11 @@ $(document).ready(function(event=null) {
 
                     case 'MVRVZSCOPE':
                         mvrvzscopeChartOfIndicator.lines.ZScope.setData(object.chart)
+                        break;
+
+                    case 'STOCHASTIC':
+                        stochasticChartOfIndicator.lines.StochasticD.setData(object.chart.d)
+                        stochasticChartOfIndicator.lines.StochasticK.setData(object.chart.k)
                         break;
 
                     default:

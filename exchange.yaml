@@ -1,5 +1,11 @@
 indicators:
 
+  WMA:
+    period: 15
+
+  EMA:
+    period: 15
+
   SMA:
     period: 15
 
@@ -7,15 +13,18 @@ indicators:
     period: 15
 
   MACD:
-    fastPeriod: 5
-    slowPeriod: 8
-    signalPeriod: 3
+    fastPeriod: 15
+    slowPeriod: 30
+    signalPeriod: 5
     SimpleMAOscillator: false
     SimpleMASignal: false
 
   MVRV:
-    ZScope:
-      stdDev: 5000
+    pass: true
+
+  Stochastic:
+    period: 15
+    signalPeriod: 3
 
 
 exchange:

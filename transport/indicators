@@ -79,189 +79,266 @@ module.exports = class {
 
         async.waterfall([
 
-            // SMA
-            function(callback) {
+            // Calculate default arrays
+            function (callback) {
 
-                var chartData = [];
-                var closes = [];
+                var object = {
+                    volume: [],
+                    close: [],
+                    high: [],
+                    low: [],
+                    open: [],
+                    time: []
+                };
 
-                for (const close of e) {
-                    closes.push(parseFloat(close.close))
+                for (const _ of e) {
+                    object.volume.push(_.volume);
+                    object.close.push(_.close);
+                    object.high.push(_.high);
+                    object.low.push(_.low);
+                    object.open.push(_.open);
+                    object.time.push(_.time);
                 }
 
-                var indicator = processor.SMA(closes);
+                callback (null, object);
+            },
+
+            // SMA
+            function(chart, callback) {
+
+                var chartData = [];
+                const indicator = processor.SMA(chart.close);
 
                 for (const key in indicator) {
                     chartData.push({
                         value: indicator[key],
-                        time: e[key].time
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                     })
                 }
 
-                callback(null, chartData);
+                callback(null, chart, chartData);
 
             },
 
             // RVI
-            function (SMA, callback) {
+            function (chart, SMA, callback) {
 
                 var chartData = [];
-                var close = [];
-                var open = [];
-                var high = [];
-                var low = [];
-
-                for (const _ of e) {
-                    close.push(parseFloat(_.close))
-                    open.push(parseFloat(_.open))
-                    high.push(parseFloat(_.high))
-                    low.push(parseFloat(_.low))
-                }
-
-                var indicator = processor.RVI(close, open, high, low);
+                const indicator = processor.RVI(chart.close, chart.open, chart.high, chart.low);
 
                 for (const key in indicator) {
                     chartData.push({
                         value: indicator[key],
-                        time: e[key].time
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                     })
                 }
 
-                callback(null, SMA, chartData);
+                callback(null, chart, SMA, chartData);
 
             },
 
             // Bollinger Bands
-            function (SMA, RVI, callback) {
+            function (chart, SMA, RVI, callback) {
 
                 var chartData = {
                     'lower': [],
                     'middle': [],
                     'upper': []
                 };
-                var closes = [];
 
-                for (const close of e) {
-                    closes.push(parseFloat(close.close))
-                }
-
-                var indicator = processor.BB(closes);
+                const indicator = processor.BB(chart.close);
 
                 for (const key in indicator) {
 
                     chartData.lower.push({
                         value: indicator[key].lower,
-                        time: e[key].time
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                     });
 
                     chartData.middle.push({
                         value: indicator[key].middle,
-                        time: e[key].time
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                     });
 
                     chartData.upper.push({
                         value: indicator[key].upper,
-                        time: e[key].time
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                     });
 
                 }
 
-                callback(null, SMA, RVI, chartData);
+                callback(null, chart, SMA, RVI, chartData);
 
             },
 
             // MACD
-            function (SMA, RVI, BB, callback) {
+            function (chart, SMA, RVI, BB, callback) {
 
                 var chartData = {
                     'macd': [],
                     'signal': [],
                     'histogram': []
                 };
-                var closes = [];
 
-                for (const close of e) {
-                    closes.push(parseFloat(close.close))
-                }
-
-                var indicator = processor.MACD(closes);
+                const indicator = processor.MACD(chart.close);
 
                 for (const key in indicator) {
 
                     chartData.macd.push({
                         value: indicator[key].MACD,
-                        time: e[key].time
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                     });
 
                     chartData.signal.push({
                         value: indicator[key].signal,
-                        time: e[key].time
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                     });
 
                     chartData.histogram.push({
                         value: indicator[key].histogram,
-                        time: e[key].time
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                     });
 
                 }
 
-                callback(null, SMA, RVI, BB, chartData);
+                callback(null, chart, SMA, RVI, BB, chartData);
 
             },
 
             // MVRVZSCOPE
-            function (SMA, RVI, BB, MACD, callback) {
+            function (chart, SMA, RVI, BB, MACD, callback) {
 
-                var closes = [];
-
-                for (const close of e) {
-                    closes.push(parseFloat(close.close))
-                }
-
-                processor.MVRVZScope(closes).then(function (indicator) {
+                processor.MVRVZScope(chart.close).then(function (indicator) {
 
                     var chartData = [];
 
                     for (const key in indicator) {
                         chartData.push({
                             value: indicator[key],
-                            time: e[key].time
+                            time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
                         })
                     }
 
-                    callback(null, SMA, RVI, BB, MACD, chartData);
+                    callback(null, chart, SMA, RVI, BB, MACD, chartData);
 
                 });
 
 
             },
 
-            // Values
-            function (SMA, RVI, BB, MACD, MVRVZSCOPE, callback) {
+            // VOLUME
+            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, callback) {
 
                 var chartData = [];
-                var values = [];
 
-                for (const close of e) {
-                    values.push(parseFloat(close.volume))
-                }
-
-                for (const key in values) {
+                for (const key in chart.volume) {
                     chartData.push({
-                        value: values[key],
-                        time: e[key].time
+                        value: chart.volume[key],
+                        time: chart.time[key],
+                        color: chart.volume[key] > 0 ? 'rgba(66, 91, 41, 0.4)' : 'rgba(97, 38, 38, 0.4)'
                     });
                 }
 
-                callback(null, SMA, RVI, BB, MACD, MVRVZSCOPE, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, chartData);
+
+            },
+
+            // WMA
+            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, callback) {
+
+                var chartData = [];
+
+                const indicator = processor.WMA(chart.close);
+
+                for (const key in indicator) {
+                    chartData.push({
+                        value: indicator[key],
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
+                    })
+                }
+
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, chartData);
+
+            },
+
+            // EMA
+            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, callback) {
+
+                var chartData = [];
+
+                const indicator = processor.EMA(chart.close);
+
+                for (const key in indicator) {
+                    chartData.push({
+                        value: indicator[key],
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
+                    })
+                }
+
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, chartData);
+
+            },
+
+            // OBV
+            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, callback) {
+
+                var chartData = [];
+                const indicator = processor.OBV(chart.close, chart.volume);
+
+                for (const key in indicator) {
+                    chartData.push({
+                        value: indicator[key],
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
+                    })
+                }
+
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, chartData);
+
+            },
+
+            // STOCHASTIC
+            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, OBV, callback) {
+
+                var chartData = {
+                    d: [],
+                    k: []
+                };
+
+                const indicator = processor.STOCHASTIC(chart.close, chart.high, chart.low);
+
+                for (const key in indicator) {
+
+                    chartData.d.push({
+                        value: indicator[key].d,
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
+                    });
+
+                    chartData.k.push({
+                        value: indicator[key].k,
+                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
+                    });
+
+                }
+
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, OBV, chartData);
 
             }
 
-        ], function (err, SMA, RVI, BB, MACD, MVRVZSCOPE, VALUES) {
+        ], function (err, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, OBV, STOCHASTIC) {
 
             this_.call('SMA', {
                 exchange: _.meta.exchange,
                 chart: SMA
+            });
+
+            this_.call('WMA', {
+                exchange: _.meta.exchange,
+                chart: WMA
+            });
+
+            this_.call('EMA', {
+                exchange: _.meta.exchange,
+                chart: EMA
             });
 
             this_.call('RVI', {
@@ -284,9 +361,19 @@ module.exports = class {
                 chart: MVRVZSCOPE
             });
 
-            this_.call('VALUES', {
+            this_.call('VOLUME', {
                 exchange: _.meta.exchange,
-                chart: VALUES
+                chart: VOLUME
+            });
+            
+            this_.call('OBV', {
+                exchange: _.meta.exchange,
+                chart: OBV
+            });
+
+            this_.call('STOCHASTIC', {
+                exchange: _.meta.exchange,
+                chart: STOCHASTIC
             });
 
         });

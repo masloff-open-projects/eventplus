@@ -1,7 +1,3 @@
-function init_addons () {
-    $(".check-password").passwordStrength();
-}
-
 function init_forms () {
 
     /**
@@ -128,7 +124,6 @@ function init_forms () {
 
 $(document).ready(function () {
 
-    init_addons ();
     init_forms ();
 
 });

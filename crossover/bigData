@@ -66,6 +66,7 @@ module.exports = class {
 
                 const io = this.essence['transfer']['io'];
 
+                // Init IO
                 io.on ('connection', function connection(ws) {
 
                     this_.call('activeConnection', ws);
@@ -80,32 +81,26 @@ module.exports = class {
 
                     ws.on ('message', function (e) {
 
-                        this_.call('message', e);
-                        this_.call('userMessage', e);
+                        this_.call('message', {
+                            event: e,
+                            ws: ws
+                        });
+
+                        this_.call('userMessage', {
+                            event: e,
+                            ws: ws
+                        });
 
                     });
 
                 });
-
-                this_.on ('activeConnection', function (ws) {
-                    this_.use ('compound', 'io', function(data) {
-                        if (ws) {
-                            ws.send(data);
-                        }
-                    });
-                });
-
-                this_.on ('closeConnection', function () {
-                    this_.use ('compound', 'io', function() {});
-                })
-
 
                 // Setup drivers env
                 for (const [name, driver] of Object.entries(this_.essence['driver'])) {
 
                     // Send price
                     driver.on('getChartForTradingview', function (event) {
-                        this_.go('compound', 'io', JSON.stringify({
+                        io.sendAll (JSON.stringify({
                             response: 'chartData',
                             exchange: driver.meta.exchange,
                             type: 'BARS',
@@ -115,7 +110,7 @@ module.exports = class {
 
                     // Send orders book
                     driver.on('getOrderBook', (event) => {
-                        this_.go('compound', 'io', JSON.stringify({
+                        io.sendAll ( JSON.stringify({
                             response: 'ordersBookData',
                             exchange: driver.meta.exchange,
                             book: event
@@ -124,7 +119,7 @@ module.exports = class {
 
                     // Send markets
                     driver.on('getMarkets', (event) => {
-                        this_.go('compound', 'io', JSON.stringify({
+                        io.sendAll ( JSON.stringify({
                             response: 'markets',
                             exchange: driver.meta.exchange,
                             markets: event
@@ -141,7 +136,7 @@ module.exports = class {
 
                                 if (!(action in ['init'])) {
                                     if ('exchange' in event) {
-                                        this_.go('compound', 'io', JSON.stringify({
+                                        io.sendAll ( JSON.stringify({
                                             response: 'chartData',
                                             exchange: event.exchange.toLowerCase(),
                                             type: action.toUpperCase(),
