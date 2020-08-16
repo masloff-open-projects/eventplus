@@ -1,81 +1,28 @@
 #!/usr/bin/env node
 
 var async = require("async");
+var prototype = require('../models/essence');
 
-module.exports = class {
+module.exports = class extends prototype {
 
-    constructor(drivers={}, processors={}) {
+    constructor() {
+
+        super();
 
         this.meta = {
             id: 'itbe-101',
             name: "Indicators Transport by Event+",
             version: 1
         };
-        this.actions = [];
-        this.transports = [];
-        this.processors = [];
         this.mask = {
-            'bdbe-101': {
-
-            },
-            'ddbe-101': {
-
-            },
-            'bmxdbe-101': {
-
-            }
-        }
-
-        // Load drivers
-        for (const driver in drivers) {
-            let object = drivers[driver];
-            if ('meta' in object) {
-                if ('exchange' in object.meta) {
-                    this.transports.push({
-                        driver: object,
-                        meta: object.meta
-                    });
-                }
-            } else {
-                throw `'${driver}' is not a driver`;
-            }
-        }
-
-        // Load processors
-        for (const processor in processors) {
-            let object = processors[processor];
-            if ('meta' in object) {
-                this.processors.push({
-                    processor: object,
-                    meta: object.meta
-                });
-            } else {
-                throw `'${processor}' is not a processor`;
-            }
+            'bdbe-101': {},
+            'ddbe-101': {},
+            'bmxdbe-101': {}
         }
 
     }
 
-    on (action='default', callback=null) {
-        return this.actions.push({
-            action: action,
-            function: callback
-        });
-    }
-
-    call (action='default', data) {
-        for (const callback of this.actions) {
-            if ( (action === callback.action) || ('*' === callback.action)) {
-                try {
-                    callback.function(data, action)
-                } catch (e) {
-                    console.error(e)
-                }
-            }
-        }
-    }
-
-    calculate (e, this_, _, processor) {
+    calculate (e, driver, processor) {
 
         async.waterfall([
 
@@ -324,90 +271,86 @@ module.exports = class {
 
             }
 
-        ], function (err, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, OBV, STOCHASTIC) {
+        ], (err, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, OBV, STOCHASTIC) => {
 
-            this_.call('SMA', {
-                exchange: _.meta.exchange,
+            this.call('SMA', {
+                exchange: driver.meta.exchange,
                 chart: SMA
             });
 
-            this_.call('WMA', {
-                exchange: _.meta.exchange,
+            this.call('WMA', {
+                exchange: driver.meta.exchange,
                 chart: WMA
             });
 
-            this_.call('EMA', {
-                exchange: _.meta.exchange,
+            this.call('EMA', {
+                exchange: driver.meta.exchange,
                 chart: EMA
             });
 
-            this_.call('RVI', {
-                exchange: _.meta.exchange,
+            this.call('RVI', {
+                exchange: driver.meta.exchange,
                 chart: RVI
             });
 
-            this_.call('BB', {
-                exchange: _.meta.exchange,
+            this.call('BB', {
+                exchange: driver.meta.exchange,
                 chart: BB
             });
 
-            this_.call('MACD', {
-                exchange: _.meta.exchange,
+            this.call('MACD', {
+                exchange: driver.meta.exchange,
                 chart: MACD
             });
 
-            this_.call('MVRVZSCOPE', {
-                exchange: _.meta.exchange,
+            this.call('MVRVZSCOPE', {
+                exchange: driver.meta.exchange,
                 chart: MVRVZSCOPE
             });
 
-            this_.call('VOLUME', {
-                exchange: _.meta.exchange,
+            this.call('VOLUME', {
+                exchange: driver.meta.exchange,
                 chart: VOLUME
             });
-            
-            this_.call('OBV', {
-                exchange: _.meta.exchange,
+
+            this.call('OBV', {
+                exchange: driver.meta.exchange,
                 chart: OBV
             });
 
-            this_.call('STOCHASTIC', {
-                exchange: _.meta.exchange,
+            this.call('STOCHASTIC', {
+                exchange: driver.meta.exchange,
                 chart: STOCHASTIC
             });
 
         });
 
+
     }
 
     init () {
 
-        const this_ = this;
-        var processor = false;
+        let processor = this.go('processor', 'indicators');
+        let driver = this.go('driver');
 
-        // Select processor
-        for (const _ of this.processors) {
-            if (_.meta.id == 'ipbe-101') {
-                processor = _.processor;
-            }
-        }
-
-        // If processor selected
         if (processor) {
 
-            for (const _ of this.transports) {
+            if (driver) {
 
-                _.driver.on('getChartForTradingview', function (e) {
-                    this_.calculate(e, this_, _, processor);
-                });
+                for (const [name, object] of Object.entries(driver)) {
+                    object.on('getChartForTradingview', (event) => {
+                        this.calculate(event, object, processor);
+                    });
+                }
 
+            } else {
+                throw "Drivers is not setup";
             }
-
-            this.call('init', true);
 
         } else {
             throw "Processor is not selected";
         }
+
 
     }
 

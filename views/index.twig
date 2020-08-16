@@ -30,6 +30,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha512-VZ6m0F78+yo3sbu48gElK4irv2dzPoep8oo9LEjxviigcnnnNvnTOJRSrIhuFk68FMLOpiNz+T77nNY89rnWDg==" crossorigin="anonymous"></script>
   <script defer src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.43/Tone.js" integrity="sha512-EykMJ8DUk41zHUpEBrlm8oWxXqmQXi5dKBvuaEiziqFMrcfGYsXz1KwBMA+ejy6noTfwVGwer1WSYrbNBrjT2w==" crossorigin="anonymous"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 
   <script src="/javascripts/WebSocket.js"></script>
   <script src="/javascripts/parseParams.js"></script>
@@ -72,6 +73,22 @@
               </div>
             </div>
           </div>
+          <div class="block-section">
+            <div class="header">
+              Firmware
+            </div>
+            <div class="block" id="firmware">
+              <div v-if="items">
+
+              </div>
+              <div v-else class="no-content">
+                <img src="/images/pcb.png" alt="">
+                <h5>No activity.</h5>
+                <small>No signals from the virtual machine.</small>
+                <a href="/studio">Create</a>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col-sm-9 col-md-6">
           <div class="block-section">
@@ -86,22 +103,22 @@
               </span>
 
               <div class="right">
-                <span id="priceStat">
+                <span id="instrumentData">
                   <span class="price-info">
-                    Price change:
-                    <span class="change-price">${change}$</span>
+                    Open interest:
+                    <span class="open-interest">${openInterest}$</span>
                   </span>
                    <span class="price-info">
-                    Volume (BTC):
-                    <span class="default-price">${volume}</span>
+                    Volume:
+                    <span class="default-price">${volume24h}</span>
                   </span>
                   <span class="price-info">
                     High:
-                    <span class="high-price">${high}$</span>
+                    <span class="high-price">${maxPrice24h}$</span>
                   </span>
                   <span class="price-info">
                     Low:
-                    <span class="low-price">${low}$</span>
+                    <span class="low-price">${minPrice24h}$</span>
                   </span>
               </span>
               </div>
@@ -143,6 +160,27 @@
         <div class="col-sm-6 col-md-3 col-lg-2">
           <div class="block-section">
             <div class="header">
+              Capital
+            </div>
+            <div class="block" id="capital">
+              <div v-if="isNull(capital)">
+
+                <div v-for="exchange in capital">
+                  <div class="exchange-name">${exchange.exchange | upper}</div>
+                  <div v-for="(value, symbol) in exchange['total']" class="value-box"><span class="exchange-capital-symbol">${symbol}</span> <span v-bind:id="exchange.exchange | id">${value}</span></div>
+                </div>
+
+              </div>
+              <div v-else class="no-content">
+                <img src="/images/capital.png" alt="">
+                <h5>No data.</h5>
+                <small>We don't have any data on your capital.</small>
+                <a href="/deposite">Deposite</a>
+              </div>
+            </div>
+          </div>
+          <div class="block-section">
+            <div class="header">
               Terminal Deals
             </div>
             <div class="block">
@@ -180,22 +218,30 @@
             </div>
             <div class="block" id="ordersBook">
 
-              <div v-for="item in asks" class="orderAsk">
+              <div v-if="asks[0][0] != 0">
+                <div v-for="item in asks" class="orderAsk">
                 <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%'}">
                   ${item[0]}
                 </span>
-                <span class="right">
-                  ${item[1]}
+                  <span class="right">
+                  ${item[1] | format}
                 </span>
-              </div>
+                </div>
 
-              <div v-for="item in bids" class="orderBids">
+                <div v-for="item in bids" class="orderBids">
                  <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%'}">
                   ${item[0]}
                 </span>
-                <span class="right">
-                  ${item[1]}
+                  <span class="right">
+                  ${item[1] | format}
                 </span>
+                </div>
+              </div>
+
+              <div v-else class="no-content">
+                <img src="/images/warning.png" alt="">
+                <h5>No order data.</h5>
+                <small>No trading data for the exchange you selected.</small>
               </div>
 
             </div>

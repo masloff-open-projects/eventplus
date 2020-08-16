@@ -57,10 +57,5 @@ module.exports = function (passport, authenticationMiddleware) {
         }
     });
 
-
-
-
-
-
     return router;
 }

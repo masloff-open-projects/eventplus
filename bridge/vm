@@ -1,2 +1,39 @@
 #!/usr/bin/env node
 
+var async = require("async");
+var vm = require("vm");
+var prototype = require('../models/essence');
+
+module.exports = class extends prototype{
+
+    constructor() {
+
+        super();
+
+        this.meta = {
+            id: 'vmbbe-101',
+            name: "Virtual Machine Bridge by Event+",
+            version: 1
+        };
+
+    }
+
+    init () {
+
+        if ('vm' in this.essence) {
+
+            var context = this.essence['vm'];
+
+            vm.createContext(context);
+            const code = 'x += 40; var y = 17;';
+            vm.runInContext(code, context);
+
+            // console.log(context)
+
+            this.call('init', true);
+
+        }
+
+    }
+
+}

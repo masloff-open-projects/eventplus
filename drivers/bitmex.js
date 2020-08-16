@@ -1,106 +1,151 @@
 #!/usr/bin/env node
 
-const request = require('request');
-const BitMEXClient = require('bitmex-realtime-api');
-const cache = require("cache");
-const c = new cache(15 * 60 * 1000);
+var prototype = require('../models/essence');
 
-module.exports = class {
+module.exports = class extends prototype {
 
-    constructor(ccxt=null, io=null, yaml=null, redis=null) {
+    constructor() {
 
-        const this_ = this;
-
-        this.data = {};
+        super();
         this.meta = {
             name: 'Bitmex Driver by Event+',
             id: 'bmxdbe-101',
             version: 1,
-            exchange: 'bitmex'
+            exchange: 'bitmex',
+            type: 'exchange'
         }
 
-        this.ccxt = ccxt;
-        this.actions = [];
-        this.keystore = yaml('keystore.yaml');
-        this.exchange = yaml('exchange.yaml');
-        this.client = new BitMEXClient({
-            testnet: this.keystore.bitmex.testnet,
-            maxTableLen: 10000
-        });
-
-
-    }
-
-    on (action='default', callback=null) {
-        return this.actions.push({
-            action: action,
-            function: callback
-        });
-    }
-
-    call (action='default', data) {
-        for (const callback of this.actions) {
-            if (action === callback.action) {
-                try {
-                    callback.function(data)
-                } catch (e) {
-                    console.error(e)
-                }
-            }
-        }
     }
 
     init () {
 
-        this.client.on('initialize', () => {
+        if ('store' in this.essence) {
 
-            const this_ = this;
+            if ('keystore' in this.essence['store']) {
 
-            request(`https://www.bitmex.com/api/v1/trade/bucketed?binSize=1m&partial=true&count=${this.exchange.exchange.count}&symbol=XBTUSD&reverse=true`, function (error, response, body) {
-                if (response && response.statusCode == 200) {
-                    const data = JSON.parse(body).reverse();
-                    var history = data;
-                    var chartData = [];
+                if ('exchange' in this.essence['store']) {
 
-                    for (const bar of history) {
-                        chartData.push ({
-                            time: Date.parse(bar.timestamp) / 1000,
-                            open: bar.open,
-                            low: bar.low,
-                            high: bar.high,
-                            close: bar.close,
-                            volume: bar.volume,
-                        });
-                    }
+                    if ('cache' in this.essence['store']) {
 
-                    this_.call('getChartForTradingview', chartData);
-                    this_.call('getChart', data);
+                        if ('commutator' in this.essence) {
 
-                    this_.client.addStream('XBTUSD', 'tradeBin1m', function (data, symbol, tableName) {
-                        if (!data.length) return;
+                            if ('request' in this.essence['commutator']) {
 
-                        for (const bar of data) {
-                            chartData.push ({
-                                time: Date.parse(bar.timestamp) / 1000,
-                                open: bar.open,
-                                low: bar.low,
-                                high: bar.high,
-                                close: bar.close,
-                                volume: bar.volume,
-                            });
+                                let BitMEXClient = require('bitmex-realtime-api');
+                                let keystore = this.essence['store']['keystore'];
+                                let exchange = this.essence['store']['exchange'];
+                                let request = this.essence['commutator']['request'];
+
+                                var buffer = [];
+                                var chartData = [];
+
+                                request(`https://www.bitmex.com/api/v1/trade/bucketed?binSize=1m&partial=true&count=${exchange.exchange.count}&symbol=XBTUSD&reverse=true`, (error, response, body) => {
+
+                                    if (response && response.statusCode == 200) {
+
+                                        const data = JSON.parse(body).reverse();
+                                        buffer = data;
+
+                                    }
+
+                                });
+
+
+                                let client = new BitMEXClient({
+                                    testnet: keystore.testnet,
+                                    maxTableLen: 10000
+                                });
+
+                                client.addStream('XBTUSD', 'orderBookL2_25', (data, symbol, tableName) => {
+
+                                    let bufferOrders = {asks: [], bids: []};
+
+                                    for (const iterator of data) {
+
+                                        if (iterator.side == 'Buy') {
+                                            bufferOrders.asks.push([
+                                                parseFloat(iterator.price),
+                                                parseFloat(iterator.size),
+                                            ]);
+                                        } else {
+                                            bufferOrders.bids.push([
+                                                parseFloat(iterator.price),
+                                                parseFloat(iterator.size),
+                                            ]);
+                                        }
+                                    }
+
+                                    this.call('getOrderBook', {
+                                        asks: bufferOrders.asks,
+                                        bids: bufferOrders.bids
+                                    });
+
+                                });
+
+                                // client.on('initialize', () => {
+                                //     console.log(client.streams);  // Log .public, .private and .all stream names
+                                // });
+
+                                client.on('error', (event) => {
+                                    this.call('error', event);
+                                });
+
+                                client.addStream('XBTUSD', 'tradeBin1m', (data, symbol, tableName) => {
+
+                                    if (!data.length) return;
+
+                                    if (Symbol.iterator in Object(data)) {
+
+                                        for (const iterator of data) {
+                                            buffer.push(iterator)
+                                        }
+
+                                    } else {
+                                        buffer.push(data);
+                                    }
+
+                                    for (const data of buffer) {
+
+                                        chartData.push ({
+                                            time: Date.parse(data.timestamp) / 1000,
+                                            open: data.open,
+                                            low: data.low,
+                                            high: data.high,
+                                            close: data.close,
+                                            volume: data.volume,
+                                        });
+
+                                    }
+
+                                    this.call('getChartForTradingview', chartData);
+
+                                });
+
+                                this.call('init', true);
+
+                            } else {
+                                throw 'No request commutator found for driver';
+                            }
+
+                        } else {
+                            throw 'No commutator found for driver';
                         }
 
-                        this_.call('getChartForTradingview', chartData);
-                        this_.call('getChart', data);
+                    } else {
+                        throw 'No exchange object found for driver';
+                    }
 
-                    });
-
+                } else {
+                    throw 'No cache storage found for driver caches';
                 }
-            });
 
-            this_.call('init', true);
+            } else {
+                throw 'No key storage found for driver';
+            }
 
-        });
+        } else {
+            throw 'No storage found for driver';
+        }
 
     }
 

@@ -125,6 +125,7 @@ div.block-section > div.block {
   color: white;
   max-height: 85vh;
   overflow: auto;
+  width: 100%;
 }
 
 .feed-description {
@@ -241,6 +242,11 @@ section.post-center {
   font-weight: bold;
 }
 
+.open-interest {
+  color: #5e345e;
+  font-weight: bold;
+}
+
 .price-info {
   color: gray;
 }
@@ -250,6 +256,25 @@ section.post-center {
   margin: 12px 0px;
   font-weight: inherit;
   font-size: 12px;
+}
+
+.value-box {
+  font-size: 10px;
+}
+
+.exchange-name {
+  color: #868686;
+  margin: 6px 0px;
+  font-weight: inherit;
+  font-size: 12px;
+}
+
+.exchange-capital-symbol {
+  color: #ffbd51;
+  margin: 12px 0px;
+  font-weight: bold;
+  font-size: 12px;
+  margin-right: 4px;
 }
 
 .right {
@@ -304,6 +329,11 @@ section.post-center {
 .no-content > img {
   padding: 10px 4px;
 }
+.no-content > a {
+  padding: 10px 12px;
+  font-size: 12px;
+  display: block;
+}
 
 .studio-title {
   font-size: 10em;
@@ -312,7 +342,7 @@ section.post-center {
 .orderAsk > .left {
   padding: 1px;
   font-size: 11px;
-  background: rgba(214, 69, 69, 0.4);
+  background: rgba(139, 201, 77, 0.4);
   width: 70%;
   display: inline-flex;
   position: relative;
@@ -327,7 +357,7 @@ section.post-center {
 .orderBids > .left {
   padding: 1px;
   font-size: 11px;
-  background: rgba(139, 201, 77, 0.4);
+  background: rgba(214, 69, 69, 0.4);
   width: 70%;
   display: inline-flex;
   position: relative;

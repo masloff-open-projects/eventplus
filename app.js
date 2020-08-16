@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var fs = require('fs');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var client = require('./bin/redis')();
@@ -86,6 +87,7 @@ app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/api', restRouter);
 
+
 // setup passport.js
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -167,4 +169,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+module.exports = {
+  app: app,
+  rest: restRouter,
+  passport: passport,
+  authenticationMiddleware: authenticationMiddleware
+};

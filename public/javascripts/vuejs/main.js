@@ -600,14 +600,19 @@ $(document).ready(function(event=null) {
         }
     })
 
-    const highPriceOfCrypto = new Vue({
+    const instrumentOfCrypto = new Vue({
         delimiters: ['${', '}'],
-        el: '#priceStat',
+        el: '#instrumentData',
         data: {
-            high: 0,
-            low: 0,
-            change: 0,
-            volume: 0,
+            maxPrice24h: 0,
+            minPrice24h: 0,
+            changePrice24h: 0,
+            totalTurnover: 0,
+            totalTurnover24h: 0,
+            volume24h: 0,
+            openInterest: 0,
+            openValue: 0,
+            fundingRate: 0
         }
     })
 
@@ -621,6 +626,11 @@ $(document).ready(function(event=null) {
             bids: [
                 [0, 0]
             ]
+        },
+        filters: {
+            format: function (e) {
+                return numeral(parseFloat(e)).format('0,0.00');
+            }
         }
     })
 
@@ -729,6 +739,29 @@ $(document).ready(function(event=null) {
             this.$el.value = (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit');
         }
     })
+
+    const capitalOfCrypto = new Vue({
+        delimiters: ['${', '}'],
+        el: '#capital',
+        data: {
+            capital: []
+        },
+        filters: {
+            upper: function (e) {
+                if (!e) return '';
+                return e.toLocaleUpperCase()
+            },
+            id: function (e) {
+                if (!e) return '';
+                return `exchange-balance-for-${e}`;
+            },
+        },
+        methods: {
+            isNull: function (e) {
+                if (e == []) return false;
+            }
+        }
+    });
 
     // Listen data channel
     websocket.onopen = function(e) {
@@ -852,11 +885,35 @@ $(document).ready(function(event=null) {
 
             }
 
+        } else if (object.response == 'instrumentData') {
+
+            if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
+                for (const index in object.instrument) {
+                    instrumentOfCrypto[index] = numeral(object.instrument[index]).format('0a');
+                }
+            }
+
         } else if (object.response == 'ordersBookData') {
 
             if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
                 orderBookOfCrypto.asks = object.book.asks;
                 orderBookOfCrypto.bids = object.book.bids;
+            }
+
+        } else if (object.response == 'balanceData') {
+
+            if ($(`#exchange-balance-for-${object.exchange}`).length > 0) {
+
+                for (const capital in capitalOfCrypto.capital) {
+
+                    if (capitalOfCrypto.capital[capital].exchange = object.exchange) {
+                        capitalOfCrypto.capital[capital].total = object.total;
+                    }
+
+                }
+
+            } else {
+                capitalOfCrypto.capital.push(object);
             }
 
         } else if (object.response == 'markets') {

@@ -1,58 +1,19 @@
 #!/usr/bin/env node
 
 var async = require("async");
+var prototype = require('../models/essence');
 
-module.exports = class {
+module.exports = class extends prototype {
 
     constructor() {
+
+        super();
 
         this.meta = {
             id: 'cbdbe-101',
             name: "Crossover BigData by Event+",
             version: 1
         };
-        this.actions = [];
-        this.essence = {};
-
-    }
-
-    on (action = 'default', callback = null) {
-        return this.actions.push({
-            action: action,
-            function: callback
-        });
-    }
-
-    call (action = 'default', data) {
-        for (const callback of this.actions) {
-            if ((action === callback.action) || ('*' === callback.action)) {
-                try {
-                    callback.function(data, action)
-                } catch (e) {
-                    console.error(e)
-                }
-            }
-        }
-    }
-
-    use (essence='default', instance='default', object=Object) {
-
-        if (!(essence in this.essence)) {this.essence[essence] = {} }
-        this.essence[essence][instance] = object;
-
-    }
-
-    go (essence='default', instance='default', data=Object) {
-
-        if (essence in this.essence) {
-            if (instance in this.essence[essence]) {
-                try {
-                    return this.essence[essence][instance](data);
-                } catch (e) {
-                    console.error(e)
-                }
-            }
-        }
 
     }
 
@@ -64,101 +25,174 @@ module.exports = class {
 
             if ('io' in this.essence['transfer']) {
 
-                const io = this.essence['transfer']['io'];
+                if ('getaway' in this.essence) {
 
-                // Init IO
-                io.on ('connection', function connection(ws) {
+                    if ('rest' in this.essence['getaway']) {
 
-                    this_.call('activeConnection', ws);
-                    this_.call('userConnect', ws);
+                        const io = this.go('transfer', 'io');
+                        const rest = this.go('getaway', 'rest');
+                        const cache = this.go('store', 'cache');
 
-                    ws.on ('close', function (e) {
+                        // Init IO
+                        io.on ('connection', function connection(ws) {
 
-                        this_.call('closeConnection', e);
-                        this_.call('userDisconnected', e);
+                            this_.call('activeConnection', ws);
+                            this_.call('userConnect', ws);
 
-                    });
+                            ws.on ('close', function (e) {
 
-                    ws.on ('message', function (e) {
+                                this_.call('closeConnection', e);
+                                this_.call('userDisconnected', e);
 
-                        this_.call('message', {
-                            event: e,
-                            ws: ws
-                        });
-
-                        this_.call('userMessage', {
-                            event: e,
-                            ws: ws
-                        });
-
-                    });
-
-                });
-
-                // Setup drivers env
-                for (const [name, driver] of Object.entries(this_.essence['driver'])) {
-
-                    // Send price
-                    driver.on('getChartForTradingview', function (event) {
-                        io.sendAll (JSON.stringify({
-                            response: 'chartData',
-                            exchange: driver.meta.exchange,
-                            type: 'BARS',
-                            chart: event
-                        }));
-                    });
-
-                    // Send orders book
-                    driver.on('getOrderBook', (event) => {
-                        io.sendAll ( JSON.stringify({
-                            response: 'ordersBookData',
-                            exchange: driver.meta.exchange,
-                            book: event
-                        }));
-                    });
-
-                    // Send markets
-                    driver.on('getMarkets', (event) => {
-                        io.sendAll ( JSON.stringify({
-                            response: 'markets',
-                            exchange: driver.meta.exchange,
-                            markets: event
-                        }));
-                    });
-
-                    driver.call('markets');
-
-                    if ('transport' in this.essence) {
-
-                        if ('indicators' in this.essence['transport']) {
-
-                            this.essence['transport']['indicators'].on('*', (event, action) => {
-
-                                if (!(action in ['init'])) {
-                                    if ('exchange' in event) {
-                                        io.sendAll ( JSON.stringify({
-                                            response: 'chartData',
-                                            exchange: event.exchange.toLowerCase(),
-                                            type: action.toUpperCase(),
-                                            chart: event.chart
-                                        }));
-                                    }
-                                }
                             });
+
+                            ws.on ('message', function (e) {
+
+                                this_.call('message', {
+                                    event: e,
+                                    ws: ws
+                                });
+
+                                this_.call('userMessage', {
+                                    event: e,
+                                    ws: ws
+                                });
+
+                            });
+
+                        });
+
+                        this.on ('activeConnection', (event) => {
+
+                            // for (const [name, driver] of Object.entries(this_.essence['driver'])) {
+                            //
+                            //     let ccxt = driver.go('commutator', 'ccxt');
+                            //
+                            //     if (ccxt) {
+                            //
+                            //         // Send balance
+                            //         ccxt.fetchBalance().then(event => {
+                            //             io.sendAll(JSON.stringify({
+                            //                 response: 'balanceData',
+                            //                 exchange: driver.meta.exchange,
+                            //                 total: event.total,
+                            //             }));
+                            //         }).catch(event => {
+                            //             this.on('error', event)
+                            //         });
+                            //
+                            //     }
+                            //
+                            // }
+
+                        });
+
+                        // Setup drivers env
+                        for (const [name, driver] of Object.entries(this_.essence['driver'])) {
+
+                            // Send price
+                            driver.on('getChartForTradingview', function (event) {
+                                io.sendAll (JSON.stringify({
+                                    response: 'chartData',
+                                    exchange: driver.meta.exchange,
+                                    type: 'BARS',
+                                    chart: event
+                                }));
+                            });
+
+                            // Send orders book
+                            driver.on('getOrderBook', (event) => {
+                                io.sendAll ( JSON.stringify({
+                                    response: 'ordersBookData',
+                                    exchange: driver.meta.exchange,
+                                    book: event
+                                }));
+                            });
+
+                            // Send instrument
+                            driver.on('getInstrument', (event) => {
+                                io.sendAll ( JSON.stringify({
+                                    response: 'instrumentData',
+                                    exchange: driver.meta.exchange,
+                                    instrument: event
+                                }));
+                            });
+
+                            // Send markets
+                            driver.on('getMarkets', (event) => {
+                                io.sendAll ( JSON.stringify({
+                                    response: 'markets',
+                                    exchange: driver.meta.exchange,
+                                    markets: event
+                                }));
+                            });
+
+                            driver.call('markets');
+
+                            if ('transport' in this.essence) {
+
+                                if ('indicators' in this.essence['transport']) {
+
+                                    this.essence['transport']['indicators'].on('*', (event, action) => {
+
+                                        if (!(action in ['init'])) {
+                                            if ('exchange' in event) {
+                                                io.sendAll ( JSON.stringify({
+                                                    response: 'chartData',
+                                                    exchange: event.exchange.toLowerCase(),
+                                                    type: action.toUpperCase(),
+                                                    chart: event.chart
+                                                }));
+                                            }
+                                        }
+                                    });
+
+                                }
+
+                            }
 
                         }
 
+                        // Setup RestAPI
+                        rest.express ('GET', '/v1/exchange/all/balance', (req, res, next) => {
+
+                            for (const [name, driver] of Object.entries(this_.essence['driver'])) {
+
+                                let ccxt = driver.go('commutator', 'ccxt');
+
+                                if (ccxt) {
+
+                                    // Send balance
+                                    ccxt.fetchBalance().then(event => {
+                                        io.sendAll(JSON.stringify({
+                                            response: 'balanceData',
+                                            exchange: driver.meta.exchange,
+                                            total: event.total,
+                                        }));
+                                    }).catch(event => {
+                                        this.on('error', event)
+                                    });
+
+                                }
+
+                            }
+
+                        });
+                        
+                    } else {
+                        throw `'rest' is not use in crossover`;
                     }
 
+                } else {
+                    throw `'getaway' is not use in crossover`;
                 }
-
 
             } else {
                 throw `'io' is not use in crossover`;
             }
 
         } else {
-            throw `'io' is not use in crossover`;
+            throw `'transfer' is not use in crossover`;
         }
 
     }

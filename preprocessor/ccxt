@@ -1,0 +1,84 @@
+#!/usr/bin/env node
+
+var prototype = require('../models/essence');
+
+module.exports = class extends prototype {
+
+    constructor() {
+
+        super();
+
+        this.meta = {
+            id: 'vmbbe-101',
+            name: "Virtual Machine Bridge by Event+",
+            version: 1
+        };
+
+    }
+
+    init () {
+
+        if ('driver' in this.essence) {
+
+            if ('ccxt' in this.essence['driver']) {
+
+                if ('store' in this.essence) {
+
+                    if ('keystore' in this.essence['store']) {
+
+                        const ccxt     = this.essence['driver']['ccxt'];
+                        const keystore = this.essence['store']['keystore'];
+
+                        for (const [exchange, pair] of Object.entries(keystore)) {
+
+                            if (exchange in ccxt) {
+
+                                var object = new ccxt[exchange]({
+                                    apiKey: keystore[exchange].apiKey,
+                                    secret: keystore[exchange].secret,
+                                    timeout: 'timeout' in keystore[exchange] ? keystore[exchange].timeout : 8000
+                                });
+
+                                // Testnet
+                                if ('testnet' in keystore[exchange]) {
+                                    if (typeof object.urls['test'] != "undefined") {
+                                        object.urls.api = object.urls.test;
+                                    } else {
+                                        throw `'${exchange}' does not support test network`;
+                                    }
+                                }
+
+                                this.call('initExchange', {
+                                    exchange: exchange,
+                                    object: object
+                                });
+
+                            } else {
+
+                                throw `'${exchange}' exchange is not supported by the CCXT driver `;
+
+                            }
+
+                        }
+
+                        this.call('init', true);
+
+                    } else {
+                        throw 'No key storage found for CCXT preprocessor.';
+                    }
+
+                } else {
+                    throw 'No storage found for the CCXT preprocessor.';
+                }
+
+            } else {
+                throw 'Driver for CCXT not found';
+            }
+
+        } else {
+            throw 'No low-level Drivers for CCXT preprocessor found';
+        }
+
+    }
+
+}

@@ -1,151 +1,312 @@
 #!/usr/bin/env node
 
-const cache = require("cache");
-const c = new cache(15 * 60 * 1000);
+var prototype = require('../models/essence');
 
-module.exports = class {
+module.exports = class extends prototype {
 
-    constructor(ccxt=null, io=null, yaml=null, redis=null) {
+    constructor() {
 
-        const this_ = this;
+        super();
 
-        this.data = {};
         this.meta = {
             name: 'Deribit Driver by Event+',
             id: 'ddbe-101',
             version: 1,
-            exchange: 'deribit'
+            exchange: 'deribit',
+            type: 'exchange',
         }
 
-        this.ccxt = ccxt;
-        this.redis = redis;
-        this.actions = [];
-        this.keystore = yaml('keystore.yaml');
-        this.exchange = yaml('exchange.yaml');
-        this.websocket = require('websocket').w3cwebsocket;
-        this.deribit_client = new this.websocket(this.keystore.deribit.testnet ? "wss://test.deribit.com/ws/api/v2" : "wss://www.deribit.com/ws/api/v2");
-        this.deribit_client.onopen = function (e) {
-            this_.init();
-        }
-        this.looper = {
-            bars: function (e) {
-                e.eval( {
-                    "jsonrpc" : "2.0",
-                    "id" : 833,
-                    "method" : "public/get_tradingview_chart_data",
-                    "params" : {
-                        "instrument_name" : "BTC-PERPETUAL",
-                        "start_timestamp" : Math.round((parseInt(new Date().getTime()) / 1000 - this_.exchange.exchange.offset) * 1000),
-                        "end_timestamp" : parseInt(new Date().getTime()),
-                        "resolution" : this_.exchange.exchange.period
-                    }
-                })
-            },
-            book: function (e) {
-                e.eval( {
-                    "jsonrpc" : "2.0",
-                    "id" : 835,
-                    "method" : "public/get_order_book",
-                    "params" : {
-                        "instrument_name" : "BTC-PERPETUAL",
-                        "depth" : this_.exchange.exchange.depth
-                    }
-                })
-            },
-            instrument: function (e) {
-                e.eval( {
-                    "jsonrpc" : "2.0",
-                    "id" : 7617,
-                    "method" : "public/get_instruments",
-                    "params" : {
-                        "currency" : "BTC",
-                        "kind" : "future",
-                        "expired" : false
-                    }
-                })
-            },
-        }
-
-    }
-
-    eval (request={}) {
-
-        const this_ = this;
-
-        (this.deribit_client).onmessage = function (e) {
-            let answer = JSON.parse(e.data);
-            if ('id' in answer) {
-                if (answer.id == 833) {
-
-                    this_.call('getChart', answer.result);
-
-                    var chartData = [];
-                    if (answer.result.ticks.length) {
-                        for (let i = 0; i < answer.result.ticks.length; i++) {
-                            chartData.push ({
-                                time: answer.result.ticks[i]/1000,
-                                open: answer.result.open[i],
-                                low: answer.result.low[i],
-                                high: answer.result.high[i],
-                                cost: answer.result.cost[i],
-                                close: answer.result.close[i],
-                                volume: answer.result.volume[i],
-                            });
-                        }
-                    }
-
-                    this_.call('getChartForTradingview', chartData);
-                    this_.looper.bars(this_);
-                } else if (answer.id == 835) {
-                    this_.call('getOrderBook', {
-                        asks: answer.result.asks,
-                        bids: answer.result.bids
-                    });
-                    this_.looper.book(this_);
-                } else if (answer.id == 7617) {
-                    this_.call('getInstrument', answer.result);
-                    this_.looper.instrument(this_);
-                }
-            }
-        };
-
-        if ((this.deribit_client).readyState == 1) {
-            (this.deribit_client).send(JSON.stringify(request));
-        }
-
-    }
-
-    on (action='default', callback=null) {
-        return this.actions.push({
-            action: action,
-            function: callback
-        });
-    }
-
-    call (action='default', data) {
-        for (const callback of this.actions) {
-            if (action === callback.action) {
-                try {
-                    callback.function(data)
-                } catch (e) {
-                    console.error(e)
-                }
-            }
-        }
     }
 
     init () {
 
-        // Start stream
-        this.looper.bars(this);
-        this.looper.book(this);
-        this.looper.instrument(this);
+        if ('store' in this.essence) {
 
-        this.call('init', true);
+            if ('keystore' in this.essence['store']) {
 
-        (async function (ccxt, this_) {
-            let deribit = new ccxt.deribit();
-        }) (this.ccxt, this);
+                if ('exchange' in this.essence['store']) {
+
+                    if ('cache' in this.essence['store']) {
+
+                        if ('commutator' in this.essence) {
+
+                            if ('request' in this.essence['commutator']) {
+
+                                if ('wss' in this.essence['commutator']) {
+
+                                    let keystore = this.essence['store']['keystore'];
+                                    let exchange = this.essence['store']['exchange'];
+                                    let request = this.essence['commutator']['request'];
+                                    let wss = this.essence['commutator']['wss'];
+                                    let io = new wss(keystore.testnet ? "wss://test.deribit.com/ws/api/v2" : "wss://www.deribit.com/ws/api/v2");
+
+                                    var buffer = [];
+                                    var bufferInstrument = [];
+                                    var bufferOrders = {asks: [], bids: []};
+
+                                    const template = {
+                                        bars: {
+                                            "jsonrpc" : "2.0",
+                                            "id" : 833,
+                                            "method" : "public/get_tradingview_chart_data",
+                                            "params" : {
+                                                "instrument_name" : "BTC-PERPETUAL",
+                                                "start_timestamp" : Math.round((parseInt(new Date().getTime()) / 1000 - exchange.exchange.offset) * 1000),
+                                                "end_timestamp" : parseInt(new Date().getTime()),
+                                                "resolution" : exchange.exchange.period
+                                            }
+                                        },
+                                        book: {
+                                            "jsonrpc": "2.0",
+                                            "id": 835,
+                                            "method": "public/get_order_book",
+                                            "params": {
+                                                "instrument_name": "BTC-PERPETUAL",
+                                                "depth": exchange.exchange.depth
+                                            }
+                                        },
+                                        instrument: {
+                                            "jsonrpc" : "2.0",
+                                            "id" : 7617,
+                                            "method" : "public/get_instruments",
+                                            "params" : {
+                                            "currency" : "BTC",
+                                                "kind" : "future",
+                                                "expired" : false
+                                            }
+                                        }
+                                    }
+
+                                    io.onopen = (event) => {
+                                        for (const [name, object] of Object.entries(template)) {
+                                            io.send(JSON.stringify(object));
+                                        }
+                                    }
+
+                                    io.onmessage = (event) => {
+
+                                        let answer = JSON.parse(event.data);
+
+                                        switch (answer.id) {
+
+                                            case 833:
+
+                                                var chartData = [];
+
+                                                for (let i = 0; i < answer.result.ticks.length; i++) {
+                                                    chartData.push ({
+                                                        time: answer.result.ticks[i]/1000,
+                                                        open: answer.result.open[i],
+                                                        low: answer.result.low[i],
+                                                        high: answer.result.high[i],
+                                                        cost: answer.result.cost[i],
+                                                        close: answer.result.close[i],
+                                                        volume: answer.result.volume[i],
+                                                    });
+                                                }
+
+                                                this.call('getChartForTradingview', chartData);
+
+                                                io.send(JSON.stringify(template.bars));
+
+                                                break;
+
+
+                                            case 835:
+
+                                                this.call('getOrderBook', {
+                                                    asks: answer.result.asks,
+                                                    bids: answer.result.bids
+                                                });
+
+                                                this.call('getInstrument', {
+                                                    maxPrice24h: answer.result.max_price,
+                                                    minPrice24h: answer.result.min_price,
+                                                    changePrice24h: answer.result.stats.price_change,
+                                                    totalTurnover: false,
+                                                    totalTurnover24h: false,
+                                                    volume24h: answer.result.stats.volume,
+                                                    openInterest: answer.result.open_interest,
+                                                    openValue: false,
+                                                    fundingRate: answer.result.funding_8h
+                                                });
+
+                                                io.send(JSON.stringify(template.book));
+
+                                                break;
+
+                                        }
+
+
+                                    }
+
+                                    this.call('init', true);
+
+                                } else {
+                                    throw 'No WSS commutator found for driver';
+                                }
+
+                            } else {
+                                throw 'No request commutator found for driver';
+                            }
+
+                        } else {
+                            throw 'No commutator found for driver';
+                        }
+
+                    } else {
+                        throw 'No exchange object found for driver';
+                    }
+
+                } else {
+                    throw 'No cache storage found for driver caches';
+                }
+
+            } else {
+                throw 'No key storage found for driver';
+            }
+
+        } else {
+            throw 'No storage found for driver';
+        }
 
     }
+
 }
+
+//
+// module.exports = class {
+//
+//     constructor(ccxt=null, io=null, yaml=null, redis=null) {
+//
+//         const this_ = this;
+//
+//         this.data = {};
+//         this.meta = {
+//             name: 'Deribit Driver by Event+',
+//             id: 'ddbe-101',
+//             version: 1,
+//             exchange: 'deribit'
+//         }
+//
+//         this.ccxt = ccxt;
+//         this.redis = redis;
+//         this.actions = [];
+//         this.keystore = yaml('keystore.yaml');
+//         this.exchange = yaml('exchange.yaml');
+//         this.websocket = require('websocket').w3cwebsocket;
+//         this.deribit_client = new this.websocket(this.keystore.deribit.testnet ? "wss://test.deribit.com/ws/api/v2" : "wss://www.deribit.com/ws/api/v2");
+//         this.deribit_client.onopen = function (e) {
+//             this_.init();
+//         }
+//         this.looper = {
+//             bars: function (e) {
+//
+//             },
+//             book: function (e) {
+//                 e.eval( )
+//             },
+//             instrument: function (e) {
+//                 e.eval()
+//             },
+//         }
+//
+//     }
+//
+//     eval (request={}) {
+//
+//         const this_ = this;
+//
+//         (this.deribit_client).onmessage = function (e) {
+//             let answer = JSON.parse(e.data);
+//             if ('id' in answer) {
+//                 if (answer.id == 833) {
+//
+//                     this_.call('getChart', answer.result);
+//
+//                     var chartData = [];
+//                     if (answer.result.ticks.length) {
+//                         for (let i = 0; i < answer.result.ticks.length; i++) {
+//                             chartData.push ({
+//                                 time: answer.result.ticks[i]/1000,
+//                                 open: answer.result.open[i],
+//                                 low: answer.result.low[i],
+//                                 high: answer.result.high[i],
+//                                 cost: answer.result.cost[i],
+//                                 close: answer.result.close[i],
+//                                 volume: answer.result.volume[i],
+//                             });
+//                         }
+//                     }
+//
+//                     this_.call('getChartForTradingview', chartData);
+//                     this_.looper.bars(this_);
+//                 } else if (answer.id == 835) {
+//
+//                     this_.call('getOrderBook', {
+//                         asks: answer.result.asks,
+//                         bids: answer.result.bids
+//                     });
+//
+//                     this_.call('getInstrument', {
+//                         maxPrice24h: answer.result.max_price,
+//                         minPrice24h: answer.result.min_price,
+//                         changePrice24h: answer.result.stats.price_change,
+//                         totalTurnover: false,
+//                         totalTurnover24h: false,
+//                         volume24h: answer.result.stats.volume,
+//                         openInterest: answer.result.open_interest,
+//                         openValue: false,
+//                         fundingRate: answer.result.funding_8h
+//                     });
+//
+//                     this_.looper.book(this_);
+//
+//                 } else if (answer.id == 7617) {
+//
+//                     // this_.call('getInstrument', answer.result);
+//                     this_.looper.instrument(this_);
+//                 }
+//             }
+//         };
+//
+//         if ((this.deribit_client).readyState == 1) {
+//             (this.deribit_client).send(JSON.stringify(request));
+//         }
+//
+//     }
+//
+//     on (action='default', callback=null) {
+//         return this.actions.push({
+//             action: action,
+//             function: callback
+//         });
+//     }
+//
+//     call (action='default', data) {
+//         for (const callback of this.actions) {
+//             if (action === callback.action) {
+//                 try {
+//                     callback.function(data)
+//                 } catch (e) {
+//                     console.error(e)
+//                 }
+//             }
+//         }
+//     }
+//
+//     init () {
+//
+//         // Start stream
+//         this.looper.bars(this);
+//         this.looper.book(this);
+//         this.looper.instrument(this);
+//
+//         this.call('init', true);
+//
+//         (async function (ccxt, this_) {
+//             let deribit = new ccxt.deribit();
+//         }) (this.ccxt, this);
+//
+//     }
+// }
