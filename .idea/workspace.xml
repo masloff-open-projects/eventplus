@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="3a4a263e-6b82-4b06-9a8f-109d428f3c27" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/drivers/bitmex" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bitmex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/bybit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bybit" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/drivers/deribit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/deribit" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +23,8 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -32,7 +36,7 @@
       <updated>1597662645371</updated>
       <workItem from="1597662648110" duration="147000" />
       <workItem from="1597662834001" duration="31000" />
-      <workItem from="1597663176973" duration="665000" />
+      <workItem from="1597663176973" duration="1222000" />
     </task>
     <servers />
   </component>
@@ -40,9 +44,17 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="418" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597662715925">
+    <state x="418" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597663883359">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="418" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1044@0.0.1920.1044" timestamp="1597662715925" />
+    <state x="418" y="180" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1044@0.0.1920.1044" timestamp="1597663883359" />
+    <state x="748" y="280" key="FileChooserDialogImpl" timestamp="1597664248026">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="748" y="280" key="FileChooserDialogImpl/0.0.1920.1044@0.0.1920.1044" timestamp="1597664248026" />
+    <state x="461" y="157" key="SettingsEditor" timestamp="1597664371723">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="461" y="157" key="SettingsEditor/0.0.1920.1044@0.0.1920.1044" timestamp="1597664371723" />
   </component>
 </project>

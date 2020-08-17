@@ -94,6 +94,7 @@ module.exports = class extends prototype {
                                                 var chartData = [];
 
                                                 for (let i = 0; i < answer.result.ticks.length; i++) {
+
                                                     chartData.push ({
                                                         time: answer.result.ticks[i]/1000,
                                                         open: answer.result.open[i],
@@ -103,6 +104,7 @@ module.exports = class extends prototype {
                                                         close: answer.result.close[i],
                                                         volume: answer.result.volume[i],
                                                     });
+                                                    
                                                 }
 
                                                 this.call('getChartForTradingview', chartData);

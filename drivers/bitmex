@@ -104,18 +104,22 @@ module.exports = class extends prototype {
                                         buffer.push(data);
                                     }
 
-                                    for (const data of buffer) {
+                                    for(var i = 0; i < buffer.length; i++) {
 
-                                        chartData.push ({
-                                            time: Date.parse(data.timestamp) / 1000,
-                                            open: data.open,
-                                            low: data.low,
-                                            high: data.high,
-                                            close: data.close,
-                                            volume: data.volume,
+                                        if (buffer[i] === undefined) continue;
+                                        bufferData = buffer[i];
+
+                                        chartData.push({
+                                            time: Date.parse(bufferData.timestamp) / 1000,
+                                            open: bufferData.open,
+                                            low: bufferData.low,
+                                            high: bufferData.high,
+                                            close: bufferData.close,
+                                            volume: bufferData.volume,
                                         });
 
                                     }
+
 
                                     this.call('getChartForTradingview', chartData);
 

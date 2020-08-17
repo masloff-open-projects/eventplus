@@ -188,8 +188,10 @@ module.exports = class extends prototype {
 
                                                     var chartData = [];
 
-                                                    
-                                                    for (const bufferData of buffer) {
+                                                    for(var i = 0; i < buffer.length; i++) {
+
+                                                        if (buffer[i] === undefined) continue;
+                                                        bufferData = buffer[i];
 
                                                         chartData.push({
                                                             time: parseFloat('open_time' in bufferData ? bufferData.open_time : bufferData.end),
@@ -200,7 +202,6 @@ module.exports = class extends prototype {
                                                             close: parseFloat(bufferData.close),
                                                             volume: parseFloat(bufferData.volume)
                                                         });
-
 
                                                     }
 
