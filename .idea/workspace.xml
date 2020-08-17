@@ -5,7 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/bitmex" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bitmex" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drivers/bybit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bybit" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/deribit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/deribit" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +35,7 @@
       <updated>1597662645371</updated>
       <workItem from="1597662648110" duration="147000" />
       <workItem from="1597662834001" duration="31000" />
-      <workItem from="1597663176973" duration="1222000" />
+      <workItem from="1597663176973" duration="1423000" />
     </task>
     <servers />
   </component>
@@ -56,5 +55,9 @@
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="461" y="157" key="SettingsEditor/0.0.1920.1044@0.0.1920.1044" timestamp="1597664371723" />
+    <state x="560" y="258" key="Vcs.Push.Dialog.v2" timestamp="1597664485729">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="560" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1044@0.0.1920.1044" timestamp="1597664485729" />
   </component>
 </project>

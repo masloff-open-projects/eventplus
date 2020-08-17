@@ -107,7 +107,7 @@ module.exports = class extends prototype {
                                     for(var i = 0; i < buffer.length; i++) {
 
                                         if (buffer[i] === undefined) continue;
-                                        bufferData = buffer[i];
+                                        var bufferData = buffer[i];
 
                                         chartData.push({
                                             time: Date.parse(bufferData.timestamp) / 1000,
