@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+module.exports = function () {
+
+    var vm = require("vm");
+    return vm;
+
+}

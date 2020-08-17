@@ -744,7 +744,7 @@ $(document).ready(function(event=null) {
         delimiters: ['${', '}'],
         el: '#capital',
         data: {
-            capital: []
+            capital: false
         },
         filters: {
             upper: function (e) {
@@ -756,10 +756,19 @@ $(document).ready(function(event=null) {
                 return `exchange-balance-for-${e}`;
             },
         },
-        methods: {
-            isNull: function (e) {
-                if (e == []) return false;
-            }
+        mounted: function () {
+
+            axios({
+                method: 'get',
+                url: `/api/v1/exchange/all/balance`
+            }).then((response) => {
+                if (response.status == 200 || response.status == 304) {
+                    console.log(response.data)
+                    this.capital = response.data;
+                    console.log(this.capital)
+                }
+            });
+
         }
     });
 
@@ -898,22 +907,6 @@ $(document).ready(function(event=null) {
             if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
                 orderBookOfCrypto.asks = object.book.asks;
                 orderBookOfCrypto.bids = object.book.bids;
-            }
-
-        } else if (object.response == 'balanceData') {
-
-            if ($(`#exchange-balance-for-${object.exchange}`).length > 0) {
-
-                for (const capital in capitalOfCrypto.capital) {
-
-                    if (capitalOfCrypto.capital[capital].exchange = object.exchange) {
-                        capitalOfCrypto.capital[capital].total = object.total;
-                    }
-
-                }
-
-            } else {
-                capitalOfCrypto.capital.push(object);
             }
 
         } else if (object.response == 'markets') {

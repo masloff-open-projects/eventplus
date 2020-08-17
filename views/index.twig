@@ -163,14 +163,14 @@
               Capital
             </div>
             <div class="block" id="capital">
-              <div v-if="isNull(capital)">
 
+              <div v-if="capital">
                 <div v-for="exchange in capital">
                   <div class="exchange-name">${exchange.exchange | upper}</div>
                   <div v-for="(value, symbol) in exchange['total']" class="value-box"><span class="exchange-capital-symbol">${symbol}</span> <span v-bind:id="exchange.exchange | id">${value}</span></div>
                 </div>
-
               </div>
+
               <div v-else class="no-content">
                 <img src="/images/capital.png" alt="">
                 <h5>No data.</h5>

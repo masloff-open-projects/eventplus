@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
 var ccxt = require ('ccxt');
+var fs = require ('fs');
 var www = require('./bin/www');
 var yaml = require('./bin/yaml');
+var string = require('./modify/string');
+var vm = require('./bin/virtual') ();
 var io = require('./bin/socket')(www.server);
 var redis = require('./bin/redis')();
 var request = require('request');
@@ -50,6 +53,7 @@ redis.on("connect", function() {
 
     console.log('[REDIS]', "You are now connected");
 
+
     /**
      * Setup getaway
      */
@@ -57,6 +61,7 @@ redis.on("connect", function() {
     getaway.rest.use('router', 'express', www.express.rest);
     getaway.rest.use('router', 'passport', www.express.passport);
     getaway.rest.use('router', 'authenticationMiddleware', www.express.authenticationMiddleware);
+
 
     /**
      * Setup preprocessor
@@ -99,6 +104,7 @@ redis.on("connect", function() {
         }
 
     });
+
 
     /**
      * Installation of Transport handler
@@ -161,6 +167,7 @@ redis.on("connect", function() {
         crossover.bigData.use ('getaway', name, getaway[name]);
     }
 
+
     /**
      * Init of all drivers and indicators
      */
@@ -170,9 +177,11 @@ redis.on("connect", function() {
     transport.indicators.init();
     crossover.bigData.init();
 
-    bridge.vm.use ('vm', 'x', 10);
-    bridge.vm.use ('vm', 'ccxt', ccxt);
-    bridge.vm.use ('vm', 'keystore', yaml('keystore.yaml'));
+    bridge.vm.use ('private', 'keystore', yaml('keystore.yaml'));
+    bridge.vm.use ('private', 'environment', vm);
+    bridge.vm.use ('private', 'fs', fs);
+
+    bridge.vm.use ('public', 'driver', driver);
 
     bridge.vm.init();
 

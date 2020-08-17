@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-var async = require("async");
-var vm = require("vm");
 var prototype = require('../models/essence');
 
 module.exports = class extends prototype{
@@ -20,18 +18,46 @@ module.exports = class extends prototype{
 
     init () {
 
-        if ('vm' in this.essence) {
+        if ('private' in this.essence) {
 
-            var context = this.essence['vm'];
+            if ('environment' in this.essence['private']) {
 
-            vm.createContext(context);
-            const code = 'x += 40; var y = 17;';
-            vm.runInContext(code, context);
+                var context = this.essence['public'];
+                var environment = this.essence['private']['environment'];
+                var bin = this.essence['private']['fs'].readFileSync('./virtual/bin.js', 'utf8');
+                var execute = this.essence['private']['fs'].readFileSync('./virtual/execute.js', 'utf8');
 
-            // console.log(context)
+                new Promise((resolve, reject) => {
 
-            this.call('init', true);
+                    environment.createContext(context);
+                    environment.runInContext(bin, context);
 
+                }).catch((event) => {
+                    this.call('error', event)
+                });
+
+                this.on ('*',  (event, action) => {
+                    if (!(action in ['init', 'error'])) {
+                        new Promise((resolve, reject) => {
+
+                            environment.runInContext(execute.replaceObject({
+                                name: action,
+                                data: JSON.stringify(event)
+                            }), context);
+
+                        }).catch((event) => {
+                            this.call('error', event)
+                        });
+
+                    }
+                });
+
+                this.call('init', true);
+                this.call('boot', true);
+            }
+
+        } else {
+            throw ``;
         }
 
     }
