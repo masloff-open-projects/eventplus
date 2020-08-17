@@ -188,6 +188,7 @@ module.exports = class extends prototype {
 
                                                     var chartData = [];
 
+                                                    
                                                     for (const bufferData of buffer) {
 
                                                         chartData.push({

@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3a4a263e-6b82-4b06-9a8f-109d428f3c27" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/eventplus.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/watcherTasks.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/drivers/bitmex.js" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bitmex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/drivers/bybit" beforeDir="false" afterPath="$PROJECT_DIR$/drivers/bybit" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +32,7 @@
       <updated>1597662645371</updated>
       <workItem from="1597662648110" duration="147000" />
       <workItem from="1597662834001" duration="31000" />
+      <workItem from="1597663176973" duration="665000" />
     </task>
     <servers />
   </component>
