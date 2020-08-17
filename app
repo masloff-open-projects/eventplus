@@ -1,3 +1,12 @@
+#!/usr/bin/env node
+
+/**
+ * Express is a minimalistic and flexible web framework for Node.js applications,
+ * providing an extensive feature set for mobile and web applications.
+ *
+ * @type {createError}
+ */
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
