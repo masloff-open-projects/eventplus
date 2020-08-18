@@ -1,0 +1,1 @@
+INSERT INTO `passport`.`users` VALUES ('$id', '$username', '$password', '$signup_time', '$name', '$scope', '$2fa');

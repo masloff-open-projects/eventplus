@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+
+var prototype = require('../models/builder');
+
+module.exports = class extends prototype {
+
+    constructor(props) {
+
+        super(props);
+
+        this.use('_sqlCreateThought', require('fs').readFileSync(__dirname + '/../sql/createThoughts.sql', 'utf8'));
+
+        this.engine( (essences, data) => {
+
+            if ('mysql' in essences) {
+
+                const connection = essences.mysql;
+
+                const sqlCreateThought = essences._sqlCreateThought.replaceObject({
+                    id: data.id,
+                    time: Math.round(+new Date() / 1000),
+                    title: data.title,
+                    thought: data.thought,
+                    public: data.public
+                });
+
+                return new Promise((resolve, reject) => {
+                    connection.query(sqlCreateThought, (error, results, fields) => {
+
+                        if (error) {
+
+                            reject({
+                                message: "SQL error",
+                                error: true,
+                                status: 'error',
+                                sql: error
+                            });
+
+                        } else {
+
+                            resolve({
+                                message: "Your thought has been successfully constructed",
+                                error: false,
+                                status: 'ok'
+                            });
+
+                        }
+
+                    });
+                });
+
+
+            } else {
+                throw 'Need MySQL connection';
+            }
+
+        });
+
+    }
+
+}

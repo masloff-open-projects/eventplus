@@ -5,6 +5,6 @@ var yaml = require('./yaml');
 
 module.exports = function () {
 
-    return mysql.createConnection(yaml('keypair.yaml').mysql);
+    return mysql.createConnection(yaml('./keypair.yaml').mysql);
 
 }

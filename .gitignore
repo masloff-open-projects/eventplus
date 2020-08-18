@@ -103,6 +103,14 @@ dist
 # TernJS port file
 .tern-port
 
-
 # Idea
 .idea/
+
+# NodeJS
+package-lock.json
+
+# Configs
+server.yaml
+exchange.yaml
+keypair.yaml
+keystore.yaml

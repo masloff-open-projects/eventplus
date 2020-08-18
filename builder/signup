@@ -1,0 +1,85 @@
+#!/usr/bin/env node
+
+var prototype = require('../models/builder');
+
+module.exports = class extends prototype {
+
+    constructor(props) {
+
+        super(props);
+
+        this.use('_sqlGetUser', require('fs').readFileSync(__dirname + '/../sql/getUser.sql', 'utf8'));
+        this.use('_sqlCreateUser', require('fs').readFileSync(__dirname + '/../sql/createUser.sql', 'utf8'));
+
+        this.engine( (essences, data) => {
+
+            if ('mysql' in essences) {
+
+                const id = (new (require('uuid-token-generator'))()).generate();
+                const connection = essences.mysql;
+
+                const sqlGetUser = essences._sqlGetUser.replaceObject({
+                    username: data.username
+                });
+
+                const sqlCreateUser = essences._sqlCreateUser.replaceObject({
+                    id: id,
+                    username: data.username,
+                    password: require("crypto-js/sha256")(data.password),
+                    name: data.name,
+                    signup_time: Math.round(+new Date() / 1000),
+                    scope: 'unknown',
+                    '2fa': 'false'
+                });
+
+                return new Promise((resolve, reject) => {
+                    connection.query(sqlGetUser, (error, results, fields) => {
+
+                        if (results.length > 0) {
+
+                            reject({
+                                message: "A user with this username already exists.",
+                                error: true,
+                                status: 'error'
+                            });
+
+                        } else {
+
+                            connection.query(sqlCreateUser, (error, results, fields) => {
+
+                                if (error) {
+                                    reject({
+                                        message: "SQL error",
+                                        error: true,
+                                        status: 'error'
+                                    });
+                                }
+
+                                resolve({
+                                    message: 'User successfully created',
+                                    error: false,
+                                    status: 'ok',
+                                    user: {
+                                        id: id,
+                                        username: data.username,
+                                        name: data.name,
+                                        scope: 'unknown'
+                                    }
+                                });
+
+                            });
+                        }
+
+                    });
+                });
+
+
+            } else {
+                throw 'Need MySQL connection';
+            }
+
+        });
+
+    }
+
+}

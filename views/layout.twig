@@ -46,7 +46,11 @@
 
           {% if user %}
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.name ? user.name : user.username }} <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fas fa-user-circle user-icon"></i>
+                {{ user.name ? user.name : user.username }}
+                <span class="caret"></span>
+              </a>
               <ul class="dropdown-menu">
                 <li><a href="/user">Account</a></li>
                 <li><a href="/api/v1/forms/auth/logout">Logout</a></li>

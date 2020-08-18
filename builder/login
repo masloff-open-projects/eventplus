@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+var prototype = require('../models/builder');
+
+module.exports = class extends prototype {
+
+    constructor(props) {
+
+        super(props);
+
+        this.use('_sqlGetUser', require('fs').readFileSync(__dirname + '/../sql/authUser.sql', 'utf8'));
+        this.use('_sqlCreateSession', require('fs').readFileSync(__dirname + '/../sql/createSession.sql', 'utf8'));
+
+        this.engine( (essences, data) => {
+
+            if ('mysql' in essences) {
+
+                const connection = essences.mysql;
+
+                const sqlAuthUser = essences._sqlGetUser.replaceObject({
+                    username: data.username,
+                    password: require("crypto-js/sha256")(data.password)
+                });
+
+                return new Promise((resolve, reject) => {
+                    connection.query(sqlAuthUser, (error, results, fields) => {
+
+                        if (results.length > 0) {
+
+                            const user = results.pop();
+
+                            const sqlCreateSession = essences._sqlCreateSession.replaceObject({
+                                id: user.id,
+                                time: Math.round(+new Date() / 1000),
+                                ip: data.ip
+                            });
+
+                            connection.query(sqlCreateSession, (error) => {
+
+                                if (error) {
+
+                                    reject({
+                                        message: "SQL error",
+                                        error: true,
+                                        status: 'error'
+                                    });
+
+                                } else {
+
+                                    resolve({
+                                        message: "The user is successfully logged in",
+                                        error: false,
+                                        status: 'ok',
+                                        user: user
+                                    });
+
+                                }
+
+                            });
+
+                        } else {
+
+                            reject({
+                                message: "Invalid username or password",
+                                error: true,
+                                status: 'error'
+                            });
+
+                        }
+
+                    });
+                });
+
+
+            } else {
+                throw 'Need MySQL connection';
+            }
+
+        });
+
+    }
+
+}

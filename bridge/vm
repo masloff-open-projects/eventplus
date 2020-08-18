@@ -24,8 +24,8 @@ module.exports = class extends prototype{
 
                 var context = this.essence['public'];
                 var environment = this.essence['private']['environment'];
-                var bin = this.essence['private']['fs'].readFileSync('./virtual/bin.js', 'utf8');
-                var execute = this.essence['private']['fs'].readFileSync('./virtual/execute.js', 'utf8');
+                var bin = this.essence['private']['fs'].readFileSync('./virtual/bin', 'utf8');
+                var execute = this.essence['private']['fs'].readFileSync('./virtual/execute', 'utf8');
 
                 new Promise((resolve, reject) => {
 

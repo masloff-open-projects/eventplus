@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
+var mysql = require('./bin/sql')();
 var ccxt = require ('ccxt');
 var fs = require ('fs');
-var www = require('./bin/www');
+var www = require('./bin/www') (mysql);
 var yaml = require('./bin/yaml');
 var string = require('./modify/string');
 var vm = require('./bin/virtual') ();
@@ -41,6 +42,23 @@ var bridge = {
     vm: new (require('./bridge/vm'))()
 }
 
+
+/**
+ * Installation of MySQL event handler
+ */
+
+mysql.connect(err => {
+
+    if (err) {
+        console.error('[SQL]', 'Error connecting: ' + err.stack);
+        return;
+    }
+
+    console.log('[SQL]', 'Connected as id ' + mysql.threadId);
+
+});
+
+
 /**
  * Installation of Redis event handler
  */
@@ -73,7 +91,7 @@ redis.on("connect", function() {
     preprocessor.ccxt.on ('init', (event) => {
         console.log('[PREPROCESSOR / CCXT]', "You are now initialization");
     });
-    
+
     preprocessor.ccxt.on ('initExchange', function (event={}) {
 
         if (event.exchange in driver) {

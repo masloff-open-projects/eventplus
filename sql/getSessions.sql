@@ -1,0 +1,1 @@
+SELECT * FROM `passport`.`sessions` WHERE id = '$id';

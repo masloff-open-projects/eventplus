@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+
+class builder {
+
+    constructor() {
+        this.data = {};
+        this.essence = {};
+        this.executer = false;
+        this.buildData = {};
+    }
+
+    set (index='default', value='default') {
+
+        if (index in this.data) {
+            throw `'${index}' already exists in this object`;
+        } else {
+            this.data[index] = value;
+        }
+
+    }
+
+    build () {
+        const data = this.data;
+
+        this.buildData = data;
+        return data;
+    }
+
+    use (essence='default', object=Object) {
+
+        if (essence in this.essence) {
+            throw `${essence} already used`;
+        } else {
+            this.essence[essence] = object;
+        }
+
+    }
+
+    run () {
+        if (this.executer == false) {
+            throw 'Engine is not setup';
+        } else {
+            return this.executer(this.essence, this.buildData);
+        }
+    }
+
+    engine (callback) {
+        if (this.executer == false) {
+            this.executer = callback;
+        } else {
+            throw 'Engine is already setup';
+        }
+    }
+
+}
+
+module.exports = builder;

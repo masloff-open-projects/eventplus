@@ -1,0 +1,1 @@
+INSERT INTO `passport`.`thoughts` VALUES ('$id', '$time', '$title', '$thought', '0', '$public');

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 if (typeof $name === "function") {
     $name (JSON.parse($data));
 }

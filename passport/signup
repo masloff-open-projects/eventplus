@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+var signupBuilder = require('../builder/signup');
+
+module.exports = function (passport, connection) {
+
+    var LocalStrategy = require('passport-local').Strategy;
+
+    if (!passport) return;
+
+    passport.use('signup', new LocalStrategy({passReqToCallback: true}, function (req, username, password, done) {
+
+        var signup = new signupBuilder();
+
+        signup.use('mysql', connection)
+
+        signup.set('username', username);
+        signup.set('password', password);
+        signup.set('name', req.body.name);
+
+        signup.build();
+
+        signup.run().then(event => {
+
+            return done(null, {
+                id: event.user.id,
+                username: username,
+                scope: event.user.scope,
+                name: req.body.name
+            });
+
+        }).catch(event => {
+
+            return done(false, false, event);
+
+        });
+
+    }));
+
+    return passport;
+
+}

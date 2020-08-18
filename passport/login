@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+var loginBuilder = require('../builder/login');
+
+module.exports = function (passport, connection) {
+
+    var LocalStrategy = require('passport-local').Strategy;
+
+    if (!passport) return;
+
+    passport.use('login', new LocalStrategy({passReqToCallback: true}, function (req, username, password, done) {
+
+        var login = new loginBuilder();
+
+        login.use('mysql', connection)
+
+        login.set('ip', req.headers['x-forwarded-for'] || req.connection.remoteAddress);
+        login.set('username', req.body.username);
+        login.set('password', req.body.password);
+
+        login.build();
+
+        login.run().then(event => {
+
+            return done(null, {
+                id: event.user.id,
+                username: username,
+                scope: event.user.scope,
+                name: event.user.name
+            });
+
+        }).catch(event => {
+
+            return done(false, false, event);
+
+        });
+
+    }));
+
+    return passport;
+
+}

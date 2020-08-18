@@ -90,6 +90,10 @@ module.exports = class extends prototype {
                                     this.call('error', event);
                                 });
 
+                                client.on('close', (event) => {
+                                    this.call('close', event);
+                                });
+
                                 client.addStream('XBTUSD', 'tradeBin1m', (data, symbol, tableName) => {
 
                                     if (!data.length) return;

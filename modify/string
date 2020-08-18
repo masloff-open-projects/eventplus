@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 String.prototype.format = function() {
     a = this;
     for (k in arguments) {
