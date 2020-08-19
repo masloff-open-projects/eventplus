@@ -486,7 +486,7 @@ section.post-center {
 #codeContainer {
   width: 100%;
   min-height: 100px;
-  height: 100vh;
+  height: 100vh - 42px;
   margin: 0px;
   padding: 0px;
 }
@@ -586,6 +586,47 @@ hr {
 .list-enter, .list-leave-to {
   opacity: 0;
   transform: translateY(-30px);
+}
+
+.orderInList-move {
+  transition: transform 0.3s;
+}
+
+.orderInList-enter-active, .orderInList-leave-active {
+  transition: 0.3s;
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.orderInList-enter, .orderInList-leave-to {
+  opacity: 0;
+  transform: translateY(-3px);
+}
+
+.button-public-post {
+  margin-left: 12px;
+}
+
+.fadeUp-enter-active, .fadeUp-leave-active {
+  transition: 0.3s;
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.fadeUp-enter, .fadeUp-leave-to {
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.statusBar {
+  background: #2c3e50;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #3498db, #2c3e50);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #3498db, #2c3e50);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  width: 100%;
+  padding: 4px 8px;
 }
 
 ::-webkit-scrollbar {

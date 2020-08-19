@@ -1,8 +1,8 @@
 # Event+
 Event+ repository
 
-Icons made by [iconixar](https://www.flaticon.com/authors/iconixar) from [flaticon](https://www.flaticon.com/)  
-Icons made by [surang](https://www.flaticon.com/free-icon/pcb_2399658?term=processor&page=2&position=1) from [flaticon](https://www.flaticon.com/)  
-Icons made by [Freepik](https://www.flaticon.com/authors/freepik) from [flaticon](https://www.flaticon.com/)  
-Icons made by [Dimitry Miroliubov](https://www.flaticon.com/free-icon/money-bag_639364?term=bank&page=1&position=28) from [flaticon](https://www.flaticon.com/) 
-
+<div>Icons made by <a href="https://www.flaticon.com/authors/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+Icons made by <a href="https://www.flaticon.com/free-icon/pcb_2399658?term=processor&page=2&position=1" title="surang">surang</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+Icons made by <a href="https://www.flaticon.com/free-icon/money-bag_639364?term=bank&page=1&position=28" title="Dimitry Miroliubov">Dimitry Miroliubov</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>

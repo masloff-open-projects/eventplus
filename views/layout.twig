@@ -8,14 +8,13 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    {% block css %}
-
-    {% endblock %}
+    {% block css %} {% endblock %}
 
   </head>
   <body>
 
-    <nav class="navbar navbar-main navbar-fixed-top">
+    {% if navbar is empty %}
+      <nav class="navbar navbar-main navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -62,15 +61,12 @@
       </div>
     </div>
   </nav>
+    {% endif %}
 
-    {% block body %}
-
-    {% endblock %}
+    {% block body %} {% endblock %}
 
   </body>
 
-  {% block scripts %}
-
-  {% endblock %}
+  {% block scripts %} {% endblock %}
 
 </html>

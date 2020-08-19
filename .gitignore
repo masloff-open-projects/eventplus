@@ -108,3 +108,9 @@ dist
 
 # NodeJS
 package-lock.json
+
+# Configs
+server.yaml
+exchange.yaml
+keypair.yaml
+keystore.yaml
