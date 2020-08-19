@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
+var yaml = require('./bin/yaml');
+var serverYaml = yaml('./server.yaml');
 var mysql = require('./bin/sql')();
 var ccxt = require ('ccxt');
 var fs = require ('fs');
-var www = require('./bin/www') (mysql);
-var yaml = require('./bin/yaml');
+var www = require('./bin/www') (mysql, serverYaml.http || {});
 var string = require('./modify/string');
 var vm = require('./bin/virtual') ();
-var io = require('./bin/socket')(www.server);
-var redis = require('./bin/redis')();
+var io = require('./bin/socket')(www.server, serverYaml.io || false);
+var redis = require('./bin/redis')(serverYaml.redis || {});
 var request = require('request');
 
 var getaway = {

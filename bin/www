@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-module.exports = function (mysql) {
+module.exports = function (mysql, options) {
 
   /**
    * Module dependencies.
@@ -10,13 +10,12 @@ module.exports = function (mysql) {
   var app = express.app;
   var debug = require('debug')('event:server');
   var http = require('http');
-  var config = require('./yaml')('./server.yaml').express;
 
   /**
    * Get port from environment and store in Express.
    */
 
-  var port = normalizePort(config.port || '3004');
+  var port = normalizePort(options.port || '3004');
   app.set('port', port);
 
   /**

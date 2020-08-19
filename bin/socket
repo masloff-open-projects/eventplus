@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-module.exports = function (http) {
+module.exports = function (http, options) {
 
-    var io = new (require('ws')).Server({server: http});
+    var io = new (require('ws')).Server(options || {server: http});
 
     // Method for sending data to all active customers
     io.sendAll = (data=Object, wss=io) => {
