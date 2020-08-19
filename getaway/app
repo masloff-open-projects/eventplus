@@ -9,26 +9,23 @@
 
 module.exports = function (mysql) {
 
-    var createError = require('http-errors');
-    var express = require('express');
-    var path = require('path');
-    var fs = require('fs');
-    var cookieParser = require('cookie-parser');
-    var logger = require('morgan');
-    var client = require('../bin/redis')();
-    var ddos = require('ddos');
-    var random = require('random')
-    var passport = require('passport')
-    var session = require('express-session')
-    var RedisStore = require('connect-redis')(session)
-    var TokenGenerator = require('uuid-token-generator');
-    var dos = new ddos({burst: 10, limit: 15})
-    var sqlinjection = require('sql-injection');
-    var multer = require('multer');
-    var upload = multer();
-    var favicon = require('serve-favicon')
+    // imports
+    const createError = require('http-errors');
+    const express = require('express');
+    const path = require('path');
+    const cookieParser = require('cookie-parser');
+    const logger = require('morgan');
+    const client = require('../bin/redis')();
+    const ddos = require('ddos');
+    const session = require('express-session')
+    const RedisStore = require('connect-redis')(session)
+    const dos = new ddos({burst: 10, limit: 15})
+    const multer = require('multer');
+    const upload = multer();
+    const favicon = require('serve-favicon')
     const rateLimit = require("express-rate-limit");
 
+    var passport = require('passport')
     var app = express();
 
     function authenticationMiddleware() {
@@ -40,6 +37,7 @@ module.exports = function (mysql) {
         }
     }
 
+    // routers
     var indexRouter = require('../routes')(passport, authenticationMiddleware)
     var studioRouter = require('../routes/studio')(passport, authenticationMiddleware)
     var usersRouter = require('../routes/users')(passport, authenticationMiddleware)
@@ -55,13 +53,13 @@ module.exports = function (mysql) {
     app.set('cache', false);
     app.set("twig options", { strict_variables: false });
 
+    // app use
     app.use(logger('dev'));
     app.use(express.json());
     app.use(express.urlencoded({extended: false}));
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, '../public')));
     app.use(favicon(path.join(__dirname, '../public', 'images', 'favicon.ico')))
-    // app.use(sqlinjection);
     app.use(dos.express);
     app.use(upload.array());
     app.use(express.json());

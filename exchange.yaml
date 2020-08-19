@@ -30,6 +30,7 @@ exchange:
   period: 1
   offset: 36000 # 10 minutes
   count: 200 # For BitMex history
+  limit: 100
 
 ordersBook:
   depth: 5

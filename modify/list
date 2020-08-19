@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+Array.prototype.sweep = function() {
+    return this.slice(this.length - arguments[0], this.length);
+}
+
+Array.prototype.append = function() {
+
+    if (this.length > arguments[1]+1) { this.shift(); }
+    this.push(arguments[0]);
+    return this;
+
+}

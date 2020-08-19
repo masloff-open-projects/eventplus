@@ -81,6 +81,8 @@ module.exports = class extends prototype {
                                         for (const [name, object] of Object.entries(template)) {
                                             io.send(JSON.stringify(object));
                                         }
+
+                                        this.call('open', event);
                                     }
 
                                     io.onmessage = (event) => {
@@ -95,7 +97,7 @@ module.exports = class extends prototype {
 
                                                 for (let i = 0; i < answer.result.ticks.length; i++) {
 
-                                                    chartData.push ({
+                                                    chartData.append ({
                                                         time: answer.result.ticks[i]/1000,
                                                         open: answer.result.open[i],
                                                         low: answer.result.low[i],
@@ -103,7 +105,7 @@ module.exports = class extends prototype {
                                                         cost: answer.result.cost[i],
                                                         close: answer.result.close[i],
                                                         volume: answer.result.volume[i],
-                                                    });
+                                                    }, exchange.exchange.limit);
                                                     
                                                 }
 
@@ -139,6 +141,7 @@ module.exports = class extends prototype {
 
                                         }
 
+                                        this.call('message', event);
 
                                     }
 

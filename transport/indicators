@@ -338,9 +338,11 @@ module.exports = class extends prototype {
             if (driver) {
 
                 for (const [name, object] of Object.entries(driver)) {
-                    object.on('getChartForTradingview', (event) => {
-                        this.calculate(event, object, processor);
-                    });
+                    if ('on' in object) {
+                        object.on('getChartForTradingview', (event) => {
+                            this.calculate(event, object, processor);
+                        });
+                    }
                 }
 
             } else {

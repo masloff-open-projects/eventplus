@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 
-var yaml = require('./bin/yaml');
-var serverYaml = yaml('./server.yaml');
-var mysql = require('./bin/sql')();
-var ccxt = require ('ccxt');
-var fs = require ('fs');
-var www = require('./bin/www') (mysql, serverYaml.http || {});
-var string = require('./modify/string');
-var vm = require('./bin/virtual') ();
-var io = require('./bin/socket')(www.server, serverYaml.io || false);
-var redis = require('./bin/redis')(serverYaml.redis || {});
-var request = require('request');
+const string = require('./modify/string');
+const list = require('./modify/list');
+
+const logger = require('./bin/logger') ();
+const yaml = require('./bin/yaml');
+const serverYaml = yaml('./server.yaml');
+const mysql = require('./bin/sql')();
+const ccxt = require ('ccxt');
+const fs = require ('fs');
+const www = require('./bin/www') (mysql, serverYaml.http || {});
+const vm = require('./bin/virtual') ();
+const io = require('./bin/socket')(www.server, serverYaml.io || false);
+const redis = require('./bin/redis')(serverYaml.redis || {});
+const request = require('request');
+const printMessage = require('print-message');
 
 var getaway = {
     rest: new (require('./getaway/RestAPI')) ()
@@ -25,7 +29,7 @@ var processor = {
 };
 
 var driver = {
-    bybit: new (require('./drivers/bybit')) (),
+    bybit: new (require('./drivers/bybit')) (ccxt, io, yaml, redis),
     deribit: new (require('./drivers/deribit')) (ccxt, io, yaml, redis),
     bitmex: new (require('./drivers/bitmex')) (ccxt, io, yaml, redis),
 }
@@ -43,7 +47,6 @@ var bridge = {
     vm: new (require('./bridge/vm'))()
 }
 
-
 /**
  * Installation of MySQL event handler
  */
@@ -52,10 +55,22 @@ mysql.connect(err => {
 
     if (err) {
         console.error('[SQL]', 'Error connecting: ' + err.stack);
+        logger.log ({
+            sender: 'SQL',
+            message: `Error connecting to the SQL`,
+            level: 'error',
+            data: err.stack,
+        });
+        process.exit(1);
         return;
     }
 
-    console.log('[SQL]', 'Connected as id ' + mysql.threadId);
+    logger.log ({
+        sender: 'SQL',
+        message: `Connected as id`,
+        level: 'info',
+        data: mysql.threadId,
+    });
 
 });
 
@@ -64,14 +79,28 @@ mysql.connect(err => {
  * Installation of Redis event handler
  */
 
-redis.on("error", function(error) {
-    console.error('[REDIS]', error);
+redis.on("error", error => {
+
+    console.error('[REDIS]', 'Error connecting: ' + error);
+    logger.log ({
+        sender: 'REDIS',
+        message: `Error connecting to the Redis client`,
+        level: 'error',
+        data: error,
+    });
+    process.exit(1);
+    return;
+
 })
 
-redis.on("connect", function() {
+redis.on("connect", event => {
 
-    console.log('[REDIS]', "You are now connected");
-
+    logger.log ({
+        sender: 'REDIS',
+        message: `Successfully connected to the server`,
+        level: 'info',
+        data: redis.options,
+    });
 
     /**
      * Setup getaway
@@ -88,11 +117,6 @@ redis.on("connect", function() {
 
     preprocessor.ccxt.use('driver', 'ccxt', ccxt);
     preprocessor.ccxt.use('store', 'keystore', yaml('./keystore.yaml'));
-
-    preprocessor.ccxt.on ('init', (event) => {
-        console.log('[PREPROCESSOR / CCXT]', "You are now initialization");
-    });
-
     preprocessor.ccxt.on ('initExchange', function (event={}) {
 
         if (event.exchange in driver) {
@@ -110,7 +134,11 @@ redis.on("connect", function() {
 
                         } else {
 
-                            console.error('[BOOT]', `The ${event.exchange} exchange Diver uses an old architecture and does not support the use method.`)
+                            logger.log ({
+                                sender: 'BOOTLOADER',
+                                message: `The '${event.exchange}' exchange diver uses an old architecture and does not support the use method.`,
+                                level: 'error'
+                            });
 
                         }
 
@@ -126,26 +154,13 @@ redis.on("connect", function() {
 
 
     /**
-     * Installation of Transport handler
-     */
-
-    transport.indicators.on ('init', (event) => {
-        console.log('[TRANSPORT / INDICATORS]', "You are now initialization");
-    });
-
-    /**
      * Settings of Crossover handler
      */
 
     crossover.bigData.use ('transfer', 'io', io);
     crossover.bigData.use ('store', 'cache', new require("cache")(15 * 60 * 1000));
-
-    crossover.bigData.on ('init', (event) => {
-        console.log('[CROSSOVER / BIGDATA]', "You are now initialization");
-    });
-
     crossover.bigData.on ('userConnect', (event) => {
-        console.log('[CROSSOVER / BIGDATA]', "User connect");
+        console.log('[CROSSOVER / BIGDATA]', event);
     });
 
 
@@ -163,27 +178,202 @@ redis.on("connect", function() {
             driver[name].use('commutator', 'request', request);
             driver[name].use('commutator', 'wss', require('websocket').w3cwebsocket);
 
+            logger.log ({
+                sender: 'BOOTLOADER',
+                message: `Driver '${name}' has successfully adopted all the necessary dependencies `,
+                level: 'info'
+            });
+
         } else {
 
-            console.error('[BOOT]', `Driver ${name} is old and don't have 'use' method`)
+            logger.log ({
+                sender: 'BOOTLOADER',
+                message: `Driver '${name}' is old and don't have 'use' method`,
+                level: 'warning'
+            });
 
         }
 
         crossover.bigData.use ('driver', name, driver[name]);
         transport.indicators.use ('driver', name, driver[name]);
 
+        if ('on' in driver[name]) {
+
+            driver[ name ].on('error', event => {
+
+                logger.log({
+                    sender: `DRIVER / ${name}`,
+                    message: 'Error',
+                    level: 'error',
+                    data: event
+                });
+
+            });
+
+            driver[ name ].on('init', event => {
+
+                logger.log({
+                    sender: `DRIVER / ${name}`,
+                    message: 'Successfully initialized',
+                    level: 'info'
+                });
+
+            });
+
+
+        }
+
     }
 
     for (const name in transport) {
+
         crossover.bigData.use ('transport', name, transport[name]);
+
+        if ('on' in transport[name]) {
+
+            transport[ name ].on('error', event => {
+
+                logger.log({
+                    sender: `TRANSPORT / ${name}`,
+                    message: 'Error',
+                    level: 'error',
+                    data: event
+                });
+
+            });
+
+            transport[ name ].on('init', event => {
+
+                logger.log({
+                    sender: `TRANSPORT / ${name}`,
+                    message: 'Successfully initialized',
+                    level: 'info'
+                });
+
+            });
+
+        }
+
     }
 
     for (const name in processor) {
+
         transport.indicators.use ('processor', name, processor[name]);
+
+        if ('on' in processor[name]) {
+
+            processor[name].on ('error', event => {
+
+                logger.log ({
+                    sender: `PROCESSOR / ${name}`,
+                    message: 'Error',
+                    level: 'error',
+                    data: event
+                });
+
+            });
+
+            processor[ name ].on('init', event => {
+
+                logger.log({
+                    sender: `PROCESSOR / ${name}`,
+                    message: 'Successfully initialized',
+                    level: 'info'
+                });
+
+            });
+
+        }
+
     }
 
     for (const name in getaway) {
+
         crossover.bigData.use ('getaway', name, getaway[name]);
+
+        if ('on' in getaway[name]) {
+
+            getaway[ name ].on('error', event => {
+
+                logger.log({
+                    sender: `GETAWAY / ${name}`,
+                    message: 'Error',
+                    level: 'error',
+                    data: event
+                });
+
+            });
+
+            getaway[ name ].on('init', event => {
+
+                logger.log({
+                    sender: `GETAWAY / ${name}`,
+                    message: 'Successfully initialized',
+                    level: 'info'
+                });
+
+            });
+
+        }
+
+    }
+
+    for (const name in crossover) {
+
+        if ('on' in crossover[name]) {
+
+            crossover[ name ].on('error', event => {
+
+                logger.log({
+                    sender: `CROSSOVER / ${name}`,
+                    message: 'Error',
+                    level: 'error',
+                    data: event
+                });
+
+            });
+
+            crossover[ name ].on('init', event => {
+
+                logger.log({
+                    sender: `CROSSOVER / ${name}`,
+                    message: 'Successfully initialized',
+                    level: 'info'
+                });
+
+            });
+
+        }
+
+    }
+
+    for (const name in preprocessor) {
+
+        if ('on' in preprocessor[name]) {
+
+            preprocessor[ name ].on('error', event => {
+
+                logger.log({
+                    sender: `PREPROCESSOR / ${name}`,
+                    message: 'Error',
+                    level: 'error',
+                    data: event
+                });
+
+            });
+
+            preprocessor[ name ].on('init', event => {
+
+                logger.log({
+                    sender: `PREPROCESSOR / ${name}`,
+                    message: 'Successfully initialized',
+                    level: 'info'
+                });
+
+            });
+
+        }
+
     }
 
 
@@ -206,8 +396,19 @@ redis.on("connect", function() {
 
     getaway.rest.init();
 
-    // driver.deribit.init();
-    // driver.bybit.init();
-    // driver.bitmex.init();
+    printMessage([
+        `Welcome to Event+`,
+        `-----------------------------`,
+        `Getaways count: ${Object.keys(getaway).length}`,
+        `Preprocessors count: ${Object.keys(preprocessor).length}`,
+        `Processors count: ${Object.keys(processor).length}`,
+        `Drivers count: ${Object.keys(driver).length}`,
+        `Transports count: ${Object.keys(transport).length}`,
+        `Crossover count: ${Object.keys(crossover).length}`,
+        `Bridge count: ${Object.keys(bridge).length}`,
+        `-----------------------------`,
+        `Drivers found: ${Object.keys(driver).join(', ')}`
+    ]);
+
 
 });

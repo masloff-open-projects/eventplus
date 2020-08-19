@@ -75,6 +75,9 @@ module.exports = class extends prototype {
                                                 "orderBookL2_25.BTCUSD"
                                             ]
                                         }));
+
+                                        this.call('open', event);
+
                                     }
 
                                     io.onmessage = (event=null) => {
@@ -178,11 +181,11 @@ module.exports = class extends prototype {
                                                     if (Symbol.iterator in Object(data.data)) {
 
                                                         for (const iterator of data.data) {
-                                                            buffer.push(iterator)
+                                                            buffer.append(iterator, exchange.exchange.limit)
                                                         }
 
                                                     } else {
-                                                        buffer.push(data.data);
+                                                        buffer.append(data.data, exchange.exchange.limit);
                                                     }
 
 
@@ -193,7 +196,7 @@ module.exports = class extends prototype {
                                                         if (buffer[i] === undefined) continue;
                                                         var bufferData = buffer[i];
 
-                                                        chartData.push({
+                                                        chartData.append({
                                                             time: parseFloat('open_time' in bufferData ? bufferData.open_time : bufferData.end),
                                                             open: parseFloat(bufferData.open),
                                                             low: parseFloat(bufferData.low),
@@ -201,7 +204,7 @@ module.exports = class extends prototype {
                                                             turnover: parseFloat(bufferData.turnover),
                                                             close: parseFloat(bufferData.close),
                                                             volume: parseFloat(bufferData.volume)
-                                                        });
+                                                        }, exchange.exchange.limit);
 
                                                     }
 
@@ -211,6 +214,8 @@ module.exports = class extends prototype {
                                             }
 
                                         }
+
+                                        this.call('message', event);
 
                                     }
 

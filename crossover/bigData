@@ -240,6 +240,8 @@ module.exports = class extends prototype {
 
                         });
 
+                        this.call('init', true);
+
                     } else {
                         throw `'rest' is not use in crossover`;
                     }

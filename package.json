@@ -50,7 +50,6 @@
         "fs": "0.0.1-security",
         "http-errors": "~1.8.0",
         "js-yaml": "^3.14.0",
-        "logger": "0.0.1",
         "mathjs": "^7.1.0",
         "morgan": "^1.10.0",
         "multer": "^1.4.2",
@@ -61,6 +60,7 @@
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
         "postcss-cli": "^7.1.1",
+        "print-message": "^3.0.1",
         "random": "^2.2.0",
         "redis": "^3.0.2",
         "rss-to-json": "^1.1.1",
@@ -73,6 +73,7 @@
         "uuid-token-generator": "^1.0.0",
         "vm": "^0.1.0",
         "websocket": "^1.0.31",
+        "winston": "^3.3.3",
         "ws": "^7.3.1",
         "xss": "^1.0.8"
     }

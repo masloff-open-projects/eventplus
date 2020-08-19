@@ -90,6 +90,10 @@ module.exports = class extends prototype {
                                     this.call('error', event);
                                 });
 
+                                client.on('open', (event) => {
+                                    this.call('open', event);
+                                });
+
                                 client.on('close', (event) => {
                                     this.call('close', event);
                                 });
@@ -101,11 +105,11 @@ module.exports = class extends prototype {
                                     if (Symbol.iterator in Object(data)) {
 
                                         for (const iterator of data) {
-                                            buffer.push(iterator)
+                                            buffer.append(iterator, exchange.exchange.limit)
                                         }
 
                                     } else {
-                                        buffer.push(data);
+                                        buffer.append(data, exchange.exchange.limit);
                                     }
 
                                     for(var i = 0; i < buffer.length; i++) {
@@ -113,14 +117,14 @@ module.exports = class extends prototype {
                                         if (buffer[i] === undefined) continue;
                                         var bufferData = buffer[i];
 
-                                        chartData.push({
+                                        chartData.append({
                                             time: Date.parse(bufferData.timestamp) / 1000,
                                             open: bufferData.open,
                                             low: bufferData.low,
                                             high: bufferData.high,
                                             close: bufferData.close,
                                             volume: bufferData.volume,
-                                        });
+                                        }, exchange.exchange.limit);
 
                                     }
 
@@ -128,6 +132,14 @@ module.exports = class extends prototype {
                                     this.call('getChartForTradingview', chartData);
 
                                 });
+
+                                // client.addStream('XBTUSD', 'chat', (data, symbol, tableName) => {
+                                //
+                                //     if (!data.length) return;
+                                //
+                                //     console.log(data)
+                                //
+                                // });
 
                                 this.call('init', true);
 
