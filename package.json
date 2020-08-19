@@ -1,6 +1,8 @@
 {
     "name": "eventplus",
     "version": "0.1.0",
+    "main": "bin.js",
+    "homepage": "https://github.com/eps-game/eventplus",
     "description": "Terminal for robotic cryptographic trading on the exchange complex",
     "private": true,
     "publishConfig": {
