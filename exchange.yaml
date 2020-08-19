@@ -1,5 +1,4 @@
 indicators:
-
   WMA:
     period: 15
 
@@ -19,18 +18,18 @@ indicators:
     SimpleMAOscillator: false
     SimpleMASignal: false
 
-  MVRV:
+  MVRVZScr:
+    period: 20
     pass: true
 
   Stochastic:
     period: 15
     signalPeriod: 3
 
-
 exchange:
   period: 1
   offset: 36000 # 10 minutes
-  count: 200 # For history BitMex
+  count: 200 # For BitMex history
 
 ordersBook:
   depth: 5
