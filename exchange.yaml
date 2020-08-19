@@ -1,0 +1,36 @@
+indicators:
+
+  WMA:
+    period: 15
+
+  EMA:
+    period: 15
+
+  SMA:
+    period: 15
+
+  BB:
+    period: 15
+
+  MACD:
+    fastPeriod: 15
+    slowPeriod: 30
+    signalPeriod: 5
+    SimpleMAOscillator: false
+    SimpleMASignal: false
+
+  MVRV:
+    pass: true
+
+  Stochastic:
+    period: 15
+    signalPeriod: 3
+
+
+exchange:
+  period: 1
+  offset: 36000 # 10 minutes
+  count: 200 # For history BitMex
+
+ordersBook:
+  depth: 5
