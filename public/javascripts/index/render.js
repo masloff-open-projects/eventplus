@@ -76,7 +76,7 @@ $(document).ready(function(event=null) {
                     backgroundColor: '#131313',
                     textColor: '#ffffff',
                     fontSize: 12,
-                    fontFamily: 'Calibri',
+                    fontFamily: 'Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
                 },
                 handleScroll: {
                     mouseWheel: true,
@@ -218,7 +218,7 @@ $(document).ready(function(event=null) {
                     backgroundColor: '#131313',
                     textColor: '#ffffff',
                     fontSize: 12,
-                    fontFamily: 'Calibri',
+                    fontFamily: 'Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
                 },
                 handleScroll: {
                     mouseWheel: true,
@@ -301,7 +301,7 @@ $(document).ready(function(event=null) {
                     backgroundColor: '#131313',
                     textColor: '#ffffff',
                     fontSize: 12,
-                    fontFamily: 'Calibri',
+                    fontFamily: 'Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
                 },
                 handleScroll: {
                     mouseWheel: true,
@@ -394,7 +394,7 @@ $(document).ready(function(event=null) {
                     backgroundColor: '#131313',
                     textColor: '#ffffff',
                     fontSize: 12,
-                    fontFamily: 'Calibri',
+                    fontFamily: 'Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
                 },
                 handleScroll: {
                     mouseWheel: true,
@@ -475,7 +475,7 @@ $(document).ready(function(event=null) {
                     backgroundColor: '#131313',
                     textColor: '#ffffff',
                     fontSize: 12,
-                    fontFamily: 'Calibri',
+                    fontFamily: 'Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
                 },
                 handleScroll: {
                     mouseWheel: true,
@@ -557,7 +557,7 @@ $(document).ready(function(event=null) {
                     backgroundColor: '#131313',
                     textColor: '#ffffff',
                     fontSize: 12,
-                    fontFamily: 'Calibri',
+                    fontFamily: 'Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif',
                 },
                 handleScroll: {
                     mouseWheel: true,

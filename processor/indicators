@@ -207,8 +207,8 @@ module.exports = class {
             var chartData = [];
             var marketCap = [];
 
-            console.log(period);
-            console.log(values[values.length - 1]);
+            // console.log(period);
+            // console.log(values[values.length - 1]);
 
             provider.market().then(function (event) {
 

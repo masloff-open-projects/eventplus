@@ -1,28 +1,31 @@
 #!/usr/bin/env node
 
-module.exports = function (mysql, options) {
+module.exports = function (mysql, optionsHttp, optionsHttps) {
 
   /**
    * Module dependencies.
    */
 
-  var express = require('../getaway/app')(mysql);
-  var app = express.app;
-  var debug = require('debug')('event:server');
-  var http = require('http');
+  const express = require('../getaway/app')(mysql);
+  const app = express.app;
+  const debug = require('debug')('event:server');
+  const http = require('http');
+  const https = require('https');
+  const fs = require('fs');
 
-  /**
-   * Get port from environment and store in Express.
-   */
+  if (('key' in optionsHttps && optionsHttps.key) && ('crt' in optionsHttps && optionsHttps.crt)) {
 
-  var port = normalizePort(options.port || '3004');
-  app.set('port', port);
+    const privateKey  = fs.readFileSync(optionsHttps.key, 'utf8');
+    const certificate = fs.readFileSync(optionsHttps.crt, 'utf8');
+
+  }
 
   /**
    * Create HTTP server.
    */
 
-  var server = http.createServer(app);
+  var httpServer = http.createServer(app);
+  var httpsServer = typeof privateKey !== "undefined" ? https.createServer({key: privateKey, cert: certificate}, app) : false;
 
   /**
    * Normalize a port into a number, string, or false.
@@ -73,27 +76,23 @@ module.exports = function (mysql, options) {
   }
 
   /**
-   * Event listener for HTTP server "listening" event.
-   */
-
-  function onListening() {
-    var addr = server.address();
-    var bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    debug('Listening on ' + bind);
-  }
-
-  /**
    * Installation of Http event handler
    */
 
-  server.on('error', onError);
-  server.on('listening', onListening);
-  server.listen(port);
+  // HTTP
+  httpServer.on('error', onError);
+  httpServer.listen(normalizePort(optionsHttp.port || '3004'));
+
+  // HTTPS
+  if (httpsServer) {
+    httpsServer.on('error', onError);
+    httpsServer.listen(normalizePort(optionsHttps.port || '3006'));
+  }
 
   return {
-    server: server,
+    http: httpServer,
+    https: httpsServer,
+    server: httpsServer ? httpsServer : httpServer,
     express: express
   };
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-function getChart () {
-    
+function getInstrument (data=null) {
+    Y = data;
 }

@@ -5,10 +5,10 @@ html {
 body {
   background: #131313;
   color: white;
-  font-family: robotoregular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; }
+  font-family: Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; }
 
 input {
-  font-family: robotoregular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background: transparent;
   border: 1px solid #292929;
   padding: 6px 10px;
@@ -24,7 +24,7 @@ input {
     background: transparent; }
 
 textarea {
-  font-family: robotoregular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background: transparent;
   border: transparent;
   padding: 6px 10px;
@@ -40,7 +40,7 @@ textarea {
     background: transparent; }
 
 select {
-  font-family: robotoregular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background: transparent;
   border: 1px solid #292929;
   padding: 6px 10px;
@@ -53,7 +53,7 @@ select {
   font-weight: 100;
   margin: 0px 0px 82px 0px;
   font-size: 84px;
-  font-family: robotoregular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; }
+  font-family: Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; }
 
 .action-button {
   background: #8E2DE2;
@@ -547,6 +547,6 @@ hr {
     font-weight: 100;
     margin: 0px 0px 32px 0px;
     font-size: 72px;
-    font-family: robotoregular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; } }
+    font-family: Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; } }
 
 /*# sourceMappingURL=style.css.map */

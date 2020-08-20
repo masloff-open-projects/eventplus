@@ -1,5 +1,18 @@
 #!/usr/bin/env node
 
+/**
+ * Virtual machine - is a software and/or hardware system emulating hardware of some platform (target - target or guest platform)
+ * and executing programs for target platform on host platform (host - host, host platform) or virtualizing some
+ * platform and creating on
+ * it environments isolating from each other programs;
+ * also specification of some computing environment (for example: "virtual machine of programming language NodeJS").
+ *
+ * The virtual machine executes
+ * some machine independent code.
+ *
+ * @type {essence}
+ */
+
 var prototype = require('../models/essence');
 
 module.exports = class extends prototype{
@@ -37,7 +50,7 @@ module.exports = class extends prototype{
                 });
 
                 this.on ('*',  (event, action) => {
-                    if (!(action in ['init', 'error'])) {
+                    if (!(['init', 'error', 'context', 'execute'].includes(action))) {
                         new Promise((resolve, reject) => {
 
                             environment.runInContext(execute.replaceObject({
@@ -45,9 +58,13 @@ module.exports = class extends prototype{
                                 data: JSON.stringify(event)
                             }), context);
 
+                            this.call('context', context)
+
                         }).catch((event) => {
                             this.call('error', event)
                         });
+
+                        this.call('execute', context)
 
                     }
                 });

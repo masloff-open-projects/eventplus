@@ -9,7 +9,7 @@ const serverYaml = yaml('./server.yaml');
 const mysql = require('./bin/sql')();
 const ccxt = require ('ccxt');
 const fs = require ('fs');
-const www = require('./bin/www') (mysql, serverYaml.http || {});
+const www = require('./bin/www') (mysql, serverYaml.http || {}, serverYaml.https || {});
 const vm = require('./bin/virtual') ();
 const io = require('./bin/socket')(www.server, serverYaml.io || false);
 const redis = require('./bin/redis')(serverYaml.redis || {});
@@ -158,10 +158,8 @@ redis.on("connect", event => {
      */
 
     crossover.bigData.use ('transfer', 'io', io);
+    crossover.bigData.use ('bridge', 'vm', bridge.vm);
     crossover.bigData.use ('store', 'cache', new require("cache")(15 * 60 * 1000));
-    crossover.bigData.on ('userConnect', (event) => {
-        console.log('[CROSSOVER / BIGDATA]', event);
-    });
 
 
     /**
@@ -383,6 +381,7 @@ redis.on("connect", event => {
 
     preprocessor.ccxt.init();
 
+    transport.indicators.use('logger', 'logger', logger);
     transport.indicators.init();
     crossover.bigData.init();
 

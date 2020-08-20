@@ -32,6 +32,7 @@ module.exports = class extends prototype {
                         const io = this.go('transfer', 'io');
                         const rest = this.go('getaway', 'rest');
                         const cache = this.go('store', 'cache');
+                        const vm = this.go('bridge', 'vm');
 
                         // Init IO
                         io.on ('connection', function connection(ws) {
@@ -151,7 +152,15 @@ module.exports = class extends prototype {
 
                             }
 
+                            driver.on('*', (event, action) => {
+                                vm.call(action, event)
+                            });
+
                         }
+
+                        vm.on ('context', event => {
+                            console.log(event)
+                        });
 
                         // Setup RestAPI
                         // Get balance

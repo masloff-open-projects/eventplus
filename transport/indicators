@@ -332,6 +332,7 @@ module.exports = class extends prototype {
 
         let processor = this.go('processor', 'indicators');
         let driver = this.go('driver');
+        let logger = this.go('logger', 'logger');
 
         if (processor) {
 
@@ -339,9 +340,25 @@ module.exports = class extends prototype {
 
                 for (const [name, object] of Object.entries(driver)) {
                     if ('on' in object) {
+
                         object.on('getChartForTradingview', (event) => {
                             this.calculate(event, object, processor);
                         });
+
+                        logger.log({
+                            sender: `TRANSPORT / INDICATORS`,
+                            message: 'Successfully subscribe on get chart event on driver for ' + name,
+                            level: 'info'
+                        });
+
+                    } else {
+
+                        logger.log({
+                            sender: `TRANSPORT / INDICATORS`,
+                            message: `The ${name} driver is outdated or damaged because it doesn't have the \`on\` method.`,
+                            level: 'error'
+                        });
+
                     }
                 }
 
