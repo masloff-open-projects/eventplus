@@ -98,6 +98,26 @@ module.exports = class extends prototype {
                                     this.call('close', event);
                                 });
 
+                                client.addStream('XBTUSD', 'instrument', (data, symbol, tableName) => {
+                                    if (!data.length) return;
+
+                                    const answer = data[0];
+
+                                    this.call('getInstrument', {
+                                        maxPrice24h: answer.highPrice,
+                                        minPrice24h: answer.lowPrice,
+                                        changePrice24h: answer.lastChangePcnt,
+                                        totalTurnover: answer.totalTurnover,
+                                        totalTurnover24h: answer.turnover24h,
+                                        volume24h: answer.volume24h,
+                                        openInterest: answer.openInterest,
+                                        openValue: answer.openValue,
+                                        fundingRate: answer.fundingRate,
+                                        lastPrice: answer.lastPrice
+                                    });
+
+                                });
+
                                 client.addStream('XBTUSD', 'tradeBin1m', (data, symbol, tableName) => {
 
                                     if (!data.length) return;

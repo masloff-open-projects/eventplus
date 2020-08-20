@@ -1,0 +1,44 @@
+{
+	"sgComment": "SG",
+	"exampleIdentifier": "html_example",
+	"sortCategories": true,
+	"sections": {
+		"styles": "",
+		"development": "Dev:"
+	},
+	"rootFolder": "./",
+	"excludeDirs": [
+		"target",
+		"node_modules",
+		".git"
+	],
+	"fileExtensions": {
+		"scss": true,
+		"sass": true,
+		"less": true,
+		"md": true,
+		"css": false
+	},
+	"templateFile": "../../../usr/lib/node_modules/markdown-documentation-generator/template/template.hbs",
+	"themeFile": "../../../usr/lib/node_modules/markdown-documentation-generator/template/theme.css",
+	"htmlOutput": "./styleguide/styleguide.html",
+	"jsonOutput": "./styleguide/styleguide.json",
+	"handlebarsPartials": {
+		"jquery": "/usr/lib/node_modules/markdown-documentation-generator/template/jquery.js",
+		"sticky": "../../../usr/lib/node_modules/markdown-documentation-generator/template/sticky.js"
+	},
+	"highlightStyle": "arduino-light",
+	"highlightFolder": "../../../usr/lib/node_modules/markdown-documentation-generator/node_modules/highlight.js/styles",
+	"customVariables": {
+		"pageTitle": "Style Guide"
+	},
+	"markedOptions": {
+		"gfm": true,
+		"breaks": true,
+		"smartypants": true
+	},
+	"logging": {
+		"prefix": "[Style Guide]",
+		"level": "verbose"
+	}
+}

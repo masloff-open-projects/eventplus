@@ -620,12 +620,19 @@ $(document).ready(function(event=null) {
         delimiters: ['${', '}'],
         el: '#ordersBook',
         data: {
+            lastPrice: 0,
+            tweenedPrice: 0,
             asks: [
                 [0, 0]
             ],
             bids: [
                 [0, 0]
             ]
+        },
+        watch: {
+            lastPrice: function(price) {
+                gsap.to(this.$data, { duration: 0.3, tweenedPrice: price });
+            }
         },
         filters: {
             format: function (e) {
@@ -837,7 +844,8 @@ $(document).ready(function(event=null) {
                             }
                         }
 
-                        mainChartOfPrice.lines.BARS.setData(object.chart)
+                        mainChartOfPrice.lines.BARS.setData(object.chart);
+
                         break;
 
                     case 'VOLUME':
@@ -900,6 +908,9 @@ $(document).ready(function(event=null) {
                 for (const index in object.instrument) {
                     instrumentOfCrypto[index] = numeral(object.instrument[index]).format('0a');
                 }
+
+                orderBookOfCrypto.lastPrice = 'lastPrice' in object.instrument ? object.instrument.lastPrice : 0
+
             }
 
         } else if (object.response == 'ordersBookData') {

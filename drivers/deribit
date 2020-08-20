@@ -132,8 +132,10 @@ module.exports = class extends prototype {
                                                     volume24h: answer.result.stats.volume,
                                                     openInterest: answer.result.open_interest,
                                                     openValue: false,
-                                                    fundingRate: answer.result.funding_8h
+                                                    fundingRate: answer.result.funding_8h,
+                                                    lastPrice: answer.result.last_price
                                                 });
+
 
                                                 io.send(JSON.stringify(template.book));
 

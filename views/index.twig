@@ -32,6 +32,7 @@
   <script defer src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.43/Tone.js" integrity="sha512-EykMJ8DUk41zHUpEBrlm8oWxXqmQXi5dKBvuaEiziqFMrcfGYsXz1KwBMA+ejy6noTfwVGwer1WSYrbNBrjT2w==" crossorigin="anonymous"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js"></script>
 
   <script src="/javascripts/WebSocket.js"></script>
   <script src="/javascripts/parseParams.js"></script>
@@ -127,8 +128,8 @@
 
               <transition name="fadeUp">
                 <div id="vue-chart-price">
-                <div id="price_chart"></div>
-              </div>
+                  <div id="price_chart"></div>
+                </div>
               </transition>
 
               <transition name="fadeUp">
@@ -231,27 +232,25 @@
             <div class="block" id="ordersBook">
               <div v-if="asks[0][0] != 0">
 
-                <transition-group name="orderInList" tag="div">
-                  <div v-for="item in asks" class="orderAsk" v-bind:key="item[0]">
-                    <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%', 'transition': '0.3s'}">
-                      ${item[0]}
-                    </span>
-                        <span class="right">
-                      ${item[1] | format}
-                    </span>
-                  </div>
-                </transition-group>
-
-                <transition-group name="orderInList" tag="div">
-                  <div v-for="item in bids" class="orderBids" v-bind:key="item[0]">
-                   <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%', 'transition': '0.3s'}">
+                <div v-for="item in asks" class="orderAsk" v-bind:key="item[0]">
+                  <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%', 'transition': '0.3s'}">
                     ${item[0]}
                   </span>
-                    <span class="right">
+                      <span class="right">
                     ${item[1] | format}
                   </span>
-                  </div>
-                </transition-group>
+                </div>
+
+                <h5 class="centerOrderBookPrice">${tweenedPrice | format} USD</h5>
+
+                <div v-for="item in bids" class="orderBids" v-bind:key="item[0]">
+                 <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%', 'transition': '0.3s'}">
+                  ${item[0]}
+                </span>
+                  <span class="right">
+                  ${item[1] | format}
+                </span>
+                </div>
 
               </div>
 

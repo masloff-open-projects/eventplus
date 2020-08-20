@@ -384,10 +384,17 @@ redis.on("connect", event => {
     transport.indicators.init();
     crossover.bigData.init();
 
+    bridge.vm.on('error', event => {
+        logger.log({
+            sender: `VIRTUAL MACHINE`,
+            message: event,
+            level: 'error'
+        });
+    })
+
     bridge.vm.use ('private', 'keystore', yaml('keystore.yaml'));
     bridge.vm.use ('private', 'environment', vm);
     bridge.vm.use ('private', 'fs', fs);
-
     bridge.vm.use ('public', 'driver', driver);
 
     bridge.vm.init();

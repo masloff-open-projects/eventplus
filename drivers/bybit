@@ -4,9 +4,11 @@
  * Established in March 2018, Bybit is one of the fastest growing cryptocurrency derivatives exchanges,
  * with more than a million registered users. Built on customer-centric values, we endeavor to provide a professional,
  * smart, intuitive and innovative trading experience to better serve our customers in a timely manner.
- * We are committed to creating a fair, transparent and efficient trading environment, and offer 24/7 multi-language support as part of our service.
+ * We are committed to creating a fair, transparent and efficient trading environment, and offer 24/7 multi-language
+ * support as part of our service.
  *
- * Products currently offered on the Bybit platform include BTC/USD, ETH/USD, XRP/USD, EOS/USD and BTC/USDT perpetual contracts.
+ * Products currently offered on the Bybit platform include BTC/USD, ETH/USD, XRP/USD, EOS/USD and BTC/USDT perpetual
+ * contracts.
  *
  * @type {essence}
  */
@@ -101,7 +103,8 @@ module.exports = class extends prototype {
                                                             volume24h: data.data.volume_24h,
                                                             openInterest: data.data.open_interest,
                                                             openValue: data.data.open_value_e8 / 100000000,
-                                                            fundingRate: data.data.funding_rate_e6 / 1000000
+                                                            fundingRate: data.data.funding_rate_e6 / 1000000,
+                                                            lastPrice: data.data.last_price_e4 / 10000
                                                         };
 
                                                         this.call('getInstrument', bufferInstrument);

@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+
+var __traps__ = [];
+
+class sync {
+
+    constructor () {
+        this.data = {};
+    }
+
+    put (index = 'default', data = null) {
+        this.data[index] = data;
+    }
+
+    get (index = 'default') {
+        return this.data[index];
+    }
+
+}
+
+class trap extends sync {
+
+    constructor(object = {}) {
+
+        super ();
+
+        for ( const [name, prop] of Object.entries(object) ) {
+            if (name && (!(name in this))) {
+                this[name] = prop;
+            }
+        }
+
+        __traps__.push(this);
+
+    }
+}
+

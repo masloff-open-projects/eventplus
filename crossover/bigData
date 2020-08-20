@@ -136,6 +136,11 @@ module.exports = class extends prototype {
 
                                     this.essence['transport']['indicators'].on('*', (event, action) => {
 
+                                        vm.call(action, {
+                                            sender: this.essence['transport']['indicators'],
+                                            event: event
+                                        });
+
                                         if (!(action in ['init'])) {
                                             if ('exchange' in event) {
                                                 io.sendAll ( JSON.stringify({
@@ -146,6 +151,7 @@ module.exports = class extends prototype {
                                                 }));
                                             }
                                         }
+
                                     });
 
                                 }
@@ -153,13 +159,16 @@ module.exports = class extends prototype {
                             }
 
                             driver.on('*', (event, action) => {
-                                vm.call(action, event)
+                                vm.call(action, {
+                                    sender: driver,
+                                    event: event
+                                })
                             });
 
                         }
 
-                        vm.on ('context', event => {
-                            console.log(event)
+                        vm.on ('execute', event => {
+                            console.log(event.__traps__)
                         });
 
                         // Setup RestAPI

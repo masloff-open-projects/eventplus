@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * Virtual machine - is a software and/or hardware system emulating hardware of some platform (target - target or guest platform)
- * and executing programs for target platform on host platform (host - host, host platform) or virtualizing some
- * platform and creating on
- * it environments isolating from each other programs;
- * also specification of some computing environment (for example: "virtual machine of programming language NodeJS").
+ * Virtual machine - is a software and/or hardware system emulating hardware of some platform (target - target or guest
+ * platform) and executing programs for target platform on host platform (host - host, host platform) or virtualizing
+ * some platform and creating on it environments isolating from each other programs; also specification of some
+ * computing environment (for example: "virtual machine of programming language NodeJS").
  *
  * The virtual machine executes
  * some machine independent code.
@@ -38,11 +37,13 @@ module.exports = class extends prototype{
                 var context = this.essence['public'];
                 var environment = this.essence['private']['environment'];
                 var bin = this.essence['private']['fs'].readFileSync('./virtual/bin', 'utf8');
+                var sync = this.essence['private']['fs'].readFileSync('./virtual/sync', 'utf8');
                 var execute = this.essence['private']['fs'].readFileSync('./virtual/execute', 'utf8');
 
                 new Promise((resolve, reject) => {
 
                     environment.createContext(context);
+                    environment.runInContext(sync, context);
                     environment.runInContext(bin, context);
 
                 }).catch((event) => {
@@ -53,15 +54,53 @@ module.exports = class extends prototype{
                     if (!(['init', 'error', 'context', 'execute'].includes(action))) {
                         new Promise((resolve, reject) => {
 
+                            context.__prop__ = event.event;
+                            context.__sender__ = event.sender;
+                            context.__action__ = action;
+
                             environment.runInContext(execute.replaceObject({
-                                name: action,
-                                data: JSON.stringify(event)
+
                             }), context);
 
                             this.call('context', context)
 
+                            for ( let i = 0; i < context.__traps__.length; i ++ ) {
+
+                                let trap = context.__traps__[i];
+
+                                if ('filter' in trap) {
+                                    if (trap.filter(event.sender, action, event.event) === true) {
+                                        trap.put(action, event.event);
+                                        if ('step' in trap) {
+                                            trap.step();
+                                        }
+                                        if ('watch' in trap && action in trap.watch) {
+                                            if (typeof trap.watch[action] === "function") {
+                                                trap.watch[action](event.event);
+                                            }
+                                        }
+                                    } else {
+                                        trap.put(action, event.event);
+                                        if ('step' in trap) {
+                                            trap.step();
+                                        }
+                                        if ('watch' in trap && action in trap.watch) {
+                                            if (typeof trap.watch[action] === "function") {
+                                                trap.watch[action](event.event);
+                                            }
+                                        }
+                                    }
+                                }
+
+
+                            }
+
+                            context.__sender__ = null;
+                            context.__prop__ = null;
+                            context.__action__ = null;
+
                         }).catch((event) => {
-                            this.call('error', event)
+                            this.call('error', String(event))
                         });
 
                         this.call('execute', context)
