@@ -113,3 +113,15 @@ package-lock.json
 # Configs
 keypair.yaml
 keystore.yaml
+server.yaml
+exchange.yaml
+
+# Certs
+.cert/
+cert/
+https/
+.https/
+.http/
+http/
+.keys/
+keys/

@@ -10,16 +10,22 @@ module.exports = function (file) {
 
         return yaml.safeLoad(fs.readFileSync(file, 'utf8'));
 
-    } else if ( fs.existsSync(path.join(__dirname, '../models/yamls/', path.basename(file))) )  {
+    } else if ( fs.existsSync(path.join(__dirname, '../models/', path.basename(`${file}.example`))) )  {
 
-        const model_path = path.join(__dirname, '../models/yamls/', path.basename(file));
+        const model_path = path.join(__dirname, '../models/', path.basename(`${file}.example`));
         const model = yaml.safeLoad(fs.readFileSync(model_path, 'utf8'));
 
         const object = yaml.dump(model, {
-            flowLevel: 3
+            flowLevel: 3,
+            sortKeys: true
         });
 
-        fs.writeFileSync(file, String(object), { mode: 0o755 });
+        fs.writeFileSync(file, [
+            "# This file was created based on the model.",
+            "# If you already had a customized configuration file and it was overwritten, ",
+            "# check the synchronization with GitHub, something might be deleting your file",
+            "",
+            String(object)].join("\n"), { mode: 0o755 });
 
         return model;
 

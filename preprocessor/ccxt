@@ -40,7 +40,7 @@ module.exports = class extends prototype {
                                 });
 
                                 // Testnet
-                                if ('testnet' in keystore[exchange]) {
+                                if (('testnet' in keystore[exchange]) && (keystore[exchange].testnet == true)) {
                                     if (typeof object.urls['test'] != "undefined") {
                                         object.urls.api = object.urls.test;
                                     } else {

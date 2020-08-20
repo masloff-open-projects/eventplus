@@ -9,7 +9,7 @@ const serverYaml = yaml('./server.yaml');
 const mysql = require('./bin/sql')();
 const ccxt = require ('ccxt');
 const fs = require ('fs');
-const www = require('./bin/www') (mysql, serverYaml.http || {}, serverYaml.https || {});
+const www = require('./bin/www') (mysql, serverYaml.http || {}, serverYaml.https || {}, logger);
 const vm = require('./bin/virtual') ();
 const io = require('./bin/socket')(www.server, serverYaml.io || false);
 const redis = require('./bin/redis')(serverYaml.redis || {});
@@ -73,7 +73,6 @@ mysql.connect(err => {
     });
 
 });
-
 
 /**
  * Installation of Redis event handler

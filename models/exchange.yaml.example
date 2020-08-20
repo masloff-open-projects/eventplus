@@ -1,0 +1,37 @@
+indicators:
+
+  WMA:
+    period:
+
+  EMA:
+    period:
+
+  SMA:
+    period:
+
+  BB:
+    period:
+
+  MACD:
+    fastPeriod:
+    slowPeriod:
+    signalPeriod:
+    SimpleMAOscillator:
+    SimpleMASignal:
+
+  MVRVZScr:
+    period:
+    pass:
+
+  Stochastic:
+    period:
+    signalPeriod:
+
+exchange:
+  period:
+  offset:
+  count:
+  limit:
+
+ordersBook:
+  depth:

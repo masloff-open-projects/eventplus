@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-module.exports = function (mysql, optionsHttp, optionsHttps) {
+module.exports = function (mysql, optionsHttp, optionsHttps, logger) {
 
   /**
    * Module dependencies.
@@ -13,10 +13,16 @@ module.exports = function (mysql, optionsHttp, optionsHttps) {
   const https = require('https');
   const fs = require('fs');
 
-  if (('key' in optionsHttps && optionsHttps.key) && ('crt' in optionsHttps && optionsHttps.crt)) {
+  const privateKey  = ('key' in optionsHttps && optionsHttps.key) ? fs.readFileSync(optionsHttps.key, 'utf8') : undefined;
+  const certificate = ('crt' in optionsHttps && optionsHttps.crt) ? fs.readFileSync(optionsHttps.crt, 'utf8') : undefined;
 
-    const privateKey  = fs.readFileSync(optionsHttps.key, 'utf8');
-    const certificate = fs.readFileSync(optionsHttps.crt, 'utf8');
+  if (certificate && privateKey) {
+
+    logger.log ({
+      sender: 'HTTP/HTTPS SERVER',
+      message: `Created HTTPS server based on certificates ${optionsHttps.key} and ${optionsHttps.cert}`,
+      level: 'info'
+    });
 
   }
 
@@ -25,7 +31,7 @@ module.exports = function (mysql, optionsHttp, optionsHttps) {
    */
 
   var httpServer = http.createServer(app);
-  var httpsServer = typeof privateKey !== "undefined" ? https.createServer({key: privateKey, cert: certificate}, app) : false;
+  var httpsServer = (certificate && privateKey) ? https.createServer({key: privateKey, cert: certificate}, app) : false;
 
   /**
    * Normalize a port into a number, string, or false.
@@ -89,6 +95,7 @@ module.exports = function (mysql, optionsHttp, optionsHttps) {
     httpsServer.listen(normalizePort(optionsHttps.port || '3006'));
   }
 
+  // Return
   return {
     http: httpServer,
     https: httpsServer,

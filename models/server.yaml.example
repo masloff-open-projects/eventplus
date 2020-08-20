@@ -1,19 +1,15 @@
-# Configure HTTP server
 http:
   host: 127.0.0.1
   port: 9872
 
-# Configure HTTPS server
 https:
   host: 127.0.0.1
   port: 9873
   key:
   crt:
 
-# Configure redis
 redis:
   host: 127.0.0.1
   port: 6379
 
-# Configure IO (for client)
 io: ~
