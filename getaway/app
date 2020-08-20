@@ -51,7 +51,7 @@ module.exports = function (mysql) {
     app.set('view engine', 'twig');
     app.set('view cache', false);
     app.set('cache', false);
-    app.set("twig options", { strict_variables: false });
+    app.set('twig options', { strict_variables: false });
 
     // app use
     app.use(logger('dev'));
@@ -69,7 +69,7 @@ module.exports = function (mysql) {
         saveUninitialized: false,
         store: new RedisStore({
             host: 'localhost',
-            port: 6397,
+            port: 6379,
             client: client
         })
     }));
@@ -115,6 +115,7 @@ module.exports = function (mysql) {
 
         // render the error page
         res.status(err.status || 500);
+        console.log(err);
         res.render('error');
     });
 

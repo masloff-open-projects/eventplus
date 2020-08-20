@@ -429,9 +429,9 @@ $(document).ready(function(event=null) {
         }
     })
 
-    const mvrvzscopeChartOfIndicator = new Vue({
+    const mvrvzscrChartOfIndicator = new Vue({
         delimiters: ['${', '}'],
-        el: '#vue-chart-indicator-mvrvzscope',
+        el: '#vue-chart-indicator-mvrvzscr',
         data: {
             chart: false,
             lines: {
@@ -440,7 +440,7 @@ $(document).ready(function(event=null) {
         },
         mounted: function () {
 
-            this.chart = LightweightCharts.createChart(indicators_chart_mvrvzscope, {
+            this.chart = LightweightCharts.createChart(indicators_chart_mvrvzscr, {
                 height: 120,
                 crosshair: {
                     vertLine: {
@@ -864,8 +864,8 @@ $(document).ready(function(event=null) {
                         macdChartOfIndicator.lines.MACDSignal.setData(object.chart.signal)
                         break;
 
-                    case 'MVRVZSCOPE':
-                        mvrvzscopeChartOfIndicator.lines.ZScope.setData(object.chart)
+                    case 'MVRVZScr':
+                        mvrvzscrChartOfIndicator.lines.ZScope.setData(object.chart)
                         break;
 
                     case 'STOCHASTIC':

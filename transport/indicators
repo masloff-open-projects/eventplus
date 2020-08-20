@@ -152,10 +152,10 @@ module.exports = class extends prototype {
 
             },
 
-            // MVRVZSCOPE
+            // MVRVZScr
             function (chart, SMA, RVI, BB, MACD, callback) {
 
-                processor.MVRVZScope(chart.close).then(function (indicator) {
+                processor.MVRVZScr(chart.close).then(function (indicator) {
 
                     var chartData = [];
 
@@ -174,7 +174,7 @@ module.exports = class extends prototype {
             },
 
             // VOLUME
-            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScr, callback) {
 
                 var chartData = [];
 
@@ -186,12 +186,12 @@ module.exports = class extends prototype {
                     });
                 }
 
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScr, chartData);
 
             },
 
             // WMA
-            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, callback) {
 
                 var chartData = [];
 
@@ -204,12 +204,12 @@ module.exports = class extends prototype {
                     })
                 }
 
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, chartData);
 
             },
 
             // EMA
-            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, WMA, callback) {
 
                 var chartData = [];
 
@@ -222,12 +222,12 @@ module.exports = class extends prototype {
                     })
                 }
 
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, WMA, chartData);
 
             },
 
             // OBV
-            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, WMA, EMA, callback) {
 
                 var chartData = [];
                 const indicator = processor.OBV(chart.close, chart.volume);
@@ -239,12 +239,12 @@ module.exports = class extends prototype {
                     })
                 }
 
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, WMA, EMA, chartData);
 
             },
 
             // STOCHASTIC
-            function (chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, OBV, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, WMA, EMA, OBV, callback) {
 
                 var chartData = {
                     d: [],
@@ -267,11 +267,11 @@ module.exports = class extends prototype {
 
                 }
 
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, OBV, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, WMA, EMA, OBV, chartData);
 
             }
 
-        ], (err, chart, SMA, RVI, BB, MACD, MVRVZSCOPE, VOLUME, WMA, EMA, OBV, STOCHASTIC) => {
+        ], (err, chart, SMA, RVI, BB, MACD, MVRVZScr, VOLUME, WMA, EMA, OBV, STOCHASTIC) => {
 
             this.call('SMA', {
                 exchange: driver.meta.exchange,
@@ -303,9 +303,9 @@ module.exports = class extends prototype {
                 chart: MACD
             });
 
-            this.call('MVRVZSCOPE', {
+            this.call('MVRVZScr', {
                 exchange: driver.meta.exchange,
-                chart: MVRVZSCOPE
+                chart: MVRVZScr
             });
 
             this.call('VOLUME', {
