@@ -3,9 +3,10 @@ http:
   host: 127.0.0.1
   port: 9872
 
+# Configure HTTPS server
 https:
-  port: 9873
   host: 127.0.0.1
+  port: 9873
   key:
   cert:
 
