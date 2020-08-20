@@ -10,9 +10,9 @@ module.exports = function (file) {
 
         return yaml.safeLoad(fs.readFileSync(file, 'utf8'));
 
-    } else if ( fs.existsSync(path.join(__dirname, '../models/yaml/', path.basename(file))) )  {
+    } else if ( fs.existsSync(path.join(__dirname, '../models/yamls/', path.basename(file))) )  {
 
-        const model_path = path.join(__dirname, '../models/yaml/', path.basename(file));
+        const model_path = path.join(__dirname, '../models/yamls/', path.basename(file));
         const model = yaml.safeLoad(fs.readFileSync(model_path, 'utf8'));
 
         const object = yaml.dump(model, {
