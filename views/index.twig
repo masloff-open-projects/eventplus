@@ -159,7 +159,7 @@
             <div class="block" id="ordersBook">
               <div v-if="asks[0][0] != 0">
 
-                <div v-for="item in asks" class="orderAsk" v-bind:key="item[0]">
+                <div v-for="item in reversedAsks" class="orderAsk" v-bind:key="item[0]">
                   <span class="left" v-bind:style="{width: item[1]/1000 > 70 ? 70 : item[1]/1000 + '%', 'transition': '0.3s'}">
                     ${item[0]}
                   </span>

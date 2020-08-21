@@ -177,8 +177,13 @@ $(document).ready(function(event=null) {
             format: function (e) {
                 return numeral(parseFloat(e)).format('0,0.00');
             }
+        },
+        computed: {
+            reversedAsks: function () {
+                return this.asks.slice().reverse();
+            }
         }
-    })
+    });
 
     const feedOfCrypto = new Vue({
         delimiters: ['${', '}'],
