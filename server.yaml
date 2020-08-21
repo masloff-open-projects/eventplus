@@ -1,12 +1,12 @@
 # Configure HTTP server
 http:
   host: 127.0.0.1
-  port: 9873
+  port: 9874
 
 # Configure HTTPS server
 https:
   host: 127.0.0.1
-  port: 9874
+  port: 9875
   key:
   crt:
 

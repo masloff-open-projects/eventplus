@@ -33,8 +33,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.43/Tone.js" integrity="sha512-EykMJ8DUk41zHUpEBrlm8oWxXqmQXi5dKBvuaEiziqFMrcfGYsXz1KwBMA+ejy6noTfwVGwer1WSYrbNBrjT2w==" crossorigin="anonymous"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/trading-vue-js@0.6.1/dist/trading-vue.min.js" integrity="sha256-wKiFHm8EQ5WkwSU03XvSxtZvx8f58cU9/iS8aWiTwnM=" crossorigin="anonymous"></script>
-  <script src="https://raw.githubusercontent.com/tvjsx/tvjs-overlays/master/dist/tvjs-overlays.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/trading-vue-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tvjs-overlays@0.2.1/dist/tvjs-overlays.min.js" integrity="sha256-klz8agLR/udqcYl1l3F0LQNMgxp8+Q0z6fnOxAhqHwQ=" crossorigin="anonymous"></script>
 
   <script src="/javascripts/WebSocket.js"></script>
   <script src="/javascripts/parseParams.js"></script>
@@ -47,99 +47,7 @@
   <section class="content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 col-lg-2">
-          <div class="block-section">
-            <div class="header">
-              Crypto Pairs
-            </div>
-            <div class="block">
-              <div id="markets">
-                <div v-if="markets">
-                  <div v-for="pair in markets">
-                    <div class="pair-container">
-                      <b>
-                        <i v-bind:class="pair.info.base_currency | cryptofont"></i>
-                        <span>${pair.symbol}</span>
-                      </b>
-                      <span class="right">
-                      <span class="span-taker">${pair.taker}</span>
-                      <span class="span-maker">${pair.maker}</span>
-                    </span>
-                    </div>
-                  </div>
-                </div>
-                <div v-else class="no-content">
-                  <img src="/images/bitcoin.png" alt="">
-                  <h5>No currency pairs</h5>
-                  <small>There is no information about currency pairs on this exchange</small>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="block-section">
-            <div class="header">
-              Firmware
-            </div>
-            <div class="block" id="firmware">
-              <div v-if="items">
-
-              </div>
-              <div v-else class="no-content">
-                <img src="/images/pcb.png" alt="">
-                <h5>No activity.</h5>
-                <small>No signals from the virtual machine.</small>
-                <a href="/studio">Create</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-9 col-md-6">
-          <div class="block-section">
-            <div class="header">
-
-              <select id="toolbar-select-chart" @change="toggle($event)">
-                <option v-for="exchange in exchanges" v-bind:value="exchange.value">${exchange.pair} ${exchange.name}</option>
-              </select>
-
-              <span v-on:click="toggle" id="toolbar-sound-on-change-price" v-bind:style="{color: turn ? 'white' : 'gray'}">
-                <i class="fas fa-volume toolbar-icon-toggle"></i>
-              </span>
-
-              <div class="right">
-                <span id="instrumentData">
-                  <span class="price-info">
-                    Open interest:
-                    <span class="open-interest">${openInterest}$</span>
-                  </span>
-                   <span class="price-info">
-                    Volume:
-                    <span class="default-price">${volume24h}</span>
-                  </span>
-                  <span class="price-info">
-                    High:
-                    <span class="high-price">${maxPrice24h}$</span>
-                  </span>
-                  <span class="price-info">
-                    Low:
-                    <span class="low-price">${minPrice24h}$</span>
-                  </span>
-              </span>
-              </div>
-            </div>
-            <div class="block" id="chart">
-
-              <trading-vue :data="this.chart"
-                           :width="this.width"
-                           :height="this.height"
-                           :color-back="colors.colorBack"
-                           :color-grid="colors.colorGrid"
-                           :color-text="colors.colorText">
-              </trading-vue>
-
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-3 col-lg-2">
+        <div class="col-sm-12 col-md-4 col-lg-2">
           <div class="block-section">
             <div class="header">
               Capital
@@ -193,7 +101,57 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-md-12 col-lg-2">
+        <div class="col-sm-12 col-md-4 col-lg-8">
+          <div class="block-section">
+            <div class="header">
+
+              <select id="toolbar-select-chart" @change="toggle($event)">
+                <option v-for="exchange in exchanges" v-bind:value="exchange.value">${exchange.pair} ${exchange.name}</option>
+              </select>
+
+              <span v-on:click="toggle" id="toolbar-sound-on-change-price" v-bind:style="{color: turn ? 'white' : 'gray'}">
+                <i class="fas fa-volume toolbar-icon-toggle"></i>
+              </span>
+
+              <div class="right">
+                <span id="instrumentData">
+                  <span class="price-info">
+                    Open interest:
+                    <span class="open-interest">${openInterest}$</span>
+                  </span>
+                   <span class="price-info">
+                    Volume:
+                    <span class="default-price">${volume24h}</span>
+                  </span>
+                  <span class="price-info">
+                    High:
+                    <span class="high-price">${maxPrice24h}$</span>
+                  </span>
+                  <span class="price-info">
+                    Low:
+                    <span class="low-price">${minPrice24h}$</span>
+                  </span>
+              </span>
+              </div>
+            </div>
+            <div class="block" id="chart">
+
+              <trading-vue :data="this.chart"
+                           title-txt="BTCUSD"
+                           :toolbar="this.toolbar"
+                           :width="this.width"
+                           :height="this.height"
+                           :overlays="this.overlays"
+                           :chart-config="this.config"
+                           :color-back="this.colors.colorBack"
+                           :color-grid="this.colors.colorGrid"
+                           :color-text="this.colors.colorText">
+              </trading-vue>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-2">
           <div class="block-section">
             <div class="header">
               Exchange OrderBook
@@ -233,6 +191,56 @@
           </div>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-sm-3 col-lg-2">
+          <div class="block-section">
+            <div class="header">
+              Crypto Pairs
+            </div>
+            <div class="block">
+              <div id="markets">
+                <div v-if="markets">
+                  <div v-for="pair in markets">
+                    <div class="pair-container">
+                      <b>
+                        <i v-bind:class="pair.info.base_currency | cryptofont"></i>
+                        <span>${pair.symbol}</span>
+                      </b>
+                      <span class="right">
+                      <span class="span-taker">${pair.taker}</span>
+                      <span class="span-maker">${pair.maker}</span>
+                    </span>
+                    </div>
+                  </div>
+                </div>
+                <div v-else class="no-content">
+                  <img src="/images/bitcoin.png" alt="">
+                  <h5>No currency pairs</h5>
+                  <small>There is no information about currency pairs on this exchange</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="block-section">
+            <div class="header">
+              Firmware
+            </div>
+            <div class="block" id="firmware">
+              <div v-if="items">
+
+              </div>
+              <div v-else class="no-content">
+                <img src="/images/pcb.png" alt="">
+                <h5>No activity.</h5>
+                <small>No signals from the virtual machine.</small>
+                <a href="/studio">Create</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 

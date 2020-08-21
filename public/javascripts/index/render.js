@@ -4,15 +4,33 @@ const barn = new Barn(localStorage);
 const notyf = new Notyf();
 const websocket = new ReconnectingWebSocket(`${location.protocol == 'https:' ? "wss:" : "ws:"}//${location.host}`, null, {debug: false, reconnectInterval: 3000});
 
-const synth = new Tone.Synth({
+const synthA = new Tone.FMSynth({
     oscillator : {
         type: 'sine'
     }
 }).toDestination();
+const synthB = new Tone.AMSynth({
+    oscillator : {
+        type: 'sine'
+    }
+}).toDestination();
+const synthC = new Tone.PolySynth({
+    oscillator : {
+        type: 'sine'
+    }
+}).toDestination();
+const synthD = new Tone.PolySynth({
+    oscillator : {
+        type: 'sine'
+    }
+}).toDestination();
+const osc = new Tone.Oscillator().toDestination();
 
 $(document).ready(function(event=null) {
 
     NProgress.start()
+
+    const Overlay = TradingVueJs.Overlay;
 
     const chart = new Vue({
         el: '#chart',
@@ -25,7 +43,7 @@ $(document).ready(function(event=null) {
                 onchart: [
                     {
                         "name": "SMA",
-                        "type": "SMA",
+                        "type": "Spline",
                         "data": [],
                         "settings": {
                             "color": "#7599b1"
@@ -33,25 +51,57 @@ $(document).ready(function(event=null) {
                     },
                     {
                         "name": "EMA",
-                        "type": "EMA",
+                        "type": "Spline",
                         "data": [],
                         "settings": {
                             "color": "#f2b620"
+                        }
+                    },
+                    {
+                        "name": "WMA",
+                        "type": "Spline",
+                        "data": [],
+                        "settings": {
+                            "color": "#ce1818"
+                        }
+                    },
+                    {
+                        "name": "BB",
+                        "type": "Channel",
+                        "data": [],
+                        "settings": {
+                            "color": "#18ce4c"
                         }
                     }
                 ],
                 offchart: [
                     {
-                        "name": "SMA",
-                        "type": "SMA",
+                        "name": "STOCHASTIC",
+                        "type": "Splines",
                         "data": [],
                         "settings": {
                             "color": "#7599b1"
                         }
                     },
                     {
-                        "name": "EMA",
-                        "type": "EMA",
+                        "name": "OBV",
+                        "type": "Splines",
+                        "data": [],
+                        "settings": {
+                            "color": "#f2b620"
+                        }
+                    },
+                    {
+                        "name": "MACD",
+                        "type": "Splines",
+                        "data": [],
+                        "settings": {
+                            "color": "#f2b620"
+                        }
+                    },
+                    {
+                        "name": "RVI",
+                        "type": "Splines",
                         "data": [],
                         "settings": {
                             "color": "#f2b620"
@@ -60,7 +110,7 @@ $(document).ready(function(event=null) {
                 ],
             },
             width: $("#chart").width(),
-            height: 700,
+            height: $("#chart").height(),
             colors: {
                 colorBack: '#131313',
                 colorGrid: '#252423',
@@ -70,23 +120,22 @@ $(document).ready(function(event=null) {
             titleTxt: 'Welcome',
             font: 'Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans,' +
                 ' Droid Sans, Helvetica Neue, sans-serif',
-            overlays: function () { return [] },
-            methods: {
-                onResize() {
-                    this.width = $("#chart").width()
-                    this.height = 500
-                }
+            config: {
+                TB_ICON_BRI: 1.9
             },
-            mounted() {
-                window.addEventListener('resize', this.onResize)
-                setTimeout(() => {
-                    // Async data setup
-                    this.$set(this, 'chart', Data)
-                }, 0)
-            },
-            beforeDestroy() {
-                window.removeEventListener('resize', this.onResize)
-            },
+            overlays: []
+        },
+        methods: {
+            onResize() {
+                this.width = $("#chart").width()
+                this.height = 500
+            }
+        },
+        mounted() {
+            window.addEventListener('resize', this.onResize);
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.onResize)
         }
     });
 
@@ -191,7 +240,11 @@ $(document).ready(function(event=null) {
                         Tone.context.resume();
                     }
 
-                    synth.triggerAttackRelease("C6", "8n", Tone.now());
+                    synthA.triggerAttackRelease("C6", "8n", Tone.now());
+                    synthB.triggerAttackRelease("C6", "8n", Tone.now());
+                    synthC.triggerAttackRelease("C6", "8n", Tone.now());
+                    synthD.triggerAttackRelease("C6", "8n", Tone.now());
+
                 }
             }
         },
@@ -309,76 +362,32 @@ $(document).ready(function(event=null) {
                         chart.chart.onchart[1].data = (object.chart)
                         break;
 
-                    //
-                    // case 'WMA':
-                    //     mainChartOfPrice.lines.WMA.setData(object.chart)
-                    //     break;
-                    //
-                    //
-                    // case 'BARS':
-                    //
-                    //     let data = barn.get('settings_sound-on-change-price');
-                    //     if (!data || data == 'true') {
-                    //
-                    //         if (Tone.context.state !== 'running') {
-                    //             Tone.context.resume();
-                    //         } else {
-                    //
-                    //             let bar = object.chart.pop();
-                    //
-                    //             if (mainChartOfPrice.lastClose != bar.close) {
-                    //
-                    //                 if (bar.close > mainChartOfPrice.lastClose) {
-                    //                     synth.triggerAttackRelease("C6", "8n", Tone.now());
-                    //                 } else {
-                    //                     synth.triggerAttackRelease("A3", "8n", Tone.now());
-                    //                 }
-                    //
-                    //                 mainChartOfPrice.lastClose = bar.close;
-                    //             }
-                    //
-                    //         }
-                    //     }
-                    //
-                    //     mainChartOfPrice.lines.BARS.setData(object.chart);
-                    //
-                    //     break;
-                    //
-                    // case 'VOLUME':
-                    //     mainChartOfPrice.lines.VOLUME.setData(object.chart)
-                    //     break;
-                    //
-                    // case 'OBV':
-                    //     obvChartOfIndicator.lines.OBV.setData(object.chart)
-                    //     break;
-                    //
-                    // case 'BB':
-                    //     mainChartOfPrice.lines.BBLower.setData(object.chart.lower)
-                    //     mainChartOfPrice.lines.BBMiddle.setData(object.chart.middle)
-                    //     mainChartOfPrice.lines.BBUpper.setData(object.chart.upper)
-                    //     break;
-                    //
-                    // case 'RVI':
-                    //     rviChartOfIndicator.lines.RVI.setData(object.chart)
-                    //     break;
-                    //
-                    // case 'MACD':
-                    //     macdChartOfIndicator.lines.MACD.setData(object.chart.macd)
-                    //     macdChartOfIndicator.lines.MACDHistogram.setData(object.chart.histogram)
-                    //     macdChartOfIndicator.lines.MACDSignal.setData(object.chart.signal)
-                    //     break;
-                    //
-                    // case 'MVRVZSCOPE':
-                    //     mvrvzscrChartOfIndicator.lines.ZScope.setData(object.chart)
-                    //     break;
-                    //
-                    // case 'STOCHASTIC':
-                    //     stochasticChartOfIndicator.lines.StochasticD.setData(object.chart.d)
-                    //     stochasticChartOfIndicator.lines.StochasticK.setData(object.chart.k)
-                    //     break;
-                    //
-                    // default:
-                    //     break
+                    case 'BOLL':
+                        chart.chart.onchart[3].data = (object.chart)
+                        break;
+
+                    case 'WMA':
+                        chart.chart.onchart[2].data = (object.chart)
+                        break;
+
+                    case 'STOCHASTIC':
+                        chart.chart.offchart[0].data = (object.chart)
+                        break;
+
+                    case 'OBV':
+                        chart.chart.offchart[1].data = (object.chart)
+                        break;
+
+                    case 'MACD':
+                        chart.chart.offchart[2].data = (object.chart)
+                        break;
+
+                    case 'RVI':
+                        chart.chart.offchart[3].data = (object.chart)
+                        break;
+
+                    default:
+                        break;
 
                 }
 
@@ -403,6 +412,61 @@ $(document).ready(function(event=null) {
             if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
                 for (const index in object.instrument) {
                     instrumentOfCrypto[index] = numeral(object.instrument[index]).format('0a');
+                }
+
+                let data = barn.get('settings_sound-on-change-price');
+                if (!data || data == 'true') {
+
+                    if (Tone.context.state !== 'running') {
+                        Tone.context.resume();
+                    } else {
+
+                        let newPrice = ('lastPrice' in object.instrument ? object.instrument.lastPrice : 0);
+
+                        if (orderBookOfCrypto.lastPrice != newPrice) {
+
+                            // High top
+                            if ((newPrice - orderBookOfCrypto.lastPrice) > 0) {
+                                synthC.triggerAttackRelease('E5', "8n", Tone.now())
+                            }
+
+                            // High strong
+                            else if ((newPrice - orderBookOfCrypto.lastPrice) > 2.5) {
+                                synthC.triggerAttackRelease('C5', "8n", Tone.now())
+                            }
+
+                            // Super high
+                            else if ((newPrice - orderBookOfCrypto.lastPrice) > 3.5) {
+
+                                osc.frequency.value = "C2";
+                                osc.frequency.rampTo("C3", 2);
+                                osc.start().stop("+3");
+
+                            }
+
+
+                            // Low
+                            else if ((newPrice - orderBookOfCrypto.lastPrice) < 0) {
+                                synthD.triggerAttackRelease('F4', "8n", Tone.now())
+                            }
+
+                            // Low strong
+                            else if ((newPrice - orderBookOfCrypto.lastPrice) < 2.5) {
+                                synthD.triggerAttackRelease('D4', "8n", Tone.now())
+                            }
+
+                            // Super low
+                            else if ((newPrice - orderBookOfCrypto.lastPrice) < 3.5) {
+
+                                osc.frequency.value = "C4";
+                                osc.frequency.rampTo("C3", 2);
+                                osc.start().stop("+3");
+
+                            }
+
+                        }
+
+                    }
                 }
 
                 orderBookOfCrypto.lastPrice = 'lastPrice' in object.instrument ? object.instrument.lastPrice : 0

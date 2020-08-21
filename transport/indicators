@@ -78,49 +78,34 @@ module.exports = class extends prototype {
                 const indicator = processor.RVI(chart.close, chart.open, chart.high, chart.low);
 
                 for (const key in indicator) {
-                    chartData.push({
-                        value: indicator[key],
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
-                    })
+                    if (typeof chart.time[key] == "number") {
+                        chartData.push([
+                            chart.time[ parseInt(key) + ( chart.time.length - indicator.length ) ],
+                            indicator[key],
+                        ])
+                    }
                 }
 
-                callback(null, chart, SMA, chartData.sweepChart());
+                callback(null, chart, SMA, chartData);
 
             },
 
             // Bollinger Bands
             function (chart, SMA, RVI, callback) {
 
-                var chartData = {
-                    'lower': [],
-                    'middle': [],
-                    'upper': []
-                };
-
+                var chartData = [];
                 const indicator = processor.BB(chart.close);
 
                 for (const key in indicator) {
-
-                    chartData.lower.push({
-                        value: indicator[key].lower,
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
-                    });
-
-                    chartData.middle.push({
-                        value: indicator[key].middle,
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
-                    });
-
-                    chartData.upper.push({
-                        value: indicator[key].upper,
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
-                    });
-
+                    if (typeof chart.time[key] == "number") {
+                        chartData.push([
+                            chart.time[ parseInt(key) + ( chart.time.length - indicator.length ) ],
+                            indicator[key].upper,
+                            indicator[key].middle,
+                            indicator[key].lower
+                        ]);
+                    }
                 }
-
-                chartData.lower = chartData.lower.sweepChart()
-                chartData.middle = chartData.middle.sweepChart()
-                chartData.upper = chartData.upper.sweepChart()
 
                 callback(null, chart, SMA, RVI, chartData);
 
@@ -129,36 +114,20 @@ module.exports = class extends prototype {
             // MACD
             function (chart, SMA, RVI, BB, callback) {
 
-                var chartData = {
-                    'macd': [],
-                    'signal': [],
-                    'histogram': []
-                };
+                var chartData = [];
 
                 const indicator = processor.MACD(chart.close);
 
                 for (const key in indicator.outMACD) {
-
-                    chartData.macd.push({
-                        value: indicator.outMACD[key],
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.outMACD.length)]
-                    });
-
-                    chartData.signal.push({
-                        value: indicator.outMACDSignal[key],
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.outMACD.length)]
-                    });
-
-                    chartData.histogram.push({
-                        value: indicator.outMACDHist[key],
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.outMACD.length)]
-                    });
-
+                    if (typeof chart.time[key] == "number") {
+                        chartData.push([
+                            chart.time[ parseInt(key) + ( chart.time.length - indicator.outMACD.length ) ],
+                            indicator.outMACD[key],
+                            indicator.outMACDSignal[key],
+                            indicator.outMACDHist[key]
+                        ]);
+                    }
                 }
-
-                chartData.histogram = chartData.histogram.sweepChart()
-                chartData.macd = chartData.macd.sweepChart()
-                chartData.signal = chartData.signal.sweepChart()
 
                 callback(null, chart, SMA, RVI, BB, chartData);
 
@@ -185,43 +154,27 @@ module.exports = class extends prototype {
 
             },
 
-            // VOLUME
+            // WMA
             function (chart, SMA, RVI, BB, MACD, MVRVZScope, callback) {
 
                 var chartData = [];
+                const indicator = processor.WMA(chart.close);
 
-                for (const key in chart.volume) {
-                    chartData.push({
-                        value: chart.volume[key],
-                        time: chart.time[key],
-                        color: chart.volume[key] > 0 ? 'rgba(66, 91, 41, 0.4)' : 'rgba(97, 38, 38, 0.4)'
-                    });
+                for (const key in indicator) {
+                    if (typeof chart.time[key] == "number") {
+                        chartData.push([
+                            chart.time[ parseInt(key) + ( chart.time.length - indicator.length ) ],
+                            indicator[key],
+                        ])
+                    }
                 }
 
                 callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, chartData);
 
             },
 
-            // WMA
-            function (chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, callback) {
-
-                var chartData = [];
-
-                const indicator = processor.WMA(chart.close);
-
-                for (const key in indicator) {
-                    chartData.push({
-                        value: indicator[key],
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
-                    })
-                }
-
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, chartData.sweepChart());
-
-            },
-
             // EMA
-            function (chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, callback) {
 
                 var chartData = [];
 
@@ -236,60 +189,51 @@ module.exports = class extends prototype {
                     }
                 }
 
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, chartData);
 
             },
 
             // OBV
-            function (chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, EMA, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, EMA, callback) {
 
                 var chartData = [];
                 const indicator = processor.OBV(chart.close, chart.volume);
 
                 for (const key in indicator) {
-                    chartData.push({
-                        value: indicator[key],
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
-                    })
+                    if (typeof chart.time[key] == "number") {
+                        chartData.push([
+                            chart.time[ parseInt(key) + ( chart.time.length - indicator.length ) ],
+                            indicator[key],
+                        ])
+                    }
                 }
 
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, EMA, chartData.sweepChart());
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, EMA, chartData);
 
             },
 
             // STOCHASTIC
-            function (chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, EMA, OBV, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, EMA, OBV, callback) {
 
-                var chartData = {
-                    d: [],
-                    k: []
-                };
-
+                var chartData = [];
                 const indicator = processor.STOCHASTIC(chart.close, chart.high, chart.low);
 
                 for (const key in indicator) {
-
-                    chartData.d.push({
-                        value: indicator[key].d,
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
-                    });
-
-                    chartData.k.push({
-                        value: indicator[key].k,
-                        time: chart.time[parseInt(key) + (chart.time.length - indicator.length)]
-                    });
-
+                    if (typeof chart.time[key] == "number") {
+                        chartData.push([
+                            chart.time[ parseInt(key) + ( chart.time.length - indicator.length ) ],
+                            indicator[key].k,
+                            indicator[key].d
+                        ]);
+                    }
                 }
 
-                chartData.d = chartData.d.sweepChart()
-                chartData.k = chartData.k.sweepChart()
-
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, EMA, OBV, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, EMA, OBV, chartData);
 
             },
 
             // TradingVUE
-            function (chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, EMA, OBV, STOCHASTIC, callback) {
+            function (chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, EMA, OBV, STOCHASTIC, callback) {
 
                 var chartData = [];
 
@@ -308,11 +252,11 @@ module.exports = class extends prototype {
 
                 }
 
-                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, EMA, OBV, STOCHASTIC, chartData);
+                callback(null, chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, EMA, OBV, STOCHASTIC, chartData);
 
             }
 
-        ], (err, chart, SMA, RVI, BB, MACD, MVRVZScope, VOLUME, WMA, EMA, OBV, STOCHASTIC, TRADINGVUE) => {
+        ], (err, chart, SMA, RVI, BB, MACD, MVRVZScope, WMA, EMA, OBV, STOCHASTIC, TRADINGVUE) => {
 
             this.call('TRADINGVUE', {
                 exchange: driver.meta.exchange,
@@ -339,7 +283,7 @@ module.exports = class extends prototype {
                 chart: RVI
             });
 
-            this.call('BB', {
+            this.call('BOLL', {
                 exchange: driver.meta.exchange,
                 chart: BB
             });
@@ -352,11 +296,6 @@ module.exports = class extends prototype {
             this.call('MVRVZSCOPE', {
                 exchange: driver.meta.exchange,
                 chart: MVRVZScope
-            });
-
-            this.call('VOLUME', {
-                exchange: driver.meta.exchange,
-                chart: VOLUME
             });
 
             this.call('OBV', {
