@@ -1,0 +1,408 @@
+#!/usr/bin/env node
+
+/**
+ * The files in the bin directory create the macro environment the program needs
+ * for further work with it from other code fragments.
+ * The bin files can be of two categories: single import and batch import.
+ * Single import returns only 1 customized module, while bin's poker files return the whole package from modules ready
+ * to work.
+ *
+ * The `pacman` module is responsible for importing and setting up the primary environment of the project.
+ * It imports all the necessary modules that you may need from anywhere in the project.
+ *
+ *
+ * @version 1.0.0
+ * @link https://www.npmjs.com/package/path
+ * @link https://www.npmjs.com/package/fs
+ * @link https://www.npmjs.com/package/js-yaml
+ * @link https://www.npmjs.com/package/winston
+ * @link https://www.npmjs.com/package/request
+ * @link https://www.npmjs.com/package/axios
+ * @link https://www.npmjs.com/package/redis
+ * @link https://www.npmjs.com/package/mysql
+ * @link https://www.npmjs.com/package/vm
+ * @link https://www.npmjs.com/package/ccxt
+ * @link https://www.npmjs.com/package/passport
+ * @link https://www.npmjs.com/package/express
+ * @link https://www.npmjs.com/package/session
+ * @link https://www.npmjs.com/package/connect-redis
+ * @link https://www.npmjs.com/package/http
+ * @link https://www.npmjs.com/package/https
+ * @link https://www.npmjs.com/package/ws
+ * @link https://www.npmjs.com/package/print-message
+ * @link https://www.npmjs.com/package/cache
+ */
+
+const path      = require('path');
+const fs        = require('fs');
+const yaml      = require('js-yaml');
+const winston   = require('winston');
+const request   = require("request");
+const axios     = require("axios");
+const redis     = require("redis");
+const mysql     = require('mysql');
+const vm        = require('vm');
+const ccxt      = require('ccxt');
+const passport  = require('passport');
+const express   = require("express");
+const session   = require('express-session');
+const rs        = require('connect-redis') (session)
+const http      = require('http');
+const https     = require('https');
+const ws        = require('ws');
+const pm        = require('print-message');
+const cache     = require("cache");
+const websocket = require('websocket');
+const cookie    = require('cookie-parser');
+const ddos      = require('ddos');
+const multer    = require('multer');
+const favicon   = require('serve-favicon')
+const rateLimit = require("express-rate-limit");
+const Strategy  = require('passport-local').Strategy;
+
+const string  = require(path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/modify/string')));
+const list    = require(path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/modify/list')));
+
+/**
+ * This is an exact copy of the NodeJS ’path’ module published to the NPM registry.
+ */
+
+path.root = file => {
+    return path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), file))
+}
+
+module.exports.path = path;
+
+/**
+ * YAML is a "friendly" data serialization format, conceptually similar to markup languages,
+ * but focused on the convenience of I/O of typical data structures of many programming languages.
+ *
+ * Function to read the YAML file. It checks if the file is found by the requested path,
+ * if the file is found, the function will read it and return the end object to the user.
+ * If the file is not found by the requested path, the function will search for the model of the file in the folder
+ * with models. If the model file is found, the function will return the contents of the model and create an exact copy
+ * of the model in the requested location. If no model is found, the function will return 'undefined'
+ *
+ * @param file
+ * @returns {undefined}
+ */
+
+yaml.read = file => {
+
+    const yaml_file  = path.normalize(file);
+    const yaml_model = path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/models/', path.basename(`${file}.example`)));
+
+    if (fs.existsSync(yaml_file)) {
+
+        return yaml.safeLoad(fs.readFileSync(file, 'utf8'));
+
+    } else if (fs.existsSync(yaml_model))  {
+
+        const model = yaml.safeLoad(fs.readFileSync(yaml_model, 'utf8'));
+
+        fs.writeFileSync(file, [
+            "# This file was created based on the model.",
+            "# If you already had a customized configuration file and it was overwritten, ",
+            "# check the synchronization with GitHub, something might be deleting your file",
+            "",
+            String(yaml.dump(model, {
+                flowLevel: 3,
+                sortKeys: true,
+                styles: {
+                    '!!null': 'canonical',
+                    '!!int': 'decimal',
+                    '!!bool': 'lowercase',
+                    '!!float': 'camelcase'
+                },
+            }))].join("\n"), { mode: 0o755 });
+
+        return model;
+
+    } else {
+
+        return undefined;
+
+    }
+
+}
+
+module.exports.yaml = yaml;
+
+
+/**
+ * Load a Pacman profile file.
+ * pacman.yaml - main configuration file.
+ * The settings for all the modules that request the user's settings are taken from it.
+ */
+
+const pacmanProfile = yaml.read(path.root('/pacman.yaml')) || {};
+
+
+/**
+ * We create a Winston logger. It is necessary to write logs to a file.
+ * Almost all logged events are routed through it, except for critical errors.
+ */
+
+module.exports.winston = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.label({
+            label: 'LOG'
+        }),
+        winston.format.timestamp(),
+        winston.format.printf((info) => {
+            return `${info.level.toUpperCase()} ${info.timestamp} [${info.sender}]: ${info.message} / ${JSON.stringify(info.data)}`;
+        })
+    ),
+    transports: [
+        new winston.transports.File({ filename: path.root('logger.log') }),
+    ],
+});
+
+
+/**
+ * This package name is not currently in use, but was formerly occupied by another package.
+ * To avoid malicious use, npm is hanging on to the package name, but loosely, and we'll probably give it to you if you want it.
+ */
+
+module.exports.fs = fs;
+
+
+/**
+ * Request is designed to be the simplest way possible to make http calls.
+ * It supports HTTPS and follows redirects by default.
+ */
+
+module.exports.request = request;
+
+
+/**
+ * Promise based HTTP client for the browser and node.js
+ */
+
+module.exports.axios = axios;
+
+
+/**
+ * Redis is a resident database management system of NoSQL class with open source code,
+ * working with data structures of "key - value" type. It is used both for databases and for implementation of caches,
+ * message brokers. It is focused on achieving maximum performance on atomic operations.
+ */
+
+module.exports.redis = redis.createClient(pacmanProfile.redis || {});
+
+
+/**
+ * MySQL - database management system
+ * MySQL is an open source relational database management system.
+ * Among the advantages of DBMS MySQL is easy to use, flexible,
+ * low cost of ownership (relative to the paid DBMS),as well as scalability and performance.
+ * MySQL allows you to store integer values with a sign and unsigned, lengths of 1, 2, 3, 4 and 8 bytes,
+ * works with string and text data of fixed and variable lengths, allows you to implement SQL commands SELECT, DELETE,
+ * INSERT, REPLACE and UPDATE, provides full support for operators and functions in the SELECT- and WHERE- parts of the
+ * queries, works with GROUP BY and ORDER BY, supports group functions COUNT(), AVG(), STD(), SUM(), MAX() and MIN(),
+ * allows you to use JOIN in queries, tel. including LEFT OUTER JOIN and RIGHT OUTER JOIN, supports replication,
+ * transactions, work with external keys and cascade changes based on them, and provides many other functionalities.
+ */
+
+module.exports.mysql = mysql.createConnection(pacmanProfile.mysql || {});
+
+
+/**
+ * Virtual machine - is a software and/or hardware system emulating hardware of some platform (target - target or guest
+ * platform) and executing programs for target platform on host platform (host - host, host platform) or virtualizing
+ * some platform and creating on it environments isolating from each other programs; also specification of some
+ * computing environment (for example: "virtual machine of programming language NodeJS").
+ *
+ * The virtual machine executes
+ * some machine independent code.
+ */
+
+module.exports.vm = vm;
+
+
+/**
+ * The CCXT library is used to connect and trade with cryptocurrency exchanges and payment processing services
+ * worldwide. It provides quick access to market data for storage, analysis, visualization, indicator development,
+ * algorithmic trading, strategy backtesting, bot programming, and related software engineering. It is intended to be
+ * used by coders, developers, technically-skilled traders, data-scientists and financial analysts for building trading
+ * algorithms.
+ *
+ * Current feature list:
+ * + support for many cryptocurrency exchanges — more coming soon
+ * + fully implemented public and private APIs
+ * + optional normalized data for cross-exchange analytics and arbitrage
+ * + an out of the box unified API that is extremely easy to integrate
+ * + works in Node 7.6+, Python 3, PHP 5.4+, and web browsers
+ */
+
+module.exports.ccxt = ccxt;
+
+
+/**
+ * The definition of "session", or "HTTP session", varies, particularly with regard to search engines.
+ * A session is usually defined as "a sequence of requests made by one end user while visiting a particular site.
+ */
+
+module.exports.session = session({
+    secret: pacmanProfile.session.secret || 'rM5qDil7mZNy8PfAKksW0IuGxwehOvgbSCLp3Y1oF4EXhp1ujcFxCILobHXJ3RO1',
+    resave: pacmanProfile.session.resave || false,
+    saveUninitialized: pacmanProfile.session.saveUninitialized || false,
+    store: new rs ({
+        host: pacmanProfile.redis.host || 'localhost',
+        port: pacmanProfile.redis.port || 6379,
+        client: module.exports.redis
+    })
+});
+
+
+/**
+ * Web Applications
+ *  Express is a minimal and flexible Node.js web application framework that provides a robust set of features for
+ *  web and mobile applications.
+ *
+ * APIs
+ *  With a myriad of HTTP utility methods and middleware at your disposal,
+ *  creating a robust API is quick and easy.
+ *
+ * Performance
+ *  Express provides a thin layer of fundamental web application features,
+ *  without obscuring Node.js features that you know and love.
+ */
+
+module.exports.express = express;
+module.exports.appExpress = module.exports.express ();
+
+module.exports.appExpress.set('views', pacmanProfile.express.views || path.root('/views'));
+module.exports.appExpress.set('view engine', pacmanProfile.express.engine || 'twig');
+module.exports.appExpress.set('view cache', pacmanProfile.express.cache || false);
+module.exports.appExpress.set('cache',  pacmanProfile.express.cache || false);
+module.exports.appExpress.set('twig options', { strict_variables: false });
+
+module.exports.appExpress.use(module.exports.session);
+module.exports.appExpress.use(module.exports.express.json());
+module.exports.appExpress.use(module.exports.express.urlencoded({extended: false}));
+module.exports.appExpress.use(cookie());
+module.exports.appExpress.use(module.exports.express.static(pacmanProfile.express.public || path.root('/public')));
+module.exports.appExpress.use(favicon(pacmanProfile.express.favicon || path.root('/public/images/favicon.ico')));
+module.exports.appExpress.use((new ddos({burst: 10, limit: 15})).express);
+module.exports.appExpress.use(multer().array());
+module.exports.appExpress.use(module.exports.express.json());
+module.exports.appExpress.use(passport.initialize());
+module.exports.appExpress.use(passport.session());
+module.exports.appExpress.use(rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 2500
+}));
+
+
+/**
+ * Passport's sole purpose is to authenticate requests,
+ * which it does through an extensible set of plugins known as strategies.
+ * Passport does not mount routes or assume any particular database schema,
+ * which maximizes flexibility and allows application-level decisions to be made by the developer.
+ * The API is simple: you provide Passport a request to authenticate,
+ * and Passport provides hooks for controlling what occurs when authentication succeeds or fails.
+ */
+
+passport.authenticationMiddleware = event => {
+    return function (req, res, next) {
+        if (req.isAuthenticated()) {
+            return next()
+        }
+        res.redirect('/login')
+    }
+}
+
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.use('login',  new Strategy ({passReqToCallback: true}, require('../passport/login') (module.exports.mysql)));
+passport.use('signup', new Strategy ({passReqToCallback: true}, require('../passport/signup') (module.exports.mysql)));
+
+module.exports.passport = passport;
+
+
+/**
+ * A web server is a server that receives HTTP requests from clients, usually web browsers,
+ * and gives them HTTP responses, usually along with an HTML page, image, file, media stream or other data.
+ */
+
+module.exports.createServer = app => {
+
+    const server = {
+        http: http.createServer(app),
+        https: https.createServer({
+            key: pacmanProfile.https.certificate,
+            cert: pacmanProfile.https.privateKey
+        }, app)
+    }
+
+    server.http.listen(pacmanProfile.http.port || 80);
+    server.https.listen(pacmanProfile.https.port || 433);
+
+    return server;
+
+};
+
+const server = {
+    http: http.createServer(module.exports.appExpress),
+    https: https.createServer({
+        key: pacmanProfile.https.certificate,
+        cert: pacmanProfile.https.privateKey
+    }, module.exports.appExpress)
+}
+
+server.http.listen(pacmanProfile.http.port || 80);
+server.https.listen(pacmanProfile.https.port || 433);
+
+module.exports.http = server.http;
+module.exports.https = server.https;
+
+
+/**
+ * Socket - the name of the software interface to ensure the exchange of data between processes.
+ * The processes of such exchange can be performed on one computer as well as on different computers connected by a
+ * network. Socket - abstract object representing an endpoint of connection.
+ */
+
+const io = new ws.Server(pacmanProfile.io || {
+    server: (pacmanProfile.https.certificate && pacmanProfile.https.privateKey) != null ? server.https : server.http
+});
+
+io.sendAll = (data=Object, wss=io) => {
+    for (const client of wss.clients) {
+        client.send(data);
+    }
+}
+
+module.exports.io = io;
+
+
+/**
+ * Node.js module for printing out beautiful messages in console.
+ */
+
+module.exports.print = pm;
+
+
+/**
+ * Cache - an intermediate buffer with fast access to
+ * it containing information that can be requested with the greatest probability
+ */
+
+module.exports.cache = new cache (pacmanProfile.cache.time || 15 * 60 * 1000);
+
+
+/**
+ * Socket - the name of the software interface to ensure the exchange of data between processes.
+ * The processes of such exchange can be performed on one computer as well as on different computers connected by a
+ * network. Socket - abstract object representing an endpoint of connection.
+ */
+
+module.exports.websocket = websocket;

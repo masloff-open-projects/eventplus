@@ -174,7 +174,7 @@ module.exports = class extends prototype {
 
                         // Setup RestAPI
                         // Get balance
-                        rest.express ('GET', '/v1/exchange/all/balance', (req, res, next) => {
+                        rest.express ('GET', '/api/v1/exchange/all/balance', (req, res, next) => {
 
                             let data = (async (event) => {
 
@@ -217,7 +217,7 @@ module.exports = class extends prototype {
                         });
 
                         // Get deposit address
-                        rest.express ('GET', '/v1/exchange/all/deposit', (req, res, next) => {
+                        rest.express ('GET', '/api/v1/exchange/all/deposit', (req, res, next) => {
 
                             let data = (async (event) => {
 

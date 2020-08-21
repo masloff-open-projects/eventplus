@@ -1,0 +1,30 @@
+pacman: ~
+http:
+  host: 127.0.0.1
+  port: 9874
+https:
+  host: 127.0.0.1
+  port: 9875
+  privateKey: ~
+  certificate: ~
+redis:
+  host: 127.0.0.1
+  port: 6379
+mysql:
+  host: 'localhost'
+  user: 'main'
+  password: 'emaqQXcwTnT3xAY6mEBve4gH'
+  database: 'passport'
+io: ~
+session:
+  secret: ~
+  resave: ~
+  saveUninitialized: ~
+cache:
+  time: ~
+express:
+  views: ~
+  engine: ~
+  cache: ~
+  public: ~
+  favicon: ~

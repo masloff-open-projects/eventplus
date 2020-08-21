@@ -7,123 +7,48 @@
  * @type {createError}
  */
 
-module.exports = function (mysql) {
 
-    // imports
-    const createError = require('http-errors');
-    const express = require('express');
-    const path = require('path');
-    const cookieParser = require('cookie-parser');
-    const logger = require('morgan');
-    const client = require('../bin/redis')();
-    const ddos = require('ddos');
-    const session = require('express-session')
-    const RedisStore = require('connect-redis')(session)
-    const dos = new ddos({burst: 10, limit: 15})
-    const multer = require('multer');
-    const upload = multer();
-    const favicon = require('serve-favicon')
-    const rateLimit = require("express-rate-limit");
+var prototype = require('../models/essence');
 
-    var passport = require('passport')
-    var app = express();
+module.exports = class extends prototype {
 
-    function authenticationMiddleware() {
-        return function (req, res, next) {
-            if (req.isAuthenticated()) {
-                return next()
-            }
-            res.redirect('/login')
-        }
+    constructor() {
+
+        super();
+
+        this.meta = {
+            id: 'grbe-101',
+            name: "Getaway RestAPI by Event+",
+            version: 1
+        };
+
     }
 
-    // routers
-    var indexRouter = require('../routes')(passport, authenticationMiddleware)
-    var studioRouter = require('../routes/studio')(passport, authenticationMiddleware)
-    var usersRouter = require('../routes/users')(passport, authenticationMiddleware)
-    var signupRouter = require('../routes/signup')(passport, authenticationMiddleware);
-    var loginRouter = require('../routes/login')(passport, authenticationMiddleware);
-    var logoutRouter = require('../routes/logout')(passport, authenticationMiddleware);
-    var restRouter = require('../routes/rest')(passport, authenticationMiddleware, mysql);
+    init () {
 
-    // view engine setup
-    app.set('views', path.join(__dirname, '../views'));
-    app.set('view engine', 'twig');
-    app.set('view cache', false);
-    app.set('cache', false);
-    app.set('twig options', { strict_variables: false });
+        const express                   = this.essence['router']['express'];
+        const passport                  = this.essence['router']['passport'];
+        const connection                = this.essence['commutator']['mysql'];
+        const authenticationMiddleware  = this.essence['router']['authenticationMiddleware'];
 
-    // app use
-    app.use(logger('dev'));
-    app.use(express.json());
-    app.use(express.urlencoded({extended: false}));
-    app.use(cookieParser());
-    app.use(express.static(path.join(__dirname, '../public')));
-    app.use(favicon(path.join(__dirname, '../public', 'images', 'favicon.ico')))
-    app.use(dos.express);
-    app.use(upload.array());
-    app.use(express.json());
-    app.use(session({
-        secret: 'hvYsBUtXNSdGdNnGriGqvGUshPMNcY8JlZKzLR8h8N1qMVqJruTIHXgq',
-        resave: false,
-        saveUninitialized: false,
-        store: new RedisStore({
-            host: 'localhost',
-            port: 6379,
-            client: client
-        })
-    }));
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use(rateLimit({
-        windowMs: 10 * 60 * 1000, // 15 minutes
-        max: 2500 // limit each IP to 100 requests per windowMs
-    }));
+        var indexRouter = require('../routes')(passport, authenticationMiddleware)
+        var studioRouter = require('../routes/studio')(passport, authenticationMiddleware)
+        var usersRouter = require('../routes/users')(passport, authenticationMiddleware)
+        var signupRouter = require('../routes/signup')(passport, authenticationMiddleware);
+        var loginRouter = require('../routes/login')(passport, authenticationMiddleware);
+        var logoutRouter = require('../routes/logout')(passport, authenticationMiddleware);
+        var rest = require('../routes/rest')(passport, authenticationMiddleware, connection);
 
-    // setup passport.js
-    passport.serializeUser(function (user, done) {
-        done(null, user);
-    });
+        express.use('/', indexRouter);
+        express.use('/studio', studioRouter);
+        express.use('/user', usersRouter);
+        express.use('/signup', signupRouter);
+        express.use('/login', loginRouter);
+        express.use('/logout', logoutRouter);
+        express.use('/api', rest);
 
-    passport.deserializeUser(function (user, done) {
-        done(null, user);
-    });
+        this.call('init', true);
 
-    // ...
-    passport = require('../passport/login') (passport, mysql);
-    passport = require('../passport/signup') (passport, mysql);
-
-    // routers
-    app.use('/', indexRouter);
-    app.use('/studio', studioRouter);
-    app.use('/user', usersRouter);
-    app.use('/signup', signupRouter);
-    app.use('/login', loginRouter);
-    app.use('/logout', logoutRouter);
-    app.use('/api', restRouter);
-
-    // catch 404 and forward to error handler
-    app.use(function (req, res, next) {
-        next(createError(404));
-    });
-
-    // error handler
-    app.use(function (err, req, res, next) {
-        // set locals, only providing error in development
-        res.locals.message = err.message;
-        res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-        // render the error page
-        res.status(err.status || 500);
-        console.log(err);
-        res.render('error');
-    });
-
-    return {
-        app: app,
-        rest: restRouter,
-        passport: passport,
-        authenticationMiddleware: authenticationMiddleware
-    };
+    }
 
 }

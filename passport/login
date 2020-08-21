@@ -2,13 +2,8 @@
 
 var loginBuilder = require('../builder/login');
 
-module.exports = function (passport, connection) {
-
-    var LocalStrategy = require('passport-local').Strategy;
-
-    if (!passport) return;
-
-    passport.use('login', new LocalStrategy({passReqToCallback: true}, function (req, username, password, done) {
+module.exports = connection => {
+    return function (req, username, password, done) {
 
         var login = new loginBuilder();
 
@@ -35,8 +30,5 @@ module.exports = function (passport, connection) {
 
         });
 
-    }));
-
-    return passport;
-
-}
+    };
+};
