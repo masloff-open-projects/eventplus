@@ -168,7 +168,7 @@ module.exports = class extends prototype {
                         }
 
                         vm.on ('execute', event => {
-                            console.log(event.__traps__)
+                            //console.log(event.__traps__)
                         });
 
                         // Setup RestAPI

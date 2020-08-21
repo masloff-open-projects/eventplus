@@ -33,6 +33,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.43/Tone.js" integrity="sha512-EykMJ8DUk41zHUpEBrlm8oWxXqmQXi5dKBvuaEiziqFMrcfGYsXz1KwBMA+ejy6noTfwVGwer1WSYrbNBrjT2w==" crossorigin="anonymous"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/trading-vue-js@0.6.1/dist/trading-vue.min.js" integrity="sha256-wKiFHm8EQ5WkwSU03XvSxtZvx8f58cU9/iS8aWiTwnM=" crossorigin="anonymous"></script>
+  <script src="https://raw.githubusercontent.com/tvjsx/tvjs-overlays/master/dist/tvjs-overlays.min.js"></script>
 
   <script src="/javascripts/WebSocket.js"></script>
   <script src="/javascripts/parseParams.js"></script>
@@ -124,48 +126,15 @@
               </span>
               </div>
             </div>
-            <div class="block">
+            <div class="block" id="chart">
 
-              <transition name="fadeUp">
-                <div id="vue-chart-price">
-                  <div id="price_chart"></div>
-                </div>
-              </transition>
-
-              <transition name="fadeUp">
-                <div id="vue-chart-indicator-rvi">
-                  <span class="indicator-name">RVI</span>
-                  <div id="indicators_chart_rvi"> </div>
-                </div>
-              </transition>
-
-              <transition name="fadeUp">
-                <div id="vue-chart-indicator-macd">
-                   <span class="indicator-name">MACD</span>
-                  <div id="indicators_chart_macd"></div>
-                </div>
-              </transition>
-
-              <transition name="fadeUp">
-                <div id="vue-chart-indicator-obv">
-                   <span class="indicator-name">OBV</span>
-                  <div id="indicators_chart_obv"></div>
-                </div>
-              </transition>
-
-              <transition name="fadeUp">
-                <div id="vue-chart-indicator-mvrvzscr">
-                  <span class="indicator-name">MVRV Z-Score</span>
-                  <div id="indicators_chart_mvrvzscr"></div>
-                </div>
-              </transition>
-
-              <transition name="fadeUp">
-                <div id="vue-chart-indicator-stochastic">
-                  <span class="indicator-name">Stochastic</span>
-                  <div id="indicators_chart_stochastic"></div>
-                </div>
-              </transition>
+              <trading-vue :data="this.chart"
+                           :width="this.width"
+                           :height="this.height"
+                           :color-back="colors.colorBack"
+                           :color-grid="colors.colorGrid"
+                           :color-text="colors.colorText">
+              </trading-vue>
 
             </div>
           </div>
@@ -266,4 +235,5 @@
       </div>
     </div>
   </section>
+
 {% endblock %}

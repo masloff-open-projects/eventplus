@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+const lodash = require('lodash');
+const math = require("mathjs");
+
 Array.prototype.sweep = function() {
     return this.slice(this.length - arguments[0], this.length);
 }
@@ -9,5 +12,15 @@ Array.prototype.append = function() {
     if (this.length > arguments[1]+1) { this.shift(); }
     this.push(arguments[0]);
     return this;
+
+}
+
+Array.prototype.sweepChart = function() {
+
+    if (!this) return [];
+    return lodash.remove(this, function(e) {
+        if (!('time' in e)) { return false; }
+        return math.isNumeric(e.time);
+    });
 
 }

@@ -12,9 +12,9 @@ indicators:
     period: 15
 
   MACD:
-    fastPeriod: 15
-    slowPeriod: 30
-    signalPeriod: 5
+    fastPeriod: 12
+    slowPeriod: 25
+    signalPeriod: 6
     SimpleMAOscillator: false
     SimpleMASignal: false
 
@@ -27,7 +27,7 @@ indicators:
     signalPeriod: 3
 
 exchange:
-  period: 1
+  period: 1m
   offset: 36000 # 10 minutes
   count: 200 # For BitMex history
   limit: 250

@@ -8,6 +8,7 @@ const WMA = require('technicalindicators').WMA;
 const EMA = require('technicalindicators').EMA;
 const OBV = require('technicalindicators').OBV;
 const Stochastic = require('technicalindicators').Stochastic;
+const talib = require("talib");
 
 const math = require("mathjs");
 const provider = require('../provider/coingecko');
@@ -25,13 +26,11 @@ module.exports = class {
 
     /**
      * Moving Average (MA) - a technical analysis tool that allows you to track the movement of market trends.
-     * It is "Moving" because as new data is added to the average, the old ones sink. As a result of this update, the average is "moving".
-     * In case of an upward trend - moving average is lower than the current price.
-     * In a downward trend - moving average is higher than the current price.
-     * When the trend direction changes, prices cross the moving average.
-     * The intersection points are trading signals.
-     * Buy signal: prices cross the moving average from bottom to top.
-     * Signal to Sell: Prices cross the Moving Average from top to bottom.
+     * It is "Moving" because as new data is added to the average, the old ones sink. As a result of this update, the
+     * average is "moving". In case of an upward trend - moving average is lower than the current price. In a downward
+     * trend - moving average is higher than the current price. When the trend direction changes, prices cross the
+     * moving average. The intersection points are trading signals. Buy signal: prices cross the moving average from
+     * bottom to top. Signal to Sell: Prices cross the Moving Average from top to bottom.
      *
      * @param values
      * @param period
@@ -40,7 +39,15 @@ module.exports = class {
      */
 
     SMA (values=[], period=this.exchangeConfig.indicators.SMA.period) {
-        return SMA.calculate({period: period, values: values});
+
+        return talib.execute({
+            name: "SMA",
+            startIdx: 0,
+            endIdx: values.length - 1,
+            inReal: values,
+            optInTimePeriod: period
+        }).result.outReal;
+
     }
 
 
@@ -48,10 +55,10 @@ module.exports = class {
      * Moving averages represent the average price of a financial instrument
      * for a certain period of time. However, there are several different types of moving averages.
      * Usually they differ in how different data points are weighed, or how they get their value.
-     * A weighted moving average (WMA) is similar to a simple moving average (SMA), except that WMA adds significance to fresher data points.
-     * Each point in the period is given a multiplier (the highest multiplier for the newest data point and then drops in order),
-     * which changes the weight or value of that particular data point.
-     * Then, like the SMA, after adding a new data point to the beginning, the old data point will be discarded.
+     * A weighted moving average (WMA) is similar to a simple moving average (SMA), except that WMA adds significance
+     * to fresher data points. Each point in the period is given a multiplier (the highest multiplier for the newest
+     * data point and then drops in order), which changes the weight or value of that particular data point. Then, like
+     * the SMA, after adding a new data point to the beginning, the old data point will be discarded.
      *
      * @param values
      * @param period
@@ -60,17 +67,24 @@ module.exports = class {
      */
 
     WMA (values=[], period=this.exchangeConfig.indicators.WMA.period) {
-        return WMA.calculate({period: period, values: values});
+
+        return talib.execute({
+            name: "WMA",
+            startIdx: 0,
+            endIdx: values.length - 1,
+            inReal: values,
+            optInTimePeriod: period
+        }).result.outReal;
+
     }
 
 
     /**
      * Moving averages represent the average price of a financial instrument for a certain period of time.
-     * However, there are several different types of moving averages. Usually they differ in how different data points are weighed,
-     * or how they get their value. Exponential Moving Average is very similar to (and is a type of) WMA.
-     * The main difference from EMA is that old data points never leave the average.
-     * That is, old data points retain their multiplier (although they hardly ever decrease),
-     * even if they are outside the selected data series.
+     * However, there are several different types of moving averages. Usually they differ in how different data points
+     * are weighed, or how they get their value. Exponential Moving Average is very similar to (and is a type of) WMA.
+     * The main difference from EMA is that old data points never leave the average. That is, old data points retain
+     * their multiplier (although they hardly ever decrease), even if they are outside the selected data series.
      *
      * @param values
      * @param period
@@ -79,20 +93,29 @@ module.exports = class {
      */
 
     EMA (values=[], period=this.exchangeConfig.indicators.EMA.period) {
-        return EMA.calculate({period: period, values: values});
+
+        return talib.execute({
+            name: "EMA",
+            startIdx: 0,
+            endIdx: values.length - 1,
+            inReal: values,
+            optInTimePeriod: period
+        }).result.outReal;
+
     }
 
 
     /**
-     * Bollinger Lines is a technical analysis tool for financial markets to reflect current price, commodity or currency fluctuations.
-     * The indicator is calculated based on the standard deviation from a simple moving average. Usually it is displayed on top of the price chart.
-     * The parameters for calculation are the type of standard deviation (usually double) and the period of moving average (depending on the preferences of the trader).
-     * The indicator helps to estimate how the prices are located relative to the normal trading range.
-     * Bollinger lines create a frame, within which prices are considered normal.
-     * Bollinger lines are drawn as upper and lower bounds around the moving average, but the width of the band is not static,
-     * but proportional to the standard deviation from the moving average for the analyzed period of time.
-     * A trading signal is a signal when the price leaves the trading corridor - either rising above the upper line or breaking the lower line.
-     * If the price chart fluctuates between the lines - the indicator does not give trading signals.
+     * Bollinger Lines is a technical analysis tool for financial markets to reflect current price, commodity or
+     * currency fluctuations. The indicator is calculated based on the standard deviation from a simple moving average.
+     * Usually it is displayed on top of the price chart. The parameters for calculation are the type of standard
+     * deviation (usually double) and the period of moving average (depending on the preferences of the trader). The
+     * indicator helps to estimate how the prices are located relative to the normal trading range. Bollinger lines
+     * create a frame, within which prices are considered normal. Bollinger lines are drawn as upper and lower bounds
+     * around the moving average, but the width of the band is not static, but proportional to the standard deviation
+     * from the moving average for the analyzed period of time. A trading signal is a signal when the price leaves the
+     * trading corridor - either rising above the upper line or breaking the lower line. If the price chart fluctuates
+     * between the lines - the indicator does not give trading signals.
      *
      * @param values
      * @param period
@@ -110,7 +133,8 @@ module.exports = class {
      * It refers to the accumulation indicators. It means that on the day when the price went up,
      * the daily volume is added to the total OBV. If the price went down, the volume is subtracted.
      * Then the OBV value forms a line for easy perception.
-     * The balance volume indicator is most often used to confirm or determine the general trend direction or to predict price movements after a divergence.
+     * The balance volume indicator is most often used to confirm or determine the general trend direction or to
+     * predict price movements after a divergence.
      *
      * @param close
      * @param volume
@@ -118,19 +142,27 @@ module.exports = class {
      * @constructor
      */
 
-    OBV (close=[], volume=[]) {
-        return OBV.calculate({close: close, volume: volume});
-    }
+    OBV (close=[], volume=[], period=this.exchangeConfig.indicators.BB.period) {
 
+        return talib.execute({
+            name: "OBV",
+            startIdx: 0,
+            endIdx: volume.length - 1,
+            volume: volume,
+            inReal: close,
+            optInTimePeriod: period
+        }).result.outReal;
+
+    }
 
     /**
      * MACD is a very popular indicator used in technical analysis.
      * MACD can be used to determine general aspects of a trend.
-     * In particular, the pulse, trend direction and duration. MACD makes an informative combination of two different types of indicators.
-     * First, the MACD uses two moving averages of different lengths to determine the trend direction and duration.
-     * The MACD then calculates the difference between these two moving averages (MACD Line) and the exponential average of these MAs (Signal Line) and shows this difference as a histogram,
-     * which fluctuates above and below the zero line.
-     * The histogram is used as an indicator of the tool's momentum.
+     * In particular, the pulse, trend direction and duration. MACD makes an informative combination of two different
+     * types of indicators. First, the MACD uses two moving averages of different lengths to determine the trend
+     * direction and duration. The MACD then calculates the difference between these two moving averages (MACD Line)
+     * and the exponential average of these MAs (Signal Line) and shows this difference as a histogram, which
+     * fluctuates above and below the zero line. The histogram is used as an indicator of the tool's momentum.
      *
      * @param values
      * @param fastPeriod
@@ -143,14 +175,18 @@ module.exports = class {
      */
 
     MACD (values=[], fastPeriod=this.exchangeConfig.indicators.MACD.fastPeriod, slowPeriod=this.exchangeConfig.indicators.MACD.slowPeriod, signalPeriod=this.exchangeConfig.indicators.MACD.signalPeriod, SimpleMAOscillator=this.exchangeConfig.indicators.MACD.SimpleMAOscillator, SimpleMASignal=this.exchangeConfig.indicators.MACD.SimpleMASignal )  {
-        return MACD.calculate({
-            values: values,
-            fastPeriod: fastPeriod,
-            slowPeriod: slowPeriod,
-            signalPeriod: signalPeriod ,
-            SimpleMAOscillator: SimpleMAOscillator,
-            SimpleMASignal: SimpleMASignal
-        });
+
+        return talib.execute({
+            name: "MACD",
+            startIdx: 0,
+            endIdx: values.length - 1,
+            inReal: values,
+            optInFastPeriod: 8,
+            optInSlowPeriod: 17,
+            optInSignalPeriod: 9
+
+        }).result;
+
     }
 
 
@@ -183,32 +219,32 @@ module.exports = class {
 
 
     /**
-     * MVRV Z-Score uses blockchain analysis to identify periods where Bitcoin is extremely over or undervalued relative to its 'fair value'.
-     * It uses three metrics:
-     * 1. Market Value: The current price of Bitcoin multiplied by the number of coins in circulation. This is like market cap in traditional markets i.e.
-     * share price multiplied by number of shares.
-     * 2. Realised Value: Rather than taking the current price of Bitcoin, Realised Value takes the price of each Bitcoin when it was last moved i.e.
-     * the last time it was sent from one wallet to another wallet. It then adds up all those individual prices and takes an average of them.
-     * It then multiplies that average price by the total number of coins in circulation.
-     * In doing so, it strips out the short term market sentiment that we have within the Market Value metric.
-     * It can therefore be seen as a more 'true' long term measure of Bitcoin value which Market Value moves above and below depending on the market sentiment at the time.
-     * 3. Z-score: A standard deviation test that pulls out the extremes in the data between market value and realised value.
+     * MVRV Z-Score uses blockchain analysis to identify periods where Bitcoin is extremely over or undervalued
+     * relative to its 'fair value'. It uses three metrics:
+     * 1. Market Value: The current price of Bitcoin multiplied by the number of coins in circulation. This is like
+     * market cap in traditional markets i.e. share price multiplied by number of shares.
+     * 2. Realised Value: Rather than taking the current price of Bitcoin, Realised Value takes the price of each
+     * Bitcoin when it was last moved i.e. the last time it was sent from one wallet to another wallet. It then adds up
+     * all those individual prices and takes an average of them. It then multiplies that average price by the total
+     * number of coins in circulation. In doing so, it strips out the short term market sentiment that we have within
+     * the Market Value metric. It can therefore be seen as a more 'true' long term measure of Bitcoin value which
+     * Market Value moves above and below depending on the market sentiment at the time.
+     * 3. Z-score: A standard deviation test that pulls out the extremes in the data between market value and realised
+     * value.
      *
      * @param values
-     * @param period
+     * @param ts
+     * @param cs
      * @returns {Promise}
      * @constructor
      */
 
-    MVRVZScr (values=[], period=this.exchangeConfig.indicators.MVRVZScr.period) {
+    MVRVZScope (values=[], ts=0, cs=0) {
 
         return new Promise((resolve, reject) => {
 
             var chartData = [];
             var marketCap = [];
-
-            // console.log(period);
-            // console.log(values[values.length - 1]);
 
             provider.market().then(function (event) {
 
@@ -236,10 +272,10 @@ module.exports = class {
 
 
     /**
-     * Stochastic oscillator is an oscillator that displays the current price position relative to the price range for a certain period in the past.
-     * Stochastic indicator is designed to display the closing location compared to the high/low range during a period defined by the user.
-     * Stochastic oscillator is usually used to: determine overbought and oversold levels,
-     * detect discrepancies, and detect bullish and bearish moods or signals.
+     * Stochastic oscillator is an oscillator that displays the current price position relative to the price range for
+     * a certain period in the past. Stochastic indicator is designed to display the closing location compared to the
+     * high/low range during a period defined by the user. Stochastic oscillator is usually used to: determine
+     * overbought and oversold levels, detect discrepancies, and detect bullish and bearish moods or signals.
      *
      * @param close
      * @param high
