@@ -6,6 +6,7 @@ import * as user from './controller/user';
 import http from 'http';
 import https from 'https';
 import ccxt from 'ccxt';
+import virtualbox from './VirtualBox';
 
 import Deribit from './listener/Deribit';
 
