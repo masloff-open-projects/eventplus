@@ -111,9 +111,7 @@ dist
 package-lock.json
 
 # Configs
-keypair.yaml
 keystore.yaml
-server.yaml
 exchange.yaml
 
 # Certs

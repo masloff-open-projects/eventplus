@@ -60,8 +60,9 @@ const favicon   = require('serve-favicon')
 const rateLimit = require("express-rate-limit");
 const Strategy  = require('passport-local').Strategy;
 
-const string  = require(path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/modify/string')));
-const list    = require(path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/modify/list')));
+const string    = require(path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/modify/string')));
+const list      = require(path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/modify/list')));
+
 
 /**
  * This is an exact copy of the NodeJS ’path’ module published to the NPM registry.
@@ -146,12 +147,9 @@ const pacmanProfile = yaml.read(path.root('/pacman.yaml')) || {};
 module.exports.winston = winston.createLogger({
     level: 'info',
     format: winston.format.combine(
-        winston.format.label({
-            label: 'LOG'
-        }),
         winston.format.timestamp(),
         winston.format.printf((info) => {
-            return `${info.level.toUpperCase()} ${info.timestamp} [${info.sender}]: ${info.message} / ${JSON.stringify(info.data)}`;
+            return `${info.level.toUpperCase()} | ${info.timestamp} | [${info.sender}]: ${info.message} / ${JSON.stringify(info.data)}`;
         })
     ),
     transports: [
@@ -162,7 +160,8 @@ module.exports.winston = winston.createLogger({
 
 /**
  * This package name is not currently in use, but was formerly occupied by another package.
- * To avoid malicious use, npm is hanging on to the package name, but loosely, and we'll probably give it to you if you want it.
+ * To avoid malicious use, npm is hanging on to the package name, but loosely, and we'll probably give it to you if you
+ * want it.
  */
 
 module.exports.fs = fs;
@@ -206,7 +205,21 @@ module.exports.redis = redis.createClient(pacmanProfile.redis || {});
  */
 
 module.exports.mysql = mysql.createConnection(pacmanProfile.mysql || {});
+module.exports.mysql.connect(function(err) {
 
+    if (err) {
+
+        module.exports.winston.log({
+            sender: `PACMAN / SQL`,
+            message: 'Error when connecting to the database',
+            level: 'error',
+            data: err.stack
+        });
+
+        return;
+    }
+
+});
 
 /**
  * Virtual machine - is a software and/or hardware system emulating hardware of some platform (target - target or guest
@@ -343,8 +356,8 @@ module.exports.createServer = app => {
         }, app)
     }
 
-    server.http.listen(pacmanProfile.http.port || 80);
-    server.https.listen(pacmanProfile.https.port || 433);
+    server.http.listen(pacmanProfile.http.port || 80, pacmanProfile.http.host || '127.0.0.1');
+    server.https.listen(pacmanProfile.https.port || 433, pacmanProfile.https.host || '127.0.0.1');
 
     return server;
 
@@ -358,8 +371,12 @@ const server = {
     }, module.exports.appExpress)
 }
 
-server.http.listen(pacmanProfile.http.port || 80);
-server.https.listen(pacmanProfile.https.port || 433);
+server.http.listen(pacmanProfile.http.port || 80, pacmanProfile.http.host || '127.0.0.1');
+server.https.listen(pacmanProfile.https.port || 433, pacmanProfile.https.host || '127.0.0.1');
+
+module.exports.httpURL =  [pacmanProfile.http.host  || '127.0.0.1', pacmanProfile.http.port  || 80];
+module.exports.httpsURL = [pacmanProfile.https.host || '127.0.0.1', pacmanProfile.https.port || 80];
+
 
 module.exports.http = server.http;
 module.exports.https = server.https;

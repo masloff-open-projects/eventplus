@@ -8,10 +8,23 @@
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/"
     },
+    "_moduleAliases": {
+        "@root": ".",
+        "@controller": "./controller"
+    },
+    "alias": {
+        "@controller": "./controller"
+    },
     "scripts": {
         "start": "node bin.js",
         "cluster": "pm2 start bin.js -i max",
-        "install": "npm i package.json && npm run start"
+        "install": "npm i package.json && npm run start",
+        "babel-node": "babel-node",
+        "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+        "prepublishOnly": "npm run build",
+        "core": "babel-node core.js",
+        "preinstall": "which link-module-alias && link-module-alias clean || echo",
+        "postinstall": "link-module-alias"
     },
     "engines": {
         "node": "14.8.0"
@@ -22,11 +35,6 @@
         "bot",
         "trading"
     ],
-    "author": "God",
-    "contributors": [
-        "Istom1n <ivan@istomin.im> (https://github.com/Istom1n)",
-        "eps-game (https://github.com/eps-game)"
-    ],
     "license": "Apache License",
     "dependencies": {
         "@pxtrn/bybit-api": "^1.1.5",
@@ -35,7 +43,7 @@
         "bcrypt": "^5.0.0",
         "bitmex-realtime-api": "^0.4.3",
         "cache": "^2.3.1",
-        "ccxt": "^1.33.20",
+        "ccxt": "^1.33.68",
         "coingecko-api": "^1.0.10",
         "coinmarketcap-api": "^3.1.1",
         "connect-redis": "^5.0.0",
@@ -43,6 +51,7 @@
         "crypto-js": "^4.0.0",
         "ddos": "^0.2.1",
         "debug": "~4.1.1",
+        "deribit-ws-nodejs": "^1.0.3",
         "every": "0.0.1",
         "express": "^4.17.1",
         "express-rate-limit": "^5.1.3",
@@ -50,13 +59,15 @@
         "fs": "0.0.1-security",
         "http-errors": "~1.8.0",
         "js-yaml": "^3.14.0",
-        "mathjs": "^7.1.0",
+        "mathjs": "^7.2.0",
+        "module-alias": "^2.2.2",
         "morgan": "^1.10.0",
         "multer": "^1.4.2",
         "mysql": "^2.18.1",
         "node-sass-middleware": "^0.11.0",
         "os-utils": "0.0.14",
         "package.json": "^2.0.1",
+        "parcel-bundler": "^1.7.0",
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
         "postcss-cli": "^7.1.1",
@@ -73,12 +84,20 @@
         "twig": "~1.15.2",
         "uuid-token-generator": "^1.0.0",
         "vm": "^0.1.0",
-        "websocket": "^1.0.31",
+        "websocket": "^1.0.32",
         "winston": "^3.3.3",
         "ws": "^7.3.1",
         "xss": "^1.0.8"
     },
     "devDependencies": {
+        "@babel/cli": "^7.10.5",
+        "@babel/core": "^7.11.4",
+        "@babel/node": "^7.10.5",
+        "@babel/preset-env": "^7.11.0",
+        "babel-cli": "^6.26.0",
+        "babel-preset-es2015": "^6.24.1",
+        "babel-preset-stage-2": "^6.24.1",
+        "babel-register": "^6.26.0",
         "documentjs": "^0.5.5"
     }
 }
