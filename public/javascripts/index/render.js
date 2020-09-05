@@ -147,6 +147,15 @@ $(document).ready(function(event=null) {
         methods: {}
     });
 
+    const deals = new Vue({
+        delimiters: ['${', '}'],
+        el: '#deals',
+        data: {
+            positions: []
+        },
+        methods: {}
+    });
+
     const instrumentOfCrypto = new Vue({
         delimiters: ['${', '}'],
         el: '#instrumentData',
@@ -484,6 +493,10 @@ $(document).ready(function(event=null) {
 
             }
 
+        } else if (object.response == 'positionsBasicData') {
+
+            deals.positions = object.positions;
+
         } else if (object.response == 'ordersBookData') {
 
             if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
@@ -496,8 +509,11 @@ $(document).ready(function(event=null) {
             if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
                 marketsOfCrypto.markets = Object.values(object.markets);
             }
+
         } else if (object.response == 'vmSignalsData') {
+
             firmware.signals = object.signals;
+
         }
 
     };

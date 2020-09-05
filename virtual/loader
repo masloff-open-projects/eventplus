@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+var __export__ = {};
+var __global__ = {};
+
+const $include = SRC => {
+    return new Promise ((resolve, reject) => {
+        read(SRC, function (script) {
+            eval(script)
+            resolve(__export__);
+        });
+    });
+}

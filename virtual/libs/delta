@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+__export__.delta = function () {
+
+    // Delta indicator
+    new trap ({
+        name: "Delta Indicator",
+        filter: function (sender={}, action='default', prop={}) {
+            return true;
+        },
+        watch: {
+            getInstrument: function (Event) {
+                this.object[__sender__.meta.exchange] = Event.lastPrice;
+                var data = {};
+                for (const [name, price] of Object.entries(this.object)) {
+                    for (const [name_, price_] of Object.entries(this.object)) {
+                        if (name !== name_ && typeof data[`${name_}_${name}`] == "undefined") {
+                            data[`${name}_${name_}`] = price - price_;
+                        }
+                    }
+                }
+                __global__.delta = data;
+            }
+        }
+    });
+
+}

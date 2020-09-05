@@ -119,6 +119,15 @@ module.exports = class extends prototype {
                                 }));
                             });
 
+                            // Send positions
+                            driver.on('getPositionsBasic', (event) => {
+                                io.sendAll ( JSON.stringify({
+                                    response: 'positionsBasicData',
+                                    exchange: driver.meta.exchange,
+                                    positions: event
+                                }));
+                            });
+
                             // Send markets
                             driver.on('getMarkets', (event) => {
                                 io.sendAll ( JSON.stringify({

@@ -37,6 +37,7 @@ module.exports = class extends prototype{
                 var alias = this.essence['private']['alias'];
                 var context = this.essence['public'];
                 var environment = this.essence['private']['environment'];
+                var loader = this.essence['private']['fs'].readFileSync('./virtual/loader', 'utf8');
                 var firmware = this.essence['private']['fs'].readFileSync('./firmware', 'utf8');
                 var sync = this.essence['private']['fs'].readFileSync('./virtual/sync', 'utf8');
                 var signal = this.essence['private']['fs'].readFileSync('./virtual/signal', 'utf8');
@@ -49,6 +50,7 @@ module.exports = class extends prototype{
                 new Promise((resolve, reject) => {
 
                     environment.createContext(context);
+                    environment.runInContext(loader, context);
                     environment.runInContext(signal, context);
                     environment.runInContext(sync, context);
                     environment.runInContext(firmware, context);
@@ -68,6 +70,7 @@ module.exports = class extends prototype{
                             firmware = firmware.replaceObject(alias);
                         }
 
+                        environment.createContext(context);
                         environment.runInContext(firmware, context);
 
                     }
@@ -98,15 +101,15 @@ module.exports = class extends prototype{
                                                 trap.watch[action](event.event);
                                             }
                                         }
-                                    } else {
-                                        trap.put(action, event.event);
-                                        if ('step' in trap) {
-                                            trap.step();
-                                        }
-                                        if ('watch' in trap && action in trap.watch) {
-                                            if (typeof trap.watch[action] === "function") {
-                                                trap.watch[action](event.event);
-                                            }
+                                    }
+                                } else {
+                                    trap.put(action, event.event);
+                                    if ('step' in trap) {
+                                        trap.step();
+                                    }
+                                    if ('watch' in trap && action in trap.watch) {
+                                        if (typeof trap.watch[action] === "function") {
+                                            trap.watch[action](event.event);
                                         }
                                     }
                                 }

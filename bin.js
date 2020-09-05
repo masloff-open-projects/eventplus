@@ -90,6 +90,11 @@ vm.use ('private', 'fs', PacMan.fs);
 vm.use ('private', 'alias', PacMan.VMAlais);
 vm.use ('public', 'driver', map.driver);
 vm.use ('public', 'console', console);
+vm.use ('public', 'read', (file, callback) => {
+    return PacMan.fs.readFile(PacMan.path.root(`/virtual/libs/${file}`), 'utf8', function (err, data) {
+        callback(data);
+    })
+});
 
 // Check if debuggers are enabled
 if (PacMan.yargs.visualization) {

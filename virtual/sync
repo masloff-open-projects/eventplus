@@ -30,6 +30,11 @@ class trap extends sync {
             }
         }
 
+        this['watch']['object'] = {};
+        this['watch']['array'] = [];
+        this['watch']['string'] = "";
+        this['watch']['int'] = 0;
+
         __traps__.push(this);
 
     }

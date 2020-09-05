@@ -52,9 +52,10 @@ module.exports = class extends prototype {
 
                                 });
 
-
                                 let client = new BitMEXClient({
                                     testnet: keystore.testnet,
+                                    apiKeyID: keystore.apiKey,
+                                    apiKeySecret: keystore.secret,
                                     maxTableLen: 10000
                                 });
 
@@ -152,6 +153,27 @@ module.exports = class extends prototype {
 
 
                                     this.call('getChartForTradingview', chartData);
+
+                                });
+
+                                client.addStream('XBTUSD', 'position', (data, symbol, tableName) => {
+
+                                    if (!data.length) return;
+
+                                    // Standardization of positions
+                                    var positions = [];
+                                    for (const position of data) {
+                                        if (position.isOpen == true) {
+                                            positions.push({
+                                                size: position.openOrderSellQty || position.openOrderBuyQty,
+                                                direction: position.openOrderSellQty ? 'SELL' : 'BUY',
+                                                exchange: this.meta.exchange
+                                            });
+                                        }
+                                    }
+
+                                    this.call('getPositionsBasic', positions);
+                                    this.call('getPositions', data);
 
                                 });
 

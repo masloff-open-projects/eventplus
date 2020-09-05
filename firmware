@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
+$include("delta").then(Event => {
+    Event.delta();
+});
+
 new trap ({
     name: "Trap",
     filter: function (sender={}, action='default', prop={}) {
-        return true;
-        return sender.meta.exchange == 'deribit';
+        // return true;
+        return sender.meta.exchange == 'bitmex';
     },
     step: function () {
         // console.log(23)
@@ -12,12 +16,9 @@ new trap ({
     watch: {
         getChartForTradingview: function () {
             this.____ = 1;
+        },
+        getPositions: function (Event) {
+            console.log(__global__.delta)
         }
     }
 });
-
-// $deribit.createLimitSellOrder('BTC-PERPETUAL', 10, 11000).then(Event => {
-//     console.log(Event)
-// }).catch(Event => {
-//     console.log(Event)
-// })

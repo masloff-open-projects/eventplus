@@ -47,6 +47,16 @@ module.exports = class extends prototype {
                                     var bufferOrders = {asks: [], bids: []};
 
                                     const template = {
+                                        auth: {
+                                            "jsonrpc" : "2.0",
+                                            "id" : 9929,
+                                            "method" : "public/auth",
+                                            "params" : {
+                                                "grant_type" : "client_credentials",
+                                                "client_id" : keystore.apiKey,
+                                                "client_secret" : keystore.secret
+                                            }
+                                        },
                                         bars: {
                                             "jsonrpc" : "2.0",
                                             "id" : 833,
@@ -76,8 +86,22 @@ module.exports = class extends prototype {
                                                 "kind" : "future",
                                                 "expired" : false
                                             }
+                                        },
+                                        positions: {
+                                            "jsonrpc" : "2.0",
+                                            "id" : 2236,
+                                            "method" : "private/get_positions",
+                                            "params" : {
+                                                "currency" : "BTC",
+                                                "kind" : "future"
+                                            }
                                         }
                                     }
+
+                                    // Helmet requests for validation every ... minutes so as not to delay the session
+                                    setTimeout(Event => {
+                                        io.send(JSON.stringify(template.auth));
+                                    }, 1000 * 60 * 10);
 
                                     io.onopen = (event) => {
                                         for (const [name, object] of Object.entries(template)) {
@@ -142,6 +166,30 @@ module.exports = class extends prototype {
                                                 io.send(JSON.stringify(template.book));
 
                                                 break;
+
+                                            case 2236:
+
+                                                this.call('getPositions', answer.result);
+
+                                                // Standardization of positions
+                                                var positions = [];
+                                                for (const position of answer.result) {
+
+                                                    positions.push({
+                                                        size: position.size,
+                                                        direction: position.direction.toUpperCase(),
+                                                        exchange: this.meta.exchange
+                                                    });
+
+                                                }
+
+                                                this.call('getPositions', answer.result);
+                                                this.call('getPositionsBasic', positions);
+
+                                                io.send(JSON.stringify(template.positions));
+
+                                                break;
+
 
                                         }
 

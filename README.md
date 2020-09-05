@@ -6,7 +6,7 @@ Event+ repository
 
 Use the `Studio Code` in the web version of the terminal or make changes to the `firmware` file in the root folder of the terminal. 
 
-### How to create a trading algorithm
+### How to create a trading algorithm?
 
 The Event+ trading terminal has an asynchronous architecture, which allows it to process a large amount of data very quickly. But the asynchrony creates a question - how to catch events? To capture events, you need to create a "trap".
 
@@ -89,6 +89,8 @@ or dump data into a file
 $ node bin.js --v=true --w=__traps__ --f=dump.json
 ```
 Alternatively, you can write data to a file by specifying the `--file=filename` or `--f=filename` agent. Be careful, the file with data dump can so big the size more than 1TB in 10 minutes of using the terminal
+
+PS: All `console.` commands will be displayed correctly in your console
 
 #### How to open positions?
 To work with the markets, the Event has a CCXT module for each driver. You can call it on the curly word `$exchange`, where you can replace `exchange` put the exchange trunk. For example, creating an order on deribit will look like this

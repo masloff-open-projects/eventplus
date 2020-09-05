@@ -185,12 +185,18 @@
           </div>
 
           {# Deals #}
-          <div class="block-section">
+          <div class="block-section" id="deals">
             <div class="header">
               Terminal Deals
             </div>
             <div class="block">
-              <div v-if="false"></div>
+              <div v-if="positions != false">
+                <div v-for="position in positions" class="position-item">
+                  <span class="exchange-name">${position.exchange}</span>
+                  <span class="high-price">$${position.direction}</span>
+                  <span class="exchange-capital-symbol">${position.size}</span>
+                </div>
+              </div>
               <div v-else class="no-content">
                 <img src="/images/money.png" alt="">
                 <h5>Empty</h5>
