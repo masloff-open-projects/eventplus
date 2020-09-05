@@ -16,13 +16,13 @@ String.prototype.indexOfAll = function (data) {
     return indices;
 }
 
-String.prototype.replaceObject = function (data) {
+String.prototype.replaceObject = function (data, signage="$") {
 
     var string = this;
 
     for (const [key, value] of Object.entries(Object.freeze(data))) {
-        for (const index in this.indexOfAll(key)) {
-            string = string.replace(`$${key}`, value);
+        for (const index in this.indexOfAll(`${signage}${key}`)) {
+            string = string.replace(`${signage}${key}`, value);
         }
     }
 

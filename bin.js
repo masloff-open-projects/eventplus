@@ -61,6 +61,7 @@ pccxt.on  ('initExchange', function (event={}) {
 
             if ('use' in driver) {
 
+                vm.use ('public', `$${driver.meta.exchange}`, event.object);
                 driver.use ('commutator', 'ccxt', event.object);
                 driver.init ();
 
@@ -86,7 +87,9 @@ tinds.use('processor', 'indicators', pinds);
 vm.use ('private', 'keystore', keystore);
 vm.use ('private', 'environment', PacMan.vm);
 vm.use ('private', 'fs', PacMan.fs);
+vm.use ('private', 'alias', PacMan.VMAlais);
 vm.use ('public', 'driver', map.driver);
+vm.use ('public', 'console', console);
 
 // Check if debuggers are enabled
 if (PacMan.yargs.visualization) {
@@ -133,7 +136,6 @@ if (PacMan.yargs.visualization) {
 
     }
 }
-
 
 // Go through the map of instances
 for (const [name, instance] of Object.entries(instances)) {

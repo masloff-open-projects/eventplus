@@ -7,7 +7,7 @@ new trap ({
         return sender.meta.exchange == 'deribit';
     },
     step: function () {
-
+        // console.log(23)
     },
     watch: {
         getChartForTradingview: function () {
@@ -15,3 +15,9 @@ new trap ({
         }
     }
 });
+
+// $deribit.createLimitSellOrder('BTC-PERPETUAL', 10, 11000).then(Event => {
+//     console.log(Event)
+// }).catch(Event => {
+//     console.log(Event)
+// })

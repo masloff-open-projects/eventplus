@@ -36,6 +36,8 @@ module.exports = class extends prototype {
                                 let exchange = this.essence['store']['exchange'];
                                 let request = this.essence['commutator']['request'];
 
+                                this.ccxt = this.essence['commutator']['ccxt'];
+
                                 var buffer = [];
                                 var chartData = [];
 

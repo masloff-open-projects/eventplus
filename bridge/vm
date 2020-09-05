@@ -34,11 +34,17 @@ module.exports = class extends prototype{
 
             if ('environment' in this.essence['private']) {
 
+                var alias = this.essence['private']['alias'];
                 var context = this.essence['public'];
                 var environment = this.essence['private']['environment'];
                 var firmware = this.essence['private']['fs'].readFileSync('./firmware', 'utf8');
                 var sync = this.essence['private']['fs'].readFileSync('./virtual/sync', 'utf8');
                 var signal = this.essence['private']['fs'].readFileSync('./virtual/signal', 'utf8');
+
+                // If aliases are specified, the following code will be processed
+                if (alias) {
+                    firmware = firmware.replaceObject(alias);
+                }
 
                 new Promise((resolve, reject) => {
 
@@ -56,6 +62,12 @@ module.exports = class extends prototype{
                     if (filename) {
 
                         var firmware = this.essence['private']['fs'].readFileSync('./firmware', 'utf8');
+
+                        // If aliases are specified, the following code will be processed
+                        if (alias) {
+                            firmware = firmware.replaceObject(alias);
+                        }
+
                         environment.runInContext(firmware, context);
 
                     }

@@ -40,6 +40,8 @@ module.exports = class extends prototype {
                                     let wss = this.essence['commutator']['wss'];
                                     let io = new wss(keystore.testnet ? "wss://test.deribit.com/ws/api/v2" : "wss://www.deribit.com/ws/api/v2");
 
+                                    this.ccxt = this.essence['commutator']['ccxt'];
+
                                     var buffer = [];
                                     var bufferInstrument = [];
                                     var bufferOrders = {asks: [], bids: []};

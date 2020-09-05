@@ -52,6 +52,8 @@ module.exports = class extends prototype {
                                     let wss = this.essence['commutator']['wss'];
                                     let io = new wss(keystore.testnet ? 'wss://stream-testnet.bybit.com/realtime' : 'wss://stream.bybit.com/realtime');
 
+                                    this.ccxt = this.essence['commutator']['ccxt'];
+
                                     var buffer = [];
                                     var bufferInstrument = [];
                                     var bufferOrders = {asks: [], bids: []};

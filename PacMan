@@ -61,6 +61,7 @@ const yargs     = require('yargs');
 const favicon   = require('serve-favicon')
 const rateLimit = require("express-rate-limit");
 const Strategy  = require('passport-local').Strategy;
+const VMAlais   = require('./virtual/alias.json')
 
 const string    = require(path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/modify/string')));
 const list      = require(path.normalize(path.join(path.dirname(process.mainModule.filename || require.main.filename), '/modify/list')));
@@ -453,3 +454,5 @@ module.exports.yargs = yargs
     .alias('file', 'f')
     .help()
     .argv;
+
+module.exports.VMAlais = VMAlais;
