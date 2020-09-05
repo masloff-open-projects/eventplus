@@ -105,6 +105,8 @@ yaml.read = file => {
             "# This file was created based on the model.",
             "# If you already had a customized configuration file and it was overwritten, ",
             "# check the synchronization with GitHub, something might be deleting your file",
+            "# ",
+            "# File created at " + new Date().toISOString().match(/(\d{2}:){2}\d{2}/)[0],
             "",
             String(yaml.dump(model, {
                 flowLevel: 3,
@@ -220,7 +222,7 @@ module.exports.mysql.connect(function(err) {
             data: err.stack
         });
 
-        return;
+        return false;
     }
 
 });
@@ -339,8 +341,8 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
-passport.use('login',  new Strategy ({passReqToCallback: true}, require('../passport/login') (module.exports.mysql)));
-passport.use('signup', new Strategy ({passReqToCallback: true}, require('../passport/signup') (module.exports.mysql)));
+passport.use('login',  new Strategy ({passReqToCallback: true}, require('./passport/login') (module.exports.mysql)));
+passport.use('signup', new Strategy ({passReqToCallback: true}, require('./passport/signup') (module.exports.mysql)));
 
 module.exports.passport = passport;
 

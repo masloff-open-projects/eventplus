@@ -36,15 +36,16 @@ module.exports = class extends prototype{
 
                 var context = this.essence['public'];
                 var environment = this.essence['private']['environment'];
-                var bin = this.essence['private']['fs'].readFileSync('./virtual/bin', 'utf8');
+                var firmware = this.essence['private']['fs'].readFileSync('./firmware', 'utf8');
                 var sync = this.essence['private']['fs'].readFileSync('./virtual/sync', 'utf8');
-                var execute = this.essence['private']['fs'].readFileSync('./virtual/execute', 'utf8');
+                var signal = this.essence['private']['fs'].readFileSync('./virtual/signal', 'utf8');
 
                 new Promise((resolve, reject) => {
 
                     environment.createContext(context);
+                    environment.runInContext(signal, context);
                     environment.runInContext(sync, context);
-                    environment.runInContext(bin, context);
+                    environment.runInContext(firmware, context);
 
                 }).catch((event) => {
                     this.call('error', event)
@@ -58,11 +59,9 @@ module.exports = class extends prototype{
                             context.__sender__ = event.sender;
                             context.__action__ = action;
 
-                            environment.runInContext(execute.replaceObject({
-
-                            }), context);
-
                             this.call('context', context)
+
+                            console.log(context.__traps__)
 
                             for ( let i = 0; i < context.__traps__.length; i ++ ) {
 

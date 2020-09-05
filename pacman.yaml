@@ -11,10 +11,10 @@ redis:
   host: 127.0.0.1
   port: 6379
 mysql:
-  host: 'localhost'
-  user: 'main'
-  password: 'emaqQXcwTnT3xAY6mEBve4gH'
-  database: 'passport'
+  host: localhost
+  user: gob
+  password: Satana666
+  database: passport
 io: ~
 session:
   secret: ~

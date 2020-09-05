@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Initialization the PacMan and key store.
-const PacMan = require ('./bin/pacman');
+const PacMan = require ('./PacMan');
 const keystore = PacMan.yaml.read(PacMan.path.root('keystore.yaml')) || {};
 const exchange = PacMan.yaml.read(PacMan.path.root('exchange.yaml')) || {};
 
@@ -84,9 +84,13 @@ tinds.use('processor', 'indicators', pinds);
 
 // Configure VM bridge
 vm.use ('private', 'keystore', keystore);
-vm.use ('private', 'environment', vm);
+vm.use ('private', 'environment', PacMan.vm);
 vm.use ('private', 'fs', PacMan.fs);
 vm.use ('public', 'driver', map.driver);
+
+vm.on ('context', Event => {
+    console.log(Object.keys(Event))
+})
 
 // Go through the map of instances
 for (const [name, instance] of Object.entries(instances)) {
