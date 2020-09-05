@@ -31,6 +31,7 @@
  * @link https://www.npmjs.com/package/ws
  * @link https://www.npmjs.com/package/print-message
  * @link https://www.npmjs.com/package/cache
+ * @link https://www.npmjs.com/package/yargs
  */
 
 const path      = require('path');
@@ -56,6 +57,7 @@ const websocket = require('websocket');
 const cookie    = require('cookie-parser');
 const ddos      = require('ddos');
 const multer    = require('multer');
+const yargs     = require('yargs');
 const favicon   = require('serve-favicon')
 const rateLimit = require("express-rate-limit");
 const Strategy  = require('passport-local').Strategy;
@@ -429,3 +431,25 @@ module.exports.cache = new cache (pacmanProfile.cache.time || 15 * 60 * 1000);
  */
 
 module.exports.websocket = websocket;
+
+module.exports.yargs = yargs
+    .option('visualization', {
+        alias: 'visualization',
+        description: 'Visualize the context of the virtual machine',
+        type: 'boolean',
+    })
+    .option('watch', {
+        alias: 'watch',
+        description: 'Watch for a specific virtual environment variable',
+        type: 'string',
+    })
+    .option('file', {
+        alias: 'file',
+        description: 'Write data dump into file',
+        type: 'string',
+    })
+    .alias('visualization', 'v')
+    .alias('watch', 'w')
+    .alias('file', 'f')
+    .help()
+    .argv;

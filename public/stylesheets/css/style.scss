@@ -72,6 +72,28 @@ select {
   font-family: $font;
 }
 
+.label-title {
+  color: #868686;
+  margin: 6px 0px;
+  margin-bottom: 3px;
+  font-weight: inherit;
+  font-size: 12px;
+}
+
+.item-signal {
+  margin-bottom: 3px;
+}
+
+.signal-data {
+  color: #efefef
+}
+
+.signal-id {
+  color: $accentColor;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 .action-button {
 
   background: #8E2DE2; /* fallback for old browsers */

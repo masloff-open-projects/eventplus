@@ -86,8 +86,13 @@
               Firmware
             </div>
             <div class="block" id="firmware">
-              <div v-if="items">
-
+              <div v-if="signals">
+                <div id="signals">
+                  <div class="label-title">Signals</div>
+                  <div v-for="signal in signals" class="item-signal">
+                    <div><span class="signal-id">${signal.id | upper}</span> <span class="signal-data">${signal.data | upper}</span></div>
+                  </div>
+                </div>
               </div>
               <div v-else class="no-content">
                 <img src="/images/pcb.png" alt="">

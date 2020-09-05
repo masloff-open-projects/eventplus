@@ -55,6 +55,24 @@ select {
   font-size: 84px;
   font-family: Roboto Regular, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; }
 
+.label-title {
+  color: #868686;
+  margin: 6px 0px;
+  margin-bottom: 3px;
+  font-weight: inherit;
+  font-size: 12px; }
+
+.item-signal {
+  margin-bottom: 3px; }
+
+.signal-data {
+  color: #efefef; }
+
+.signal-id {
+  color: #ffbd51;
+  font-size: 12px;
+  font-weight: bold; }
+
 .action-button {
   background: #8E2DE2;
   /* fallback for old browsers */

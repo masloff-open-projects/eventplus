@@ -51,8 +51,18 @@ module.exports = class extends prototype{
                     this.call('error', event)
                 });
 
+                // Watching the changes in the file
+                this.essence['private']['fs'].watch('./firmware', { encoding: 'utf8' }, (eventType, filename) => {
+                    if (filename) {
+
+                        var firmware = this.essence['private']['fs'].readFileSync('./firmware', 'utf8');
+                        environment.runInContext(firmware, context);
+
+                    }
+                });
+
                 this.on ('*',  (event, action) => {
-                    if (!(['init', 'error', 'context', 'execute'].includes(action))) {
+                    if (!(['boot', 'init', 'error', 'context', 'execute', 'done'].includes(action))) {
                         new Promise((resolve, reject) => {
 
                             context.__prop__ = event.event;
@@ -60,8 +70,6 @@ module.exports = class extends prototype{
                             context.__action__ = action;
 
                             this.call('context', context)
-
-                            console.log(context.__traps__)
 
                             for ( let i = 0; i < context.__traps__.length; i ++ ) {
 
@@ -98,8 +106,10 @@ module.exports = class extends prototype{
                             context.__prop__ = null;
                             context.__action__ = null;
 
+                            this.call('done', context)
+
                         }).catch((event) => {
-                            this.call('error', String(event))
+                            this.call('error', event)
                         });
 
                         this.call('execute', context)

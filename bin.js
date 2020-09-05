@@ -88,9 +88,52 @@ vm.use ('private', 'environment', PacMan.vm);
 vm.use ('private', 'fs', PacMan.fs);
 vm.use ('public', 'driver', map.driver);
 
-vm.on ('context', Event => {
-    console.log(Object.keys(Event))
-})
+// Check if debuggers are enabled
+if (PacMan.yargs.visualization) {
+
+    // Debbug message
+    PacMan.print([
+        `Welcome to Event+ VM Visualization`,
+        `---------------------------`,
+        'Now the full virtual machine state dump will be sent to the console',
+        PacMan.yargs.file ? 'WARNING: A file with the virtual machine data dump can reach 1TB in 10 minutes. Be careful' : ''
+    ]);
+
+    // Specific var?
+    if (PacMan.yargs.watch) {
+
+        vm.on ('context', Event => {
+
+            // Write to file?
+            if (PacMan.yargs.file) {
+                PacMan.fs.appendFile(PacMan.yargs.file, "\n\n" + JSON.stringify(Event[PacMan.yargs.watch], null, 2), function () {});
+            } else {
+                console.log('');
+                console.log(`Virtual Machine DUMP on ${Date.now()}`);
+                console.log(Event[PacMan.yargs.watch]);
+            }
+
+        })
+
+    // Dump all data
+    } else {
+
+        vm.on ('context', Event => {
+
+            // Write to file?
+            if (PacMan.yargs.file) {
+                PacMan.fs.appendFile(PacMan.yargs.file, "\n\n" + JSON.stringify(Event, null, 2), function () {});
+            } else {
+                console.log('');
+                console.log(`Virtual Machine DUMP on ${Date.now()}`);
+                console.log(Event);
+            }
+
+        })
+
+    }
+}
+
 
 // Go through the map of instances
 for (const [name, instance] of Object.entries(instances)) {

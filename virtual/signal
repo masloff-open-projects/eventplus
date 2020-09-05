@@ -1,3 +1,30 @@
 #!/usr/bin/env node
 
 var __signals__ = [];
+
+class vmsignal {
+
+    signal (id='boot', data="run") {
+
+        for (const signal of __signals__) {
+            if (signal.id === id) {
+                return;
+            }
+        }
+
+        __signals__.push({
+            id: id,
+            data: data
+        });
+
+    }
+
+    remove (id='boot') {
+        __signals__ = __signals__.filter(function(item) {
+            console.log(item)
+            return item.id !== id;
+        });
+    }
+}
+
+const activity = new vmsignal();

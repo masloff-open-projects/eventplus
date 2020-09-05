@@ -25,6 +25,8 @@ $(document).ready(function () {
             });
 
         }
+    }).catch(function (response) {
+        alert(String(response));
     });
 
 

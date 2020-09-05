@@ -143,7 +143,6 @@ module.exports = class extends prototype {
 
                                         if (!(action in ['init'])) {
                                             if ('exchange' in event) {
-
                                                 io.sendAll ( JSON.stringify({
                                                     response: 'chartData',
                                                     exchange: event.exchange.toLowerCase(),
@@ -168,8 +167,15 @@ module.exports = class extends prototype {
 
                         }
 
-                        vm.on ('execute', event => {
-                            //console.log(event.__traps__)
+                        vm.on ('done', event => {
+                            io.sendAll ( JSON.stringify({
+                                response: 'vmSignalsData',
+                                signals: event.__signals__
+                            }));
+                        });
+
+                        vm.on ('error', event => {
+                            console.log(event)
                         });
 
                         // Setup RestAPI

@@ -30,9 +30,8 @@ $(document).ready(function(event=null) {
 
     NProgress.start()
 
-    const Overlay = TradingVueJs.Overlay;
-
     const chart = new Vue({
+        delimiters: ['${', '}'],
         el: '#chart',
         components: {
             'trading-vue': TradingVueLib.TradingVue
@@ -137,6 +136,15 @@ $(document).ready(function(event=null) {
         beforeDestroy() {
             window.removeEventListener('resize', this.onResize)
         }
+    });
+
+    const firmware = new Vue({
+        delimiters: ['${', '}'],
+        el: '#firmware',
+        data: {
+            signals: []
+        },
+        methods: {}
     });
 
     const instrumentOfCrypto = new Vue({
@@ -318,9 +326,7 @@ $(document).ready(function(event=null) {
                 url: `/api/v1/exchange/all/balance`
             }).then((response) => {
                 if (response.status == 200 || response.status == 304) {
-                    console.log(response.data)
                     this.capital = response.data;
-                    console.log(this.capital)
                 }
             });
 
@@ -490,6 +496,8 @@ $(document).ready(function(event=null) {
             if (object.exchange == (barn.get('chart_exchange') ? barn.get('chart_exchange') : 'deribit')) {
                 marketsOfCrypto.markets = Object.values(object.markets);
             }
+        } else if (object.response == 'vmSignalsData') {
+            firmware.signals = object.signals;
         }
 
     };

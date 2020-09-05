@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 new trap ({
+    name: "Trap",
     filter: function (sender={}, action='default', prop={}) {
         return true;
         return sender.meta.exchange == 'deribit';
     },
     step: function () {
-        console.log()
+
     },
     watch: {
         getChartForTradingview: function () {
@@ -14,6 +15,3 @@ new trap ({
         }
     }
 });
-
-
-__signals__ = 234;

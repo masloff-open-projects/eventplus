@@ -160,8 +160,7 @@ module.exports = function (passport, authenticationMiddleware, mysql) {
     // Virtual program
     router.get('/v1/vm/:segment', authenticationMiddleware(), function (req, res){
         if (req.params.segment == 'all') {
-            console.log(__dirname + '../virtual/all.js')
-            res.send(fs.readFileSync(__dirname + '/../virtual/all.js', 'utf8'));
+            res.send(fs.readFileSync(__dirname + '/../firmware', 'utf8'));
         }
     });
 
