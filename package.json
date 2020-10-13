@@ -34,7 +34,7 @@
         "async": "^3.2.0",
         "autoprefixer": "^9.8.6",
         "bcrypt": "^5.0.0",
-        "bitmex-realtime-api": "^0.4.3",
+        "bitmex-realtime-api": "^0.5.0",
         "cache": "^2.3.1",
         "ccxt": "^1.33.20",
         "coingecko-api": "^1.0.10",
